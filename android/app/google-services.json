@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "674336402509",
+    "project_id": "hit-with-database",
+    "storage_bucket": "hit-with-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674336402509:android:d2a3f57a280398d6aa8004",
+        "android_client_info": {
+          "package_name": "com.example.emshealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "674336402509-n2ebqv5ug8hmjknt7dlob22pl1u31ars.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUeByyhaQm4GmD5fLr1iwabAaF9R_bIVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "674336402509-n2ebqv5ug8hmjknt7dlob22pl1u31ars.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
