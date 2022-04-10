@@ -1,3 +1,4 @@
+import 'package:emshealth/home_page.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -93,6 +94,10 @@ Widget build(BuildContext context) {
       print('${dates[i]}, ${scores[i]}');
     }
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
+    prefs.setString('date', time);
+
   }
 
   return FutureBuilder(
@@ -129,6 +134,17 @@ Widget build(BuildContext context) {
                   ),
                 ],
               )
+            ),
+            ElevatedButton(
+              child: Text("Go back to Home Page"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => HomePage(),
+                  ),
+                );
+              },
             )
           ],
         ),

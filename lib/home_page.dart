@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   bool markDoneForMin = false;
   String? username = '';
   bool signin = false;
+  bool didSurvey = false;
 
   @override
   void initState() {
@@ -106,7 +107,7 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  void loadLocalData() async {
+  Future<void> loadLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('username')) {
       username = prefs.getString('username');
@@ -116,6 +117,23 @@ class _HomePageState extends State<HomePage> {
       signin = false;
     }
     print("username: " + username!);
+
+    String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
+    if (prefs.containsKey('date')) {
+      String? prevDate = prefs.getString('date');
+      if (prevDate.toString().compareTo(time) == 0) {
+        //did survey before
+        didSurvey = true;
+      } else {
+        didSurvey = false;
+      }
+    } else {
+      didSurvey = false;
+    }
+
+    print('signin: $signin');
+    print('didsurvey: $didSurvey');
+
   }
 
   void pushNameLocal(String name) async {
@@ -154,106 +172,116 @@ class _HomePageState extends State<HomePage> {
     TextEditingController dobController = new TextEditingController();
     TextEditingController passwordController = new TextEditingController();
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("EMS Health"),
-      ),
-      body: username == null || username == '' ?
-      Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Container(
-                alignment: Alignment.center,
-                child: Text("You need to create a profile."),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'name',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              child: TextField(
-                controller: ageController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'age',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              child: TextField(
-                controller: dobController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'date of birth (MM/DD/YYYY)',
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              child: TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'password',
-                ),
-              ),
-            ),
-            ElevatedButton(
-              child: Text("Save my name"),
-              onPressed: () {
-                //save name on local data
-                pushNameLocal(nameController.text);
-
-                //save name on storage
-                pushUserFirestore(nameController.text, ageController.text, dobController.text, passwordController.text);
-
-                //then only create notification
-                NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                createHourlyReminder(nw);
-
-                //go to survey page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SurveyPage(name: nameController.text),
+    return FutureBuilder(
+      future: loadLocalData(),
+      builder: (context, snapshot) {
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text("EMS Health"),
+          ),
+          body: username == null || username == '' ?
+          Center(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text("You need to create a profile."),
                   ),
-                );
-
-              },
-            )
-          ],
-        ),
-      ) :
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: Text("Click to go to survey"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SurveyPage(name: username.toString()),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'name',
+                    ),
                   ),
-                );
-              },
+                ),
+                SizedBox(height: 10),
+                Container(
+                  child: TextField(
+                    controller: ageController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'age',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  child: TextField(
+                    controller: dobController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'date of birth (MM/DD/YYYY)',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  child: TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'password',
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  child: Text("Submit"),
+                  onPressed: () {
+                    //save name on local data
+                    pushNameLocal(nameController.text);
+
+                    //save name on storage
+                    pushUserFirestore(nameController.text, ageController.text, dobController.text, passwordController.text);
+
+                    //then only create notification
+                    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
+                    createHourlyReminder(nw);
+
+                    //go to survey page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SurveyPage(name: nameController.text),
+                      ),
+                    );
+
+                  },
+                )
+              ],
             ),
-          ],
-        ),
-      ),
+          ) :
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  child: !didSurvey ? ElevatedButton(
+                    child: Text("Click to go to survey"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SurveyPage(name: username.toString()),
+                        ),
+                      );
+                    },
+                  ) :
+                  Text("You did your survey today! See you tomorrow!"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+
+
   }
 }
