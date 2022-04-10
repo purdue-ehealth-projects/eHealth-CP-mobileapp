@@ -124,13 +124,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void pushUserFirestore(String name, String age, String dob, String password) async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await users.add({
-      'name': name,
-      'age': age,
-      'dob': dob,
-      'password': password,
-    });
+    CollectionReference patients = FirebaseFirestore.instance.collection('patients');
+    QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
+    QueryDocumentSnapshot doc = query.docs[0];
+    DocumentReference docRef = doc.reference;
+    docRef.update({'password': password});
     print("Success");
   }
 

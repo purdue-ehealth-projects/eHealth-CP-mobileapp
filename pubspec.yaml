@@ -44,6 +44,8 @@ dependencies:
   survey_kit: ^0.0.21
   shared_preferences: ^2.0.13
   xid: ^1.0.7
+  fl_chart: ^0.50.1
+  syncfusion_flutter_charts: ^20.1.47+1
 
 dev_dependencies:
   flutter_test:

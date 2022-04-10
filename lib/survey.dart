@@ -56,6 +56,12 @@ class _SurveyPageState extends State<SurveyPage> {
                           if (l.compareTo('1') == 0) needs = 'A phone call';
                           if (l.compareTo('2') == 0) needs = 'A visit';
                           if (l.compareTo('3') == 0) needs = 'None';
+
+                          if (l.compareTo('Aching all over') == 0) score += 5;
+                          if (l.compareTo('A headache') == 0) score += 5;
+                          if (l.compareTo('Nausea') == 0) score += 5;
+                          if (l.compareTo('A new concern or problem that came back') == 0) score += 5;
+
                         }
                       }
                     }
@@ -211,9 +217,9 @@ class _SurveyPageState extends State<SurveyPage> {
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
                 textChoices: [
-                  TextChoice(text: 'Better than yesterday', value: '-5'),
-                  TextChoice(text: 'Same as yesterday', value: '0'),
-                  TextChoice(text: 'Worse than yesterday', value: '5'),
+                  TextChoice(text: 'Better than yesterday', value: 'better'),
+                  TextChoice(text: 'Same as yesterday', value: 'same'),
+                  TextChoice(text: 'Worse than yesterday', value: 'worse'),
                 ]
             )
         ),
@@ -247,9 +253,9 @@ class _SurveyPageState extends State<SurveyPage> {
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
                 textChoices: [
-                  TextChoice(text: 'Better than yesterday', value: '-5'),
-                  TextChoice(text: 'Same as yesterday', value: '0'),
-                  TextChoice(text: 'Worse than yesterday', value: '5'),
+                  TextChoice(text: 'Better than yesterday', value: 'better'),
+                  TextChoice(text: 'Same as yesterday', value: 'same'),
+                  TextChoice(text: 'Worse than yesterday', value: 'worse'),
                 ]
             )
         ),
@@ -267,13 +273,13 @@ class _SurveyPageState extends State<SurveyPage> {
         ),
         QuestionStep(
             title: 'And this is:',
-            text: 'Compare your sleep to yesterday.',
+            text: 'Compare your weight to yesterday.',
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
                 textChoices: [
-                  TextChoice(text: 'Better than yesterday', value: '-5'),
-                  TextChoice(text: 'Same as yesterday', value: '0'),
-                  TextChoice(text: 'Worse than yesterday', value: '5'),
+                  TextChoice(text: 'Better than yesterday', value: 'better'),
+                  TextChoice(text: 'Same as yesterday', value: 'same'),
+                  TextChoice(text: 'Worse than yesterday', value: 'worse'),
                 ]
             )
         ),
@@ -283,11 +289,11 @@ class _SurveyPageState extends State<SurveyPage> {
             isOptional: false,
             answerFormat: MultipleChoiceAnswerFormat(
                 textChoices: [
-                  TextChoice(text: 'Aching all over', value: '5'),
-                  TextChoice(text: 'A headache', value: '5'),
-                  TextChoice(text: 'Nausea', value: '5'),
-                  TextChoice(text: 'A new concern or problem that came back', value: '5'),
-                  TextChoice(text: 'None of the above', value: '0'),
+                  TextChoice(text: 'Aching all over', value: 'Aching all over'),
+                  TextChoice(text: 'A headache', value: 'A headache'),
+                  TextChoice(text: 'Nausea', value: 'Nausea'),
+                  TextChoice(text: 'A new concern or problem that came back', value: 'A new concern or problem that came back'),
+                  TextChoice(text: 'None of the above', value: 'None of the above'),
                 ]
             )
         ),
