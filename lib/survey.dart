@@ -18,6 +18,20 @@ class _SurveyPageState extends State<SurveyPage> {
   final String name;
   _SurveyPageState(this.name);
 
+  Map<int, Color> color =
+  {
+    50:Color.fromRGBO(11,57,84, .1),
+    100:Color.fromRGBO(11,57,84, .2),
+    200:Color.fromRGBO(11,57,84, .3),
+    300:Color.fromRGBO(11,57,84, .4),
+    400:Color.fromRGBO(11,57,84, .5),
+    500:Color.fromRGBO(11,57,84, .6),
+    600:Color.fromRGBO(11,57,84, .7),
+    700:Color.fromRGBO(11,57,84, .8),
+    800:Color.fromRGBO(11,57,84, .9),
+    900:Color.fromRGBO(11,57,84, 1),
+  };
+
   @override
   Widget build(BuildContext context) {
 
@@ -83,16 +97,16 @@ class _SurveyPageState extends State<SurveyPage> {
                   },
                   themeData: Theme.of(context).copyWith(
                     colorScheme: ColorScheme.fromSwatch(
-                      primarySwatch: Colors.deepOrange,
+                      primarySwatch: Colors.cyan,
                     ).copyWith(
                       onPrimary: Colors.white,
                     ),
-                    primaryColor: Colors.deepOrangeAccent,
+                    primaryColor: Colors.cyan,
                     backgroundColor: Colors.white,
                     appBarTheme: const AppBarTheme(
                       color: Colors.white,
                       iconTheme: IconThemeData(
-                        color: Colors.deepOrangeAccent,
+                        color: Colors.cyan,
                       ),
                       titleTextStyle: TextStyle(
                         color: Colors.cyan,
