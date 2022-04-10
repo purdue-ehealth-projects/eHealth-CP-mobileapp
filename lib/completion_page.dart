@@ -105,48 +105,133 @@ Widget build(BuildContext context) {
     builder: (context, snapshot) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Completion'),
+          title: Text('Great Job!'),
+          backgroundColor: Color(0xff0b3954),
+          elevation: 0,
         ),
-        body: Column(
-          children: <Widget>[
-            Text(
-                "Your score today: $score",
-              style: TextStyle(
-                color: (score >= 0 && score <= 20) ? Colors.green : ((score >= 25 && score <= 35 ? Colors.yellow : Colors.red )),
-              ),
-            ),
-            Text("Your needs today: $needs"),
-            Text("Your next survey will be at 8am tomorrow."),
-            Text("Your past 5 records: "),
-            Container(
-              padding: const EdgeInsets.all(5),
-              width: double.infinity,
-              height: 500,
-              child: SfCartesianChart(
-                primaryXAxis: CategoryAxis(
-                  labelRotation: 90,
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: ElevatedButton(
+                  child: Text("Go back to Home Page"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => HomePage(),
+                      ),
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    foregroundColor: MaterialStateProperty.all(Colors.black87),
+                    shadowColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                  ),
                 ),
-                series: <ChartSeries>[
-                  LineSeries<SurveyScores, String>(
-                      dataSource: ss,
-                      xValueMapper: (SurveyScores data, _) => data.date,
-                      yValueMapper: (SurveyScores data, _) => data.score,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      width: 150,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Your score today: ",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            "$score",
+                            style: TextStyle(
+                              color: (score >= 0 && score <= 20) ? Colors.green : ((score >= 25 && score <= 35 ? Colors.yellow : Colors.red )),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 150,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                      "Your needs today: ",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                            textAlign: TextAlign.center,
+                    ),
+                          Text(
+                      "$needs",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                            textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Container(
+                  child: Text(
+                    "Your next survey will be at 8am tomorrow.",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ],
-              )
-            ),
-            ElevatedButton(
-              child: Text("Go back to Home Page"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => HomePage(),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Container(
+                  child: Text(
+                    "Your past 5 records: ",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                );
-              },
-            )
-          ],
+                ),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(5),
+                  height: 400,
+                  width: double.infinity,
+                  child: SfCartesianChart(
+                    primaryXAxis: CategoryAxis(
+                      labelRotation: 90,
+                      autoScrollingMode: AutoScrollingMode.start,
+                    ),
+                    series: <ChartSeries>[
+                      LineSeries<SurveyScores, String>(
+                        dataSource: ss,
+                        xValueMapper: (SurveyScores data, _) => data.date,
+                        yValueMapper: (SurveyScores data, _) => data.score,
+                      ),
+                    ],
+                  )
+              ),
+            ],
+          ),
         ),
       );
     },

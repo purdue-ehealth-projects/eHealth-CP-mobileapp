@@ -83,16 +83,16 @@ class _SurveyPageState extends State<SurveyPage> {
                   },
                   themeData: Theme.of(context).copyWith(
                     colorScheme: ColorScheme.fromSwatch(
-                      primarySwatch: Colors.cyan,
+                      primarySwatch: Colors.deepOrange,
                     ).copyWith(
                       onPrimary: Colors.white,
                     ),
-                    primaryColor: Colors.cyan,
+                    primaryColor: Colors.deepOrangeAccent,
                     backgroundColor: Colors.white,
                     appBarTheme: const AppBarTheme(
                       color: Colors.white,
                       iconTheme: IconThemeData(
-                        color: Colors.cyan,
+                        color: Colors.deepOrangeAccent,
                       ),
                       titleTextStyle: TextStyle(
                         color: Colors.cyan,

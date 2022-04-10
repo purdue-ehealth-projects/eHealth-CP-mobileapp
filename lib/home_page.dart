@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'notification_week_and_time.dart';
@@ -167,10 +167,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = new TextEditingController();
-    TextEditingController ageController = new TextEditingController();
-    TextEditingController dobController = new TextEditingController();
-    TextEditingController passwordController = new TextEditingController();
 
     return FutureBuilder(
       future: loadLocalData(),
@@ -179,104 +175,73 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             centerTitle: true,
             title: Text("EMS Health"),
+            backgroundColor: Color(0xff0b3954),
+            elevation: 0,
           ),
-          body: username == null || username == '' ?
-          Center(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text("You need to create a profile."),
+          body: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Text(
+                  "EMS",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 72,
                   ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  child: TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'name',
-                    ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Text(
+                  "Health",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 52,
                   ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  child: TextField(
-                    controller: ageController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'age',
-                    ),
+              ),
+              username == null || username == '' ?
+              Center(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
                   ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  child: TextField(
-                    controller: dobController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'date of birth (MM/DD/YYYY)',
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  child: TextField(
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'password',
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  child: Text("Submit"),
+                  child: Text("Create a profile"),
                   onPressed: () {
-                    //save name on local data
-                    pushNameLocal(nameController.text);
-
-                    //save name on storage
-                    pushUserFirestore(nameController.text, ageController.text, dobController.text, passwordController.text);
-
-                    //then only create notification
-                    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                    createHourlyReminder(nw);
-
-                    //go to survey page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SurveyPage(name: nameController.text),
+                        builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
                       ),
                     );
-
                   },
-                )
-              ],
-            ),
-          ) :
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: !didSurvey ? ElevatedButton(
-                    child: Text("Click to go to survey"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SurveyPage(name: username.toString()),
-                        ),
-                      );
-                    },
-                  ) :
-                  Text("You did your survey today! See you tomorrow!"),
                 ),
-              ],
-            ),
+              ) :
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: !didSurvey ? ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                        ),
+                        child: Text("Click to go to survey"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SurveyPage(name: username.toString()),
+                            ),
+                          );
+                        },
+                      ) :
+                      Text("You did your survey today! See you tomorrow!"),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
