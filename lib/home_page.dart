@@ -3,9 +3,11 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey.dart';
+import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:xid/xid.dart';
 import 'notification_week_and_time.dart';
 
 class HomePage extends StatefulWidget {
@@ -142,11 +144,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   void pushUserFirestore(String name, String age, String dob, String password) async {
+
+    //generate a userId
+    Xid userId = Xid();
+
+    //generate password
+    final key = E.Key.fromLength(32);
+    final iv = E.IV.fromLength(16);
+    final encrypter = E.Encrypter(E.AES(key));
+
+    final encrypted = encrypter.encrypt(password, iv: iv).base64;
+
+    //update patient part
     CollectionReference patients = FirebaseFirestore.instance.collection('patients');
     QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
     QueryDocumentSnapshot doc = query.docs[0];
     DocumentReference docRef = doc.reference;
-    docRef.update({'password': password});
+    docRef.update({'userId': userId.toString()});
+
+    //update profile part
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    users.add({
+      'name': name,
+      'userId': userId.toString(),
+      'password': encrypted,
+    });
+
     print("Success");
   }
 
@@ -159,7 +182,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> loginUser(String name, String password) async {
-    CollectionReference patients = FirebaseFirestore.instance.collection('patients');
+    CollectionReference patients = FirebaseFirestore.instance.collection('users');
     QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
     if (query == null) return false;
     else {
@@ -174,9 +197,14 @@ class _HomePageState extends State<HomePage> {
       idx = rec.indexOf(',');
       rec = rec.substring(0, idx);
 
-      print('rec: $rec');
-      print('password: $password');
-      if (rec.compareTo(password) == 0) return true;
+
+      final key = E.Key.fromLength(32);
+      final iv = E.IV.fromLength(16);
+      final encrypter = E.Encrypter(E.AES(key));
+
+      final encrypted = encrypter.encrypt(password, iv: iv).base64;
+
+      if (rec.compareTo(encrypted) == 0) return true;
       else return false;
     }
   }
@@ -200,7 +228,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text("EMS Health"),
+            title: Text("EMS Health Home Page"),
             backgroundColor: Color(0xff0b3954),
             elevation: 0,
           ),
@@ -244,6 +272,7 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: TextField(
+                        obscureText: true,
                         controller: passwordController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -259,8 +288,8 @@ class _HomePageState extends State<HomePage> {
                       child: Text("Login"),
                       onPressed: () {
                         print(nameController.text);
-                        pushNameLocal(nameController.text);
                         loginUser(nameController.text, passwordController.text).then((result) {
+                          pushNameLocal(nameController.text);
                           if (result) {
                             NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
                             createHourlyReminder(nw);

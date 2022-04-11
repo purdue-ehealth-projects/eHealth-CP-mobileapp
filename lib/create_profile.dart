@@ -72,6 +72,7 @@ class CreateProfile extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: TextField(
+                obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),

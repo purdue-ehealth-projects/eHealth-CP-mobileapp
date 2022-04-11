@@ -151,6 +151,7 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.symmetric(vertical: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
                       width: 150,
@@ -165,14 +166,26 @@ Widget build(BuildContext context) {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          Text(
-                            "$score",
-                            style: TextStyle(
-                              color: (score >= 0 && score <= 20) ? Colors.green : ((score >= 25 && score <= 35 ? Colors.yellow : Colors.red )),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: (score >= 0 && score <= 20) ? Colors.green : ((score >= 25 && score <= 35 ? Colors.yellow : Colors.red )),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "$score",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
@@ -183,21 +196,30 @@ Widget build(BuildContext context) {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                      "Your needs today: ",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            "Your needs today: ",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              ),
                             textAlign: TextAlign.center,
-                    ),
-                          Text(
-                      "$needs",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                            textAlign: TextAlign.center,
-                    ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "$needs",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+
                   ],
                 ),
                     ),
@@ -205,7 +227,7 @@ Widget build(BuildContext context) {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.all(10),
                 child: Container(
                   child: Text(
                     "Your next survey will be at 8am tomorrow.",

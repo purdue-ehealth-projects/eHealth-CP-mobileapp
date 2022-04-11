@@ -46,6 +46,7 @@ dependencies:
   xid: ^1.0.7
   fl_chart: ^0.50.1
   syncfusion_flutter_charts: ^20.1.47+1
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:
