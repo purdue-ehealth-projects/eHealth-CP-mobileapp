@@ -10,7 +10,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   AwesomeNotifications().initialize(
-    'resource://drawable/res_notification_app_icon',
+    null,
     [
       NotificationChannel(
         channelKey: 'hourly_channel',

@@ -7,6 +7,7 @@ Future<void> createHourlyReminder(
   print("create interval reminder");
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
+      icon: null,
       id: createUniqueId(),
       channelKey: 'hourly_channel',
       title: 'Complete Survey',
@@ -34,6 +35,7 @@ Future<void> createDailyReminder(
   print('scheduling on day ${notificationSchedule.dayOfTheWeek} and hour ${notificationSchedule.timeOfDay.hour}');
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
+      icon: null,
       id: createUniqueId(),
       channelKey: 'daily_channel',
       title: 'Complete Survey',

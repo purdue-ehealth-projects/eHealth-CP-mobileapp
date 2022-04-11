@@ -158,6 +158,29 @@ class _HomePageState extends State<HomePage> {
     markDoneForMin = false;
   }
 
+  Future<bool> loginUser(String name, String password) async {
+    CollectionReference patients = FirebaseFirestore.instance.collection('patients');
+    QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
+    if (query == null) return false;
+    else {
+      QueryDocumentSnapshot doc = query.docs[0];
+      DocumentReference docRecord = doc.reference;
+      DocumentSnapshot docRecSnap = await docRecord.get();
+      var rec = docRecSnap.data().toString();
+
+      //parse password
+      int idx = rec.indexOf('password:');
+      rec = rec.substring(idx + 10);
+      idx = rec.indexOf(',');
+      rec = rec.substring(0, idx);
+
+      print('rec: $rec');
+      print('password: $password');
+      if (rec.compareTo(password) == 0) return true;
+      else return false;
+    }
+  }
+
   @override
   void dispose() {
     AwesomeNotifications().actionSink.close();
@@ -167,6 +190,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = new TextEditingController();
+    TextEditingController passwordController = new TextEditingController();
 
     return FutureBuilder(
       future: loadLocalData(),
@@ -202,19 +227,70 @@ class _HomePageState extends State<HomePage> {
               ),
               username == null || username == '' ?
               Center(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
-                  ),
-                  child: Text("Create a profile"),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'name',
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'password',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                      ),
+                      child: Text("Login"),
+                      onPressed: () {
+                        print(nameController.text);
+                        pushNameLocal(nameController.text);
+                        loginUser(nameController.text, passwordController.text).then((result) {
+                          if (result) {
+                            NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
+                            createHourlyReminder(nw);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SurveyPage(name: nameController.text),
+                              ),
+                            );
+                          } else {
+                            loginFailedAlert(context);
+                          }
+                        });
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                      ),
+                      child: Text("Create a profile"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ) :
               Center(
@@ -246,7 +322,30 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-
-
   }
+}
+
+loginFailedAlert(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Login Failed"),
+    content: Text("Wrong username or password. Please try again."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

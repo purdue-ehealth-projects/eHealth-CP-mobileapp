@@ -45,6 +45,7 @@ Widget build(BuildContext context) {
 
     //get the past 5 records
     QuerySnapshot queryRecords = await surveys.orderBy('date', descending: true).limit(5).get();
+    print(queryRecords);
     List<dynamic> recordList = queryRecords.docs;
     for (var record in recordList) {
       QueryDocumentSnapshot doc = record;
