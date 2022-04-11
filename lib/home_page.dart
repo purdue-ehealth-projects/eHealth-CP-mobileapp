@@ -196,6 +196,7 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
+
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,

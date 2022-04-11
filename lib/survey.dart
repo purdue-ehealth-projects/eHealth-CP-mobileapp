@@ -195,6 +195,8 @@ class _SurveyPageState extends State<SurveyPage> {
                     backgroundColor: Colors.white,
                   ),
                 );
+              } else {
+                return Text("You have done your survey.");
               }
               return Text("Done");
             },

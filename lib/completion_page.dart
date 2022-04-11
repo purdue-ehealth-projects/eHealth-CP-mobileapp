@@ -109,6 +109,21 @@ Widget build(BuildContext context) {
           title: Text('Great Job!'),
           backgroundColor: Color(0xff0b3954),
           elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (_) => HomePage(),
+                  ),
+              );
+            }
+          ),
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
