@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
       ));
     });
 
-    AwesomeNotifications().actionStream.listen((notification) {
+    AwesomeNotifications().actionStream.listen((notification) async {
       if (notification.channelKey == 'basic_channel' && Platform.isIOS) {
         AwesomeNotifications().getGlobalBadgeCounter().then(
               (value) =>
@@ -85,19 +85,21 @@ class _HomePageState extends State<HomePage> {
         );
       }
 
+      //get username
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String usernameP = prefs.getString('username').toString();
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => SurveyPage(name: username.toString()),
+          builder: (_) => SurveyPage(name: usernameP),
         ),
             (route) => route.isFirst,
       );
 
       if (notification.channelKey == 'daily_channel') {
-        if (!markDoneForMin) {
           NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
           createHourlyReminder(nw);
-        }
       }
 
     });
@@ -158,6 +160,28 @@ class _HomePageState extends State<HomePage> {
     //update patient part
     CollectionReference patients = FirebaseFirestore.instance.collection('patients');
     QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
+    if (query.docs.isEmpty ) {
+      patients.add({
+        'address': '',
+        'age': 0,
+        'appointment_day': '',
+        'chest': '',
+        'contact_1': '',
+        'contact_2': '',
+        'coords': FieldValue.arrayUnion([0, 0]),
+        'gender_id': '',
+        'medical_history': '',
+        'overall': '',
+        'priority': '',
+        'program': '',
+        'race': '',
+        'start_date': '',
+        'stomach': '',
+        'zone': 0,
+        'name': name,
+        'userId': userId.toString(),
+      });
+    }
     QueryDocumentSnapshot doc = query.docs[0];
     DocumentReference docRef = doc.reference;
     docRef.update({'userId': userId.toString()});

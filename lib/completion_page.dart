@@ -21,11 +21,8 @@ List<SurveyScores> ss = [];
 @override
 Widget build(BuildContext context) {
 
+  cancelScheduledNotifications();
   DateTime dt = DateTime.now();
-  NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: (dt.day) + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-      dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
-  )));
-  createDailyReminder(nw);
 
   Future<void> updateDatabase() async {
     CollectionReference patients = FirebaseFirestore.instance.collection('patients');
@@ -87,7 +84,7 @@ Widget build(BuildContext context) {
       'energy_levels': quizResult[9][0],
     });
 
-    print('success');
+    print('success send update');
 
     //parse into graphs
     for (int i = 0; i < dates.length; i++) {
@@ -104,6 +101,13 @@ Widget build(BuildContext context) {
   return FutureBuilder(
     future: updateDatabase(),
     builder: (context, snapshot) {
+
+      cancelScheduledNotifications();
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+        dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
+      )));
+      createDailyReminder(nw);
+
       return Scaffold(
         appBar: AppBar(
           title: Text('Great Job!'),
@@ -207,7 +211,6 @@ Widget build(BuildContext context) {
                             padding: EdgeInsets.only(top: 10),
                             child: Container(
                               height: 50,
-                              width: 50,
                               alignment: Alignment.center,
                               child: Text(
                                 "$needs",

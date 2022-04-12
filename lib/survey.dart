@@ -4,6 +4,8 @@ import 'completion_page.dart';
 import 'notification_api.dart';
 import 'package:survey_kit/survey_kit.dart';
 
+import 'notification_week_and_time.dart';
+
 
 class SurveyPage extends StatefulWidget {
   final String name;
@@ -36,6 +38,8 @@ class _SurveyPageState extends State<SurveyPage> {
   Widget build(BuildContext context) {
 
     cancelScheduledNotifications();
+    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
+    createHourlyReminder(nw);
 
     return Scaffold(
       body: Container(
