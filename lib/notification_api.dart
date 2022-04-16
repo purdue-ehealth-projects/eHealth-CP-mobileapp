@@ -21,7 +21,7 @@ Future<void> createHourlyReminder(
       ),
     ],
     schedule: NotificationInterval(
-      interval: 3600, //in seconds
+      interval: 3600, //in seconds (for testing, use 600)
       timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
       allowWhileIdle: true,
       repeats: true,

@@ -1,6 +1,5 @@
 import 'package:emshealth/home_page.dart';
 import 'package:emshealth/notification_api.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xid/xid.dart';
 import 'package:flutter/material.dart';
@@ -103,9 +102,18 @@ Widget build(BuildContext context) {
     builder: (context, snapshot) {
 
       cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
         dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
       )));
+
+
+      /*
+      * for testing, uncomment this part:-
+      * NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+        dt.year, dt.month, dt.day, dt.hour + 1, 0, 0, 0, 0
+      )));
+      * */
+
       createDailyReminder(nw);
 
       return Scaffold(

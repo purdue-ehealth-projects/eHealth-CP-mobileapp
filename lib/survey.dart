@@ -37,9 +37,10 @@ class _SurveyPageState extends State<SurveyPage> {
   @override
   Widget build(BuildContext context) {
 
+    /*
     cancelScheduledNotifications();
     NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-    createHourlyReminder(nw);
+    createHourlyReminder(nw);*/
 
     return Scaffold(
       body: Container(
@@ -288,6 +289,7 @@ class _SurveyPageState extends State<SurveyPage> {
                   TextChoice(text: 'My weight went up 2 or more pounds since yesterday', value: '10'),
                   TextChoice(text: 'My clothes and shoes feel tight', value: '5'),
                   TextChoice(text: 'I can see swelling in my ankles', value: '5'),
+                  TextChoice(text: 'My weight is the same or less than yesterday', value: '5'),
                 ]
             )
         ),

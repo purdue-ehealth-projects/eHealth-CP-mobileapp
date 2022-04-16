@@ -77,36 +77,74 @@ class _HomePageState extends State<HomePage> {
       ));
     });
 
-    AwesomeNotifications().actionStream.listen((notification) async {
-      if (notification.channelKey == 'basic_channel' && Platform.isIOS) {
-        AwesomeNotifications().getGlobalBadgeCounter().then(
-              (value) =>
-              AwesomeNotifications().setGlobalBadgeCounter(value - 1),
-        );
+    AwesomeNotifications().displayedStream.listen((notification) {
+      print("Am i in displayed stream");
+      if (notification.channelKey == 'daily_channel') {
+        //special case where its the first reminder of the day
+        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
+        cancelScheduledNotifications();
+        createHourlyReminder(nw);
       }
+    });
+
+    AwesomeNotifications().actionStream.listen((notification) async {
 
       //get username
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String usernameP = prefs.getString('username').toString();
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SurveyPage(name: usernameP),
-        ),
-            (route) => route.isFirst,
-      );
+      //check if survey's done today
+      String surveyDate = prefs.getString('date').toString();
+      DateTime now = DateTime.now();
+      String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
+      if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
+        //not yet did survey
+        didSurvey == false;
 
-      if (notification.channelKey == 'daily_channel') {
+        if (notification.channelKey == 'daily_channel') {
+          //special case where its the first reminder of the day
           NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
+          cancelScheduledNotifications();
           createHourlyReminder(nw);
+        }
+
+      } else {
+        //already did survey
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HomePage(),
+          ),
+              (route) => route.isFirst,
+        );
+      }
+
+      if (usernameP == null || usernameP == "") {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HomePage(),
+          ),
+              (route) => route.isFirst,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SurveyPage(name: usernameP),
+          ),
+              (route) => route.isFirst,
+        );
       }
 
     });
 
-    if (signin == true) {
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now().add(Duration(seconds: 120))));
+    if (signin == true && didSurvey == true) {
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
       createDailyReminder(nw);
+    } else {
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
+      createHourlyReminder(nw);
     }
 
   }
