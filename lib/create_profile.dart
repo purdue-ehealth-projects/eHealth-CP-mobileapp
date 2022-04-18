@@ -42,7 +42,7 @@ class CreateProfile extends StatelessWidget {
                 controller: nameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'name',
+                  labelText: 'Name',
                 ),
               ),
             ),
@@ -53,7 +53,7 @@ class CreateProfile extends StatelessWidget {
                 controller: ageController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'age',
+                  labelText: 'Age',
                 ),
               ),
             ),
@@ -64,7 +64,7 @@ class CreateProfile extends StatelessWidget {
                 controller: dobController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'date of birth (MM/DD/YYYY)',
+                  labelText: 'Date of Birth (MM/DD/YYYY)',
                 ),
               ),
             ),
@@ -76,7 +76,7 @@ class CreateProfile extends StatelessWidget {
                 controller: passwordController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'password',
+                  labelText: 'Password',
                 ),
               ),
             ),

@@ -11,6 +11,7 @@ import 'package:xid/xid.dart';
 import 'notification_week_and_time.dart';
 
 class HomePage extends StatefulWidget {
+
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  bool markDoneForMin = false;
+  bool goBack = false;
   String? username = '';
   bool signin = false;
   bool didSurvey = false;
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
 
     //get local data
     loadLocalData();
+    DateTime now = DateTime.now();
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -77,9 +79,21 @@ class _HomePageState extends State<HomePage> {
       ));
     });
 
-    AwesomeNotifications().displayedStream.listen((notification) {
+    AwesomeNotifications().displayedStream.listen((notification) async {
       print("Am i in displayed stream");
-      if (notification.channelKey == 'daily_channel') {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String usernameP = prefs.getString('username').toString();
+
+      //check if survey's done today
+      String surveyDate = prefs.getString('date').toString();
+      String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
+      if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
+        //not yet did survey
+        didSurvey == false;
+      }
+
+      if (notification.channelKey == 'daily_channel' && didSurvey == false) {
         //special case where its the first reminder of the day
         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
         cancelScheduledNotifications();
@@ -103,7 +117,7 @@ class _HomePageState extends State<HomePage> {
 
         if (notification.channelKey == 'daily_channel') {
           //special case where its the first reminder of the day
-          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
+          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
           cancelScheduledNotifications();
           createHourlyReminder(nw);
         }
@@ -140,7 +154,10 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (signin == true && didSurvey == true) {
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
+      cancelScheduledNotifications();
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+      )));
       createDailyReminder(nw);
     } else {
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
@@ -160,7 +177,9 @@ class _HomePageState extends State<HomePage> {
     }
     print("username: " + username!);
 
-    String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
+    DateTime now = DateTime.now();
+
+    String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
     if (prefs.containsKey('date')) {
       String? prevDate = prefs.getString('date');
       if (prevDate.toString().compareTo(time) == 0) {
@@ -175,6 +194,15 @@ class _HomePageState extends State<HomePage> {
 
     print('signin: $signin');
     print('didsurvey: $didSurvey');
+
+    if (signin == true && didSurvey == true) {
+      print("cancelling...");
+      cancelScheduledNotifications();
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+      )));
+      createDailyReminder(nw);
+    }
 
   }
 
@@ -219,10 +247,11 @@ class _HomePageState extends State<HomePage> {
         'name': name,
         'userId': userId.toString(),
       });
+    } else {
+      QueryDocumentSnapshot doc = query.docs[0];
+      DocumentReference docRef = doc.reference;
+      docRef.update({'userId': userId.toString()});
     }
-    QueryDocumentSnapshot doc = query.docs[0];
-    DocumentReference docRef = doc.reference;
-    docRef.update({'userId': userId.toString()});
 
     //update profile part
     CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -233,14 +262,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     print("Success");
-  }
-
-  void changeMark() {
-    markDoneForMin = true;
-    cancelScheduledNotifications();
-    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now().add(Duration(seconds: 120))));
-    createDailyReminder(nw);
-    markDoneForMin = false;
   }
 
   Future<bool> loginUser(String name, String password) async {
@@ -287,12 +308,18 @@ class _HomePageState extends State<HomePage> {
       future: loadLocalData(),
       builder: (context, snapshot) {
 
+        if (didSurvey == true) {
+          cancelScheduledNotifications();
+          print("I'm here");
+        }
+
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             title: Text("EMS Health Home Page"),
             backgroundColor: Color(0xff0b3954),
             elevation: 0,
+            leading: (didSurvey == true) ? Container() : null,
           ),
           body: Column(
             children: <Widget>[

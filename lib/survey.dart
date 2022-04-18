@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'completion_page.dart';
 import 'notification_api.dart';
@@ -34,6 +35,10 @@ class _SurveyPageState extends State<SurveyPage> {
     900:Color.fromRGBO(11,57,84, 1),
   };
 
+  Function hi = () {
+    print("Hi");
+  };
+
   @override
   Widget build(BuildContext context) {
 
@@ -48,191 +53,202 @@ class _SurveyPageState extends State<SurveyPage> {
         child: Align(
           alignment: Alignment.center,
           child: FutureBuilder<Task>(
-            future: getSurvey(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done
-                  && snapshot.hasData && snapshot.data != null) {
-                final task = snapshot.data!;
-                return SurveyKit(
-                  onResult: (SurveyResult result) {
-                    List<List<String>> temp = [];
-                    int score = 0;
-                    String needs = '';
-                    var res = result.results;
-                    for (StepResult x in res) {
-                      //print('x: $x');
-                      var y = x.results;
-                      for (QuestionResult<dynamic> z in y) {
-                        //print("z: ${z.result}");
-                        String work = z.valueIdentifier.toString();
-                        List<String> list = work.split(',');
-                        temp.add(list);
-                        print(list);
-                        for (String l in list) {
-                          if (l.compareTo('5') == 0) score += 5;
-                          if (l.compareTo('-5') == 0) score -= 5;
-                          if (l.compareTo('10') == 0) score += 10;
-                          if (l.compareTo('1') == 0) needs = 'A phone call';
-                          if (l.compareTo('2') == 0) needs = 'A visit';
-                          if (l.compareTo('3') == 0) needs = 'None';
+              future: getSurvey(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done
+                    && snapshot.hasData && snapshot.data != null) {
+                  final task = snapshot.data!;
+                  return SurveyKit(
+                    onResult: (SurveyResult result) {
+                      List<List<String>> temp = [];
+                      int score = 0;
+                      String needs = '';
+                      var res = result.results;
+                      for (StepResult x in res) {
+                        //print('x: $x');
+                        var y = x.results;
+                        for (QuestionResult<dynamic> z in y) {
+                          //print("z: ${z.result}");
+                          String work = z.valueIdentifier.toString();
+                          List<String> list = work.split(',');
+                          temp.add(list);
+                          print(list);
+                          for (String l in list) {
+                            if (l.compareTo('5') == 0) score += 5;
+                            if (l.compareTo('-5') == 0) score -= 5;
+                            if (l.compareTo('10') == 0) score += 10;
+                            if (l.compareTo('1') == 0) needs = 'A phone call';
+                            if (l.compareTo('2') == 0) needs = 'A visit';
+                            if (l.compareTo('3') == 0) needs = 'None';
 
-                          if (l.compareTo('Aching all over') == 0) score += 5;
-                          if (l.compareTo('A headache') == 0) score += 5;
-                          if (l.compareTo('Nausea') == 0) score += 5;
-                          if (l.compareTo('A new concern or problem that came back') == 0) score += 5;
+                            if (l.compareTo('Aching all over') == 0) score += 5;
+                            if (l.compareTo('A headache') == 0) score += 5;
+                            if (l.compareTo('Nausea') == 0) score += 5;
+                            if (l.compareTo('A new concern or problem that came back') == 0) score += 5;
 
+                          }
                         }
                       }
-                    }
-                    print('score: $score');
-                    print('needs: $needs');
-                    print(temp);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CompletionPage(score: score, needs: needs, name: this.name, quizResult: temp),
+                      print('score: $score');
+                      print('needs: $needs');
+                      print(temp);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CompletionPage(score: score, needs: needs, name: this.name, quizResult: temp),
+                        ),
+                      );
+                    },
+                    task: task,
+                    showProgress: true,
+                    localizations: {
+                      'cancel': 'Cancel',
+                      'next': 'Next',
+                    },
+                    themeData: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.fromSwatch(
+                        primarySwatch: Colors.cyan,
+                      ).copyWith(
+                        onPrimary: Colors.white,
                       ),
-                    );
-                  },
-                  task: task,
-                  showProgress: true,
-                  localizations: {
-                    'cancel': 'Cancel',
-                    'next': 'Next',
-                  },
-                  themeData: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.fromSwatch(
-                      primarySwatch: Colors.cyan,
-                    ).copyWith(
-                      onPrimary: Colors.white,
-                    ),
-                    primaryColor: Colors.cyan,
-                    backgroundColor: Colors.white,
-                    appBarTheme: const AppBarTheme(
-                      color: Colors.white,
-                      iconTheme: IconThemeData(
-                        color: Colors.cyan,
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: Colors.cyan,
-                      ),
-                    ),
-                    iconTheme: const IconThemeData(
-                      color: Colors.cyan,
-                    ),
-                    textSelectionTheme: TextSelectionThemeData(
-                      cursorColor: Colors.cyan,
-                      selectionColor: Colors.cyan,
-                      selectionHandleColor: Colors.cyan,
-                    ),
-                    cupertinoOverrideTheme: CupertinoThemeData(
                       primaryColor: Colors.cyan,
-                    ),
-                    outlinedButtonTheme: OutlinedButtonThemeData(
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(
-                          Size(150.0, 60.0),
+                      backgroundColor: Colors.white,
+                      appBarTheme: const AppBarTheme(
+                        color: Colors.white,
+                        iconTheme: IconThemeData(
+                          color: Colors.cyan,
                         ),
-                        side: MaterialStateProperty.resolveWith(
-                              (Set<MaterialState> state) {
-                            if (state.contains(MaterialState.disabled)) {
-                              return BorderSide(
-                                color: Colors.grey,
-                              );
-                            }
-                            return BorderSide(
-                              color: Colors.cyan,
-                            );
-                          },
+                        titleTextStyle: TextStyle(
+                          color: Colors.cyan,
                         ),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        ),
-                        textStyle: MaterialStateProperty.resolveWith(
+                      ),
+                      iconTheme: const IconThemeData(
+                        color: Colors.cyan,
+                      ),
+                      textSelectionTheme: TextSelectionThemeData(
+                        cursorColor: Colors.cyan,
+                        selectionColor: Colors.cyan,
+                        selectionHandleColor: Colors.cyan,
+                      ),
+                      cupertinoOverrideTheme: CupertinoThemeData(
+                        primaryColor: Colors.cyan,
+                      ),
+                      outlinedButtonTheme: OutlinedButtonThemeData(
+                        style: ButtonStyle(
+                          minimumSize: MaterialStateProperty.all(
+                            Size(150.0, 60.0),
+                          ),
+                          side: MaterialStateProperty.resolveWith(
                                 (Set<MaterialState> state) {
                               if (state.contains(MaterialState.disabled)) {
-                                return Theme.of(context).textTheme.button?.copyWith(
+                                return BorderSide(
                                   color: Colors.grey,
                                 );
                               }
-                              return Theme.of(context).textTheme.button?.copyWith(
+                              return BorderSide(
                                 color: Colors.cyan,
                               );
-                            }
-                        ),
-                      ),
-                    ),
-                    textButtonTheme: TextButtonThemeData(
-                      style: ButtonStyle(
-                        textStyle: MaterialStateProperty.all(
-                          Theme.of(context).textTheme.button?.copyWith(
-                            color: Colors.cyan,
+                            },
+                          ),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          ),
+                          textStyle: MaterialStateProperty.resolveWith(
+                                  (Set<MaterialState> state) {
+                                if (state.contains(MaterialState.disabled)) {
+                                  return Theme.of(context).textTheme.button?.copyWith(
+                                    color: Colors.grey,
+                                  );
+                                }
+                                return Theme.of(context).textTheme.button?.copyWith(
+                                  color: Colors.cyan,
+                                );
+                              }
                           ),
                         ),
                       ),
-                    ),
-                    textTheme: TextTheme(
-                      headline2: TextStyle(
-                        fontSize: 28.0,
-                        color: Colors.black,
+                      textButtonTheme: TextButtonThemeData(
+                        style: ButtonStyle(
+                          textStyle: MaterialStateProperty.all(
+                            Theme.of(context).textTheme.button?.copyWith(
+                              color: Colors.cyan,
+                            ),
+                          ),
+                        ),
                       ),
-                      headline5: TextStyle(
-                        fontSize: 24.0,
-                        color: Colors.black,
-                      ),
-                      bodyText2: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                      ),
-                      subtitle1: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                    inputDecorationTheme: InputDecorationTheme(
-                        labelStyle: TextStyle(
+                      textTheme: TextTheme(
+                        headline2: TextStyle(
+                          fontSize: 28.0,
                           color: Colors.black,
-                        )
+                        ),
+                        headline5: TextStyle(
+                          fontSize: 24.0,
+                          color: Colors.black,
+                        ),
+                        bodyText2: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.black,
+                        ),
+                        subtitle1: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                      inputDecorationTheme: InputDecorationTheme(
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          )
+                      ),
                     ),
-                  ),
-                  surveyProgressbarConfiguration: SurveyProgressConfiguration(
-                    backgroundColor: Colors.white,
-                  ),
-                );
-              } else {
-                return Text("You have done your survey.");
-              }
-              return Text("Done");
-            },
+                    surveyProgressbarConfiguration: SurveyProgressConfiguration(
+                      backgroundColor: Colors.white,
+                    ),
+                  );
+                } else {
+                  return Text("You have done your survey.");
+                }
+                return Text("Done");
+              },
+            ),
           ),
         ),
-      ),
     );
   }
 
+  List<TextChoice> tc = [
+    TextChoice(text: 'I am breathing well', value: '0'),
+    TextChoice(text: 'I run out of breath when walking', value: '5'),
+    TextChoice(text: 'I run out of breath when talking', value: '10'),
+  ];
+  int tcIdx = 0;
+  int surveyIdx = 0;
+
+  InstructionStep intro = InstructionStep(
+    title: 'Welcome to the survey!',
+    text: 'This will only take 5 minutes.',
+    buttonText: 'Start',
+  );
+
+
   Future<Task> getSurvey() {
+
     var task = NavigableTask(
       id: TaskIdentifier(),
       steps: [
-        InstructionStep(
-          title: 'Welcome to the survey!',
-          text: 'This will only take 5 minutes.',
-          buttonText: 'Start',
-        ),
+        intro,
         QuestionStep(
+            stepIdentifier: StepIdentifier(),
             title: 'How is your breathing?',
             text: 'Choose one option.',
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
-                textChoices: [
-                  TextChoice(text: 'I am breathing well', value: '0'),
-                  TextChoice(text: 'I get out of breath when walking', value: '5'),
-                  TextChoice(text: 'I get out of breath when talking', value: '10'),
-                ]
-            )
+              textChoices: tc,
+            ),
+            buttonText: 'Next'
         ),
         QuestionStep(
+          stepIdentifier: StepIdentifier(),
             title: 'And this is:',
             text: 'Compare your breathing to yesterday.',
             isOptional: false,
@@ -257,7 +273,7 @@ class _SurveyPageState extends State<SurveyPage> {
             )
         ),
         QuestionStep(
-            title: 'How is your sleep?',
+            title: 'How did you sleep last night?',
             text: 'Choose one option.',
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
@@ -266,7 +282,7 @@ class _SurveyPageState extends State<SurveyPage> {
                   TextChoice(text: 'My sleep was restless', value: '5'),
                   TextChoice(text: 'I had to use pillows to sit up in bed', value: '10'),
                 ]
-            )
+            ),
         ),
         QuestionStep(
             title: 'And this is:',
@@ -281,7 +297,7 @@ class _SurveyPageState extends State<SurveyPage> {
             )
         ),
         QuestionStep(
-            title: 'How is your weight?',
+            title: 'How do you weigh today?',
             text: 'Choose one option.',
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
@@ -299,10 +315,10 @@ class _SurveyPageState extends State<SurveyPage> {
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
                 textChoices: [
-                  TextChoice(text: 'Better than yesterday', value: 'better'),
+                  TextChoice(text: 'More than yesterday', value: 'better'),
                   TextChoice(text: 'Same as yesterday', value: 'same'),
-                  TextChoice(text: 'Worse than yesterday', value: 'worse'),
-                ]
+                  TextChoice(text: 'Less than yesterday', value: 'worse'),
+                ],
             )
         ),
         QuestionStep(
@@ -350,6 +366,24 @@ class _SurveyPageState extends State<SurveyPage> {
           buttonText: 'Submit Survey',
         ),
       ],
+    );
+
+    task.addNavigationRule(
+      forTriggerStepIdentifier: task.steps[1].stepIdentifier,
+      navigationRule: ConditionalNavigationRule(
+        resultToStepIdentifierMapper: (input) {
+          String res = input.toString();
+          print('input: $input');
+          if (res.compareTo('0') == 0)
+              tcIdx = 1;
+          if (res.compareTo('5') == 0)
+              tcIdx = 1;
+          if (res.compareTo('10') == 0)
+              tcIdx = 2;
+          surveyIdx++;
+          return task.steps[2].stepIdentifier;
+        },
+      ),
     );
     return Future.value(task);
   }
