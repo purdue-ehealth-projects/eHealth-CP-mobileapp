@@ -35,10 +35,6 @@ class _SurveyPageState extends State<SurveyPage> {
     900:Color.fromRGBO(11,57,84, 1),
   };
 
-  Function hi = () {
-    print("Hi");
-  };
-
   @override
   Widget build(BuildContext context) {
 

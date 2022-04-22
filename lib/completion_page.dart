@@ -103,21 +103,18 @@ Widget build(BuildContext context) {
     builder: (context, snapshot) {
 
       DateTime dt = DateTime.now();
+      print("Cancelling...");
       cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
         dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
       )));
 
-
-      print("Today is: ${dt.day}");
       /*
       * for testing, uncomment this part:-
       * NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
         dt.year, dt.month, dt.day, dt.hour + 1, 0, 0, 0, 0
       )));
       * */
-
-      print("I'm here");
       createDailyReminder(nw);
 
       return Scaffold(

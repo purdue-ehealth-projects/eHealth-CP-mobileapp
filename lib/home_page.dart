@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     //get local data
-    loadLocalData();
     DateTime now = DateTime.now();
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -87,6 +86,7 @@ class _HomePageState extends State<HomePage> {
 
       //check if survey's done today
       String surveyDate = prefs.getString('date').toString();
+      DateTime now = DateTime.now();
       String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
       if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
         //not yet did survey
@@ -98,6 +98,14 @@ class _HomePageState extends State<HomePage> {
         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
         cancelScheduledNotifications();
         createHourlyReminder(nw);
+      }
+
+      if (didSurvey == true) {
+        cancelScheduledNotifications();
+        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+            now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+        )));
+        createDailyReminder(nw);
       }
     });
 
@@ -111,28 +119,23 @@ class _HomePageState extends State<HomePage> {
       String surveyDate = prefs.getString('date').toString();
       DateTime now = DateTime.now();
       String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
+
       if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
         //not yet did survey
         didSurvey == false;
-
-        if (notification.channelKey == 'daily_channel') {
-          //special case where its the first reminder of the day
-          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
-          cancelScheduledNotifications();
-          createHourlyReminder(nw);
-        }
-
-      } else {
-        //already did survey
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => HomePage(),
-          ),
-              (route) => route.isFirst,
-        );
       }
 
+      // --- get data done ---
+
+      //special case where its the first reminder of the day
+      if (notification.channelKey == 'daily_channel') {
+        //special case where its the first reminder of the day
+        cancelScheduledNotifications();
+        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
+        createHourlyReminder(nw);
+      };
+
+      //no username in local data
       if (usernameP == null || usernameP == "") {
         Navigator.pushAndRemoveUntil(
           context,
@@ -142,17 +145,32 @@ class _HomePageState extends State<HomePage> {
               (route) => route.isFirst,
         );
       } else {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SurveyPage(name: usernameP),
-          ),
-              (route) => route.isFirst,
-        );
+        //have username in local data
+
+        //if done survey for the day
+        if (didSurvey) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HomePage(),
+            ),
+                (route) => route.isFirst,
+          );
+        } else {
+          //not yet done survey
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SurveyPage(name: usernameP),
+            ),
+                (route) => route.isFirst,
+          );
+        }
       }
 
-    });
+      });
 
+    /*
     if (signin == true && didSurvey == true) {
       cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
@@ -162,7 +180,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
       createHourlyReminder(nw);
-    }
+    }*/
 
   }
 
@@ -196,12 +214,17 @@ class _HomePageState extends State<HomePage> {
     print('didsurvey: $didSurvey');
 
     if (signin == true && didSurvey == true) {
-      print("cancelling...");
+      /*
       cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
           now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
       )));
-      createDailyReminder(nw);
+      createDailyReminder(nw);*/
+    } else {
+      print("cancelling...");
+      cancelScheduledNotifications();
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
+      createHourlyReminder(nw);
     }
 
   }
@@ -380,6 +403,7 @@ class _HomePageState extends State<HomePage> {
                         loginUser(nameController.text, passwordController.text).then((result) {
                           pushNameLocal(nameController.text);
                           if (result) {
+                            cancelScheduledNotifications();
                             NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
                             createHourlyReminder(nw);
                             Navigator.push(
