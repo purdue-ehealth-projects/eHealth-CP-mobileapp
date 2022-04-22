@@ -1,12 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'completion_page.dart';
-import 'notification_api.dart';
 import 'package:survey_kit/survey_kit.dart';
-
-import 'notification_week_and_time.dart';
-
 
 class SurveyPage extends StatefulWidget {
   final String name;
@@ -37,11 +32,6 @@ class _SurveyPageState extends State<SurveyPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    /*
-    cancelScheduledNotifications();
-    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-    createHourlyReminder(nw);*/
 
     return Scaffold(
       body: Container(
@@ -240,6 +230,7 @@ class _SurveyPageState extends State<SurveyPage> {
             isOptional: false,
             answerFormat: SingleChoiceAnswerFormat(
               textChoices: tc,
+              defaultSelection: tc[tcIdx],
             ),
             buttonText: 'Next'
         ),
@@ -370,12 +361,22 @@ class _SurveyPageState extends State<SurveyPage> {
         resultToStepIdentifierMapper: (input) {
           String res = input.toString();
           print('input: $input');
-          if (res.compareTo('0') == 0)
+          if (res.compareTo('0') == 0) {
+            setState(() {
+              tcIdx = 0;
+            });
+          }
+          if (res.compareTo('5') == 0) {
+            setState(() {
               tcIdx = 1;
-          if (res.compareTo('5') == 0)
-              tcIdx = 1;
-          if (res.compareTo('10') == 0)
+            });
+          }
+          if (res.compareTo('10') == 0) {
+            setState(() {
               tcIdx = 2;
+            });
+          }
+
           surveyIdx++;
           return task.steps[2].stepIdentifier;
         },

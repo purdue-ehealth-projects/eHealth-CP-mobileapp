@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey.dart';
+import 'package:emshealth/survey_2.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -409,7 +409,8 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => SurveyPage(name: nameController.text),
+                                builder: (_) => SurveyWelcomePage(username: nameController.text),
+                                //builder: (_) => SurveyPage(name: nameController.text),
                               ),
                             );
                           } else {
@@ -450,7 +451,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => SurveyPage(name: username.toString()),
+                              builder: (_) => SurveyWelcomePage(username: username.toString()),
+                              //builder: (_) => SurveyPage(name: username.toString()),
                             ),
                           );
                         },
