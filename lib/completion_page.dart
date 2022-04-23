@@ -1,5 +1,6 @@
 import 'package:emshealth/home_page.dart';
 import 'package:emshealth/notification_api.dart';
+import 'package:emshealth/survey_data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xid/xid.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class CompletionPage extends StatelessWidget {
 final int score;
 final String needs;
 final String name;
-final List<List<String>> quizResult;
+final Map<String, String> quizResult;
 CompletionPage({Key? key, required this.score, required this.needs, required this.name, required this.quizResult}) : super(key: key);
 List<SurveyScores> ss = [];
 
@@ -69,20 +70,24 @@ Future<void> updateDatabase() async {
     dates.add(recStrDate);
   }
 
+  List<String> conds = quizResult[questions[7]].toString().split('+').toList();
+  print("x:  $conds");
+  conds.removeLast();
+
   await surveys.add({
     'date': DateTime.now().toString(),
     'surveyId': surveyId,
     'score': score,
     'needs': needs,
-    'breathing': quizResult[1][0],
-    'breathing_compare': quizResult[2][0],
-    'heart': quizResult[3][0],
-    'sleep': quizResult[4][0],
-    'sleep_compare': quizResult[5][0],
-    'weight': quizResult[6][0],
-    'weight_compare': quizResult[7][0],
-    'condition': quizResult[8],
-    'energy_levels': quizResult[9][0],
+    'breathing': quizResult[questions[0]].toString(),
+    'breathing_compare': quizResult[questions[1]].toString(),
+    'heart': quizResult[questions[2]].toString(),
+    'sleep': quizResult[questions[3]].toString(),
+    'sleep_compare': quizResult[questions[4]].toString(),
+    'weight': quizResult[questions[5]].toString(),
+    'weight_compare': quizResult[questions[6]].toString(),
+    'condition': conds,
+    'energy_levels': quizResult[questions[8]].toString(),
   });
 
   print('success send update');

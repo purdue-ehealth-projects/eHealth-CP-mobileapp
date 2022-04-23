@@ -202,36 +202,28 @@ class _SurveyQues1State extends State<SurveyQues1> {
                 ),
               ),
               onTap: () {
+                if (x.containsKey(questions[question])) {
+                  x.update(questions[question], (value) => choices[selectedIdx]);
+                } else {
+                  x.putIfAbsent(questions[question], () => choices[selectedIdx]);
+                }
                 print("question: $question");
-                if (question == 8) {
-                  print("hey");
-                  print(x);
-                  /*
+
+                if (question == 9) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CompletionPage(name: username, score: 0, quizResult: [], needs: choices[selectedIdx]),
+                      builder: (_) => LastSurveyPage(username: username, percent: this.percent + 10),
                     ),
-                  );*/
+                  );
                 } else if (question == 6 ) {
-                  if (x.containsKey(questions[question])) {
-                    x.update(questions[question], (value) => choices[selectedIdx]);
-                  } else {
-                    x.putIfAbsent(questions[question], () => choices[selectedIdx]);
-                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => SurveyQues2(username: username, choices: choices7, question: question + 1, percent: this.percent + 10),
                     ),
                   );
-
                 } else {
-                  if (x.containsKey(questions[question])) {
-                    x.update(questions[question], (value) => choices[selectedIdx]);
-                  } else {
-                    x.putIfAbsent(questions[question], () => choices[selectedIdx]);
-                  }
                   List<String> temp = [];
                   switch(question) {
                     case 0:
@@ -328,6 +320,50 @@ GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Fun
   );
 }
 
+int collectScore(Map<String, String> x) {
+  int score = 0;
+  for (String q in questions) {
+    String temp = x[q].toString();
+
+    if (q.compareTo('I have: \nChoose all that apply.') == 0) {
+      List<String> list = temp.split('+');
+      score += list.length * 5;
+      continue;
+    }
+
+    if (q.compareTo("Energy level: \nChoose one option.") == 0) {
+      if (temp.compareTo("Better than yesterday") == 0) score -= 5;
+      if (temp.compareTo("Same as yesterday") == 0) score += 0;
+      if (temp.compareTo("Worse than yesterday") == 0) score += 5;
+      continue;
+    }
+
+    if (temp.compareTo("I am breathing well") == 0) score += 0;
+    if (temp.compareTo("I run out of breath when walking") == 0) score += 5;
+    if (temp.compareTo("I run out of breath when talking") == 0) score += 10;
+
+    if (temp.compareTo("I feel great") == 0) score += 0;
+    if (temp.compareTo("My heart is racing") == 0) score += 5;
+    if (temp.compareTo("I have chest pain") == 0) score += 10;
+
+    if (temp.compareTo("I slept well last night") == 0) score += 0;
+    if (temp.compareTo("My sleep was restless") == 0) score += 5;
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) score += 10;
+
+    if (temp.compareTo("My weight went up 2 or more pounds since yesterday") == 0) score += 10;
+    if (temp.compareTo("My clothes and shoes feel tight") == 0) score += 5;
+    if (temp.compareTo("I can see swelling in my ankles") == 0) score += 5;
+    if (temp.compareTo("My weight is the same or less than yesterday") == 0) score += 0;
+
+    if (temp.compareTo("I slept well last night") == 0) score += 0;
+    if (temp.compareTo("My sleep was restless") == 0) score += 5;
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) score += 10;
+
+  }
+
+  return score;
+}
+
 class _SurveyQues2State extends State<SurveyQues2> {
 
   final String username;
@@ -349,7 +385,6 @@ class _SurveyQues2State extends State<SurveyQues2> {
 
   @override
   Widget build(BuildContext context) {
-    print("Am i hereeeee");
     return Scaffold(
       appBar: AppBar(
         title: getProgressBar(percent, context),
@@ -415,6 +450,84 @@ class _SurveyQues2State extends State<SurveyQues2> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => SurveyQues1(username: username, choices: choices2, question: question + 1, percent: this.percent + 10),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+
+class LastSurveyPage extends StatefulWidget {
+  final String username;
+  final int percent;
+
+  const LastSurveyPage({Key? key, required this.username, required this.percent}) : super(key: key);
+
+  @override
+  _LastSurveyPage createState() => _LastSurveyPage(this.username, this.percent);
+
+}
+
+class _LastSurveyPage extends State<LastSurveyPage> {
+
+  final String username;
+  final int percent;
+
+  _LastSurveyPage(this.username, this.percent);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: getProgressBar(percent, context),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: Text(
+                "Are you ready to submit?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            SizedBox(height: 70),
+            GestureDetector(
+              child: Container(
+                width: 150,
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Colors.blue,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              onTap: () {
+                print(x);
+                int scoreQ = collectScore(x);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CompletionPage(name: username, score: scoreQ, quizResult: x, needs: x[questions[9]].toString()),
                   ),
                 );
               },

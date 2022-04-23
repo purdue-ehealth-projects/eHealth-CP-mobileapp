@@ -78,10 +78,11 @@ class _SurveyPageState extends State<SurveyPage> {
                       print('score: $score');
                       print('needs: $needs');
                       print(temp);
+                      Map<String, String> x = Map();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CompletionPage(score: score, needs: needs, name: this.name, quizResult: temp),
+                          builder: (_) => CompletionPage(score: score, needs: needs, name: this.name, quizResult: x),
                         ),
                       );
                     },
@@ -292,7 +293,7 @@ class _SurveyPageState extends State<SurveyPage> {
                   TextChoice(text: 'My weight went up 2 or more pounds since yesterday', value: '10'),
                   TextChoice(text: 'My clothes and shoes feel tight', value: '5'),
                   TextChoice(text: 'I can see swelling in my ankles', value: '5'),
-                  TextChoice(text: 'My weight is the same or less than yesterday', value: '5'),
+                  TextChoice(text: 'My weight is the same or less than yesterday', value: '0'),
                 ]
             )
         ),
