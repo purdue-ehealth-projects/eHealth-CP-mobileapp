@@ -25,7 +25,7 @@ GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx, 
   return GestureDetector(
       child: Container(
         width: size.width * 0.9,
-        height: 100,
+        height: 80,
         alignment: Alignment.center,
         child: Text(
           choices[index],
@@ -33,7 +33,7 @@ GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx, 
           style: TextStyle(
             fontFamily: 'OpenSans',
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -312,7 +312,7 @@ GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Fun
   return GestureDetector(
       child: Container(
         width: size.width * 0.9,
-        height: 90,
+        height: 80,
         alignment: Alignment.center,
         child: Text(
           choices[index],
@@ -320,7 +320,7 @@ GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Fun
           style: TextStyle(
             fontFamily: 'OpenSans',
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
         ),
