@@ -18,75 +18,179 @@ class CreateProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Color(0xff0b3954),
       appBar: AppBar(
         centerTitle: true,
-        title: Text("EMS Health"),
+        title: Text(
+          "EMS Health",
+          style: TextStyle(
+            fontFamily: "OpenSans"
+          ),
+        ),
         backgroundColor: Color(0xff0b3954),
-        elevation: 0,
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(left: 10, right: 10, top: 30),
               child: Container(
                 alignment: Alignment.center,
-                child: Text("You need to create a profile."),
+                child: Text(
+                    "You need to create a profile.",
+                  style: TextStyle(
+                    fontFamily: "OpenSans",
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
+              width: size.width * 0.9,
               child: TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      )
+                  ),
                   labelText: 'Name',
+                  labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans'
                 ),
               ),
             ),
             SizedBox(height: 10),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
+              width: size.width * 0.9,
               child: TextField(
                 controller: ageController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      )
+                  ),
                   labelText: 'Age',
+                  labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans'
                 ),
               ),
             ),
             SizedBox(height: 10),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
+              width: size.width * 0.9,
               child: TextField(
                 controller: dobController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      )
+                  ),
                   labelText: 'Date of Birth (MM/DD/YYYY)',
+                  labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans'
                 ),
               ),
             ),
             SizedBox(height: 10),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
+              width: size.width * 0.9,
               child: TextField(
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      )
+                  ),
                   labelText: 'Password',
+                  labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans'
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+            SizedBox(height: 50),
+            GestureDetector(
+              child: Container(
+                width: size.width * 0.8,
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-              child: Text("Submit"),
-              onPressed: () {
+              onTap: () {
                 //save name on local data
                 pushNameLocal(nameController.text);
 

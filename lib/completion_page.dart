@@ -121,10 +121,18 @@ Widget build(BuildContext context) {
       )));
       * */
       createDailyReminder(nw);
-
+      Size size = MediaQuery.of(context).size;
       return Scaffold(
+        backgroundColor: Color(0xff0b3954),
         appBar: AppBar(
-          title: Text('Great Job!'),
+          centerTitle: true,
+          title: Text(
+            'Great Job!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: "OpenSans"
+            ),
+          ),
           backgroundColor: Color(0xff0b3954),
           elevation: 0,
           leading: IconButton(
@@ -145,9 +153,33 @@ Widget build(BuildContext context) {
           child: Column(
             children: <Widget>[
               Container(
-                child: ElevatedButton(
-                  child: Text("Go back to Home Page"),
-                  onPressed: () {
+                child: GestureDetector(
+                  child: Container(
+                    height: 40,
+                    width: size.width * 0.6,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color(0xff087e8b),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, 10),
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 10,
+                        ),
+                      ]
+                    ),
+                    child: Text(
+                      "Go back to Home Page",
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  onTap: () {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -156,11 +188,6 @@ Widget build(BuildContext context) {
                           (route) => route.isFirst,
                     );
                   },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    foregroundColor: MaterialStateProperty.all(Colors.black87),
-                    shadowColor: MaterialStateProperty.all(Color(0xff0b3954)),
-                  ),
                 ),
               ),
               Padding(
@@ -179,6 +206,8 @@ Widget build(BuildContext context) {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
+                              fontFamily: "OpenSans",
+                              color: Colors.white
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -198,6 +227,7 @@ Widget build(BuildContext context) {
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: "OpenSans"
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -216,6 +246,8 @@ Widget build(BuildContext context) {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
+                              fontFamily: "OpenSans",
+                              color: Colors.white
                               ),
                             textAlign: TextAlign.center,
                           ),
@@ -229,12 +261,13 @@ Widget build(BuildContext context) {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: "OpenSans",
+                                  color: Colors.white,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-
                   ],
                 ),
                     ),
@@ -244,11 +277,15 @@ Widget build(BuildContext context) {
               Padding(
                 padding: EdgeInsets.all(10),
                 child: Container(
+                  alignment: Alignment.center,
                   child: Text(
                     "Your next survey will be at 8am tomorrow.",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      fontFamily: "OpenSans",
+                      color: Colors.white
                     ),
                   ),
                 ),
@@ -261,6 +298,8 @@ Widget build(BuildContext context) {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      fontFamily: "OpenSans",
+                      color: Colors.white
                     ),
                   ),
                 ),
@@ -270,12 +309,26 @@ Widget build(BuildContext context) {
                   height: 400,
                   width: double.infinity,
                   child: SfCartesianChart(
+                    plotAreaBackgroundColor: Colors.transparent,
                     primaryXAxis: CategoryAxis(
+                      borderColor: Colors.transparent,
                       labelRotation: 90,
                       autoScrollingMode: AutoScrollingMode.start,
+                      labelStyle: TextStyle(
+                        fontFamily: "OpenSans",
+                        color: Colors.white,
+                      ),
+                    ),
+                    primaryYAxis: CategoryAxis(
+                      borderColor: Colors.transparent,
+                      labelStyle: TextStyle(
+                        fontFamily: "OpenSans",
+                        color: Colors.white,
+                      ),
                     ),
                     series: <ChartSeries>[
                       LineSeries<SurveyScores, String>(
+                        color: Colors.transparent,
                         dataSource: ss,
                         xValueMapper: (SurveyScores data, _) => data.date,
                         yValueMapper: (SurveyScores data, _) => data.score,

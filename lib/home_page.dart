@@ -71,11 +71,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     AwesomeNotifications().createdStream.listen((notification) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           'Notification Created on ${notification.channelKey}',
         ),
-      ));
+      ));*/
     });
 
     AwesomeNotifications().displayedStream.listen((notification) async {
@@ -335,24 +335,32 @@ class _HomePageState extends State<HomePage> {
           cancelScheduledNotifications();
           print("I'm here");
         }
-
+        Size size = MediaQuery.of(context).size;
         return Scaffold(
+          backgroundColor: Color(0xff0b3954),
           appBar: AppBar(
             centerTitle: true,
-            title: Text("EMS Health Home Page"),
+            title: Text(
+                "EMS Health Home Page",
+              style: TextStyle(
+                fontFamily: "OpenSans"
+              ),
+            ),
             backgroundColor: Color(0xff0b3954),
-            elevation: 0,
             leading: (didSurvey == true) ? Container() : null,
           ),
-          body: Column(
+          body: ListView(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Text(
                   "EMS",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
+                    fontFamily: "OpenSans",
                     fontWeight: FontWeight.w700,
-                    fontSize: 72,
+                    fontSize: 80,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -360,9 +368,12 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.only(bottom: 20),
                 child: Text(
                   "Health",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
+                    fontFamily: "OpenSans",
                     fontWeight: FontWeight.w700,
                     fontSize: 52,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -372,33 +383,83 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: size.width * 0.9,
                       child: TextField(
                         controller: nameController,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'name',
+                          alignLabelWithHint: true,
+                          fillColor: Colors.transparent,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            )
+                          ),
+                          labelText: 'Name',
+                          labelStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'OpenSans',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'OpenSans'
                         ),
                       ),
                     ),
                     SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: size.width * 0.9,
                       child: TextField(
                         obscureText: true,
                         controller: passwordController,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'password',
+                          alignLabelWithHint: true,
+                          fillColor: Colors.transparent,
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                                width: 2,
+                              )
+                          ),
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'OpenSans',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'OpenSans'
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                    SizedBox(height: 40),
+                    GestureDetector(
+                      child: Container(
+                        width: size.width * 0.8,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                      child: Text("Login"),
-                      onPressed: () {
+                      onTap: () {
                         print(nameController.text);
                         loginUser(nameController.text, passwordController.text).then((result) {
                           pushNameLocal(nameController.text);
@@ -419,13 +480,27 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                     ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                    SizedBox(height: 20),
+                    GestureDetector(
+                      child: Container(
+                        width: size.width * 0.8,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Create a Profile",
+                          style: TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                      child: Text("Create a profile"),
-                      onPressed: () {
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -442,12 +517,26 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      child: !didSurvey ? ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Color(0xff0b3954)),
+                      child: !didSurvey ? GestureDetector(
+                        child: Container(
+                          width: size.width * 0.8,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Click to go to Survey",
+                            style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
-                        child: Text("Click to go to survey"),
-                        onPressed: () {
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -457,7 +546,19 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       ) :
-                      Text("You did your survey today! See you tomorrow!"),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                            "You did your survey today! See you tomorrow!",
+                          style: TextStyle(
+                            fontFamily: "OpenSans",
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ],
                 ),

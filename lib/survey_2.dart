@@ -6,38 +6,43 @@ import 'package:percent_indicator/percent_indicator.dart';
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
   return LinearPercentIndicator(
     alignment: MainAxisAlignment.center,
-    width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width *  0.6,
-    center: Text(percent.toString() + "%",style: const TextStyle( color: Colors.grey)),
+    width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width *  0.4,
+    center: Text(percent.toString() + "%",style: const TextStyle( color: Colors.black)),
     lineHeight: 25.0,
     percent: (percent / 100).toDouble(),
     //linearStrokeCap: LinearStrokeCap.roundAll,
     linearStrokeCap: LinearStrokeCap.roundAll,
     backgroundColor: Colors.white,
-    barRadius: const Radius.circular(16),
-    progressColor: Color(0xff00587A),
+    barRadius: const Radius.circular(10),
+    progressColor: Color(0xff0b3954).withOpacity(0.5),
     animation: true,
-    animationDuration: 2000,
+    animationDuration: 500,
 
   );
 }
 
-GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx, Function setIdx) {
+GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx, Function setIdx, Size size) {
   return GestureDetector(
       child: Container(
-        width: 250,
-        height: 50,
+        width: size.width * 0.9,
+        height: 100,
         alignment: Alignment.center,
         child: Text(
-            choices[index],
+          choices[index],
           textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'OpenSans',
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(15)),
             border: Border.all(
               style: BorderStyle.solid,
               width: 3,
-              color: (selectedIdx == index) ? Colors.blue : Colors.black,
+              color: (selectedIdx == index) ? Colors.blue : Colors.transparent,
             )
         ),
       ),
@@ -63,57 +68,64 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Color(0xff0b3954),
       appBar: AppBar(
-        title: getProgressBar(0, context),
+        backgroundColor: Color(0xff0b3954),
+        actions: <Widget>[getProgressBar(0, context)],
       ),
-      body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
           children: <Widget>[
             Container(
-              child: Text(
-                "Welcome to the survey! \nThis will only take 5 minutes.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+                child: Container(
+                  height: size.height * 0.5,
+                  child: Text(
+                    "Welcome to the survey! \nThis will only take 5 minutes.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'OpenSans',
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white
+                    ),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 70),
-            GestureDetector(
-              child: Container(
-                width: 150,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.blue,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Next",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+              GestureDetector(
+                child: Container(
+                  width: size.width * 0.8,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SurveyQues1(username: this.username, choices: choices1, question: 0, percent: 0.toInt()),
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SurveyQues1(username: this.username, choices: choices1, question: 0, percent: 0.toInt()),
-                  ),
-                );
-              },
-            )
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -154,124 +166,139 @@ class _SurveyQues1State extends State<SurveyQues1> {
   @override
   Widget build(BuildContext context) {
 
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: getProgressBar(percent, context),
+        backgroundColor: Color(0xff0b3954),
+        actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
+        color: Color(0xff0b3954),
         alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            Container(
-              child: Text(
-                questions[question],
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            SizedBox(height: 70),
-            optionBuilder(choices, 0, selectedIdx, setIdx),
-            SizedBox(height: 10),
-            optionBuilder(choices, 1, selectedIdx, setIdx),
-            SizedBox(height: 10),
-            optionBuilder(choices, 2, selectedIdx, setIdx),
-            SizedBox(height: 10),
-            (choices.length > 3) ? optionBuilder(choices, 3, selectedIdx, setIdx) : Container(),
-            (choices.length > 3) ? SizedBox(height: 10) : Container(),
-            (choices.length > 4) ? optionBuilder(choices, 4, selectedIdx, setIdx) : Container(),
-            (choices.length > 4) ? SizedBox(height: 10) : Container(),
-            GestureDetector(
-              child: Container(
-                width: 150,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.blue,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Next",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 40, bottom: 20, left: 10, right: 10),
+                  child: Container(
+                    child: Text(
+                      questions[question],
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-              onTap: () {
-                if (x.containsKey(questions[question])) {
-                  x.update(questions[question], (value) => choices[selectedIdx]);
-                } else {
-                  x.putIfAbsent(questions[question], () => choices[selectedIdx]);
-                }
-                print("question: $question");
-
-                if (question == 9) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LastSurveyPage(username: username, percent: this.percent + 10),
+                optionBuilder(choices, 0, selectedIdx, setIdx, size),
+                SizedBox(height: 10),
+                optionBuilder(choices, 1, selectedIdx, setIdx, size),
+                SizedBox(height: 10),
+                optionBuilder(choices, 2, selectedIdx, setIdx, size),
+                SizedBox(height: 10),
+                (choices.length > 3) ? optionBuilder(choices, 3, selectedIdx, setIdx, size) : Container(),
+                (choices.length > 3) ? SizedBox(height: 10) : Container(),
+                (choices.length > 4) ? optionBuilder(choices, 4, selectedIdx, setIdx, size) : Container(),
+                (choices.length > 4) ? SizedBox(height: 10) : Container(),
+          ],
+        ),
+            Positioned(
+              bottom: 80,
+              left: 40,
+              child: GestureDetector(
+                child: Container(
+                  width: size.width * 0.8,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
                     ),
-                  );
-                } else if (question == 6 ) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SurveyQues2(username: username, choices: choices7, question: question + 1, percent: this.percent + 10),
-                    ),
-                  );
-                } else {
-                  List<String> temp = [];
-                  switch(question) {
-                    case 0:
-                      temp = choices2;
-                      break;
-                    case 1:  //2
-                      temp = choices3;
-                      break;
-                    case 2:
-                      temp = choices4;
-                      break;
-                    case 3:  //2
-                      temp = choices2;
-                      break;
-                    case 4:
-                      temp = choices5;
-                      break;
-                    case 5:  //2
-                      temp = choices6;
-                      break;
-                    case 6:
-                      temp = choices7;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SurveyQues2(username: username, choices: temp, question: question + 1, percent: this.percent + 10),
-                        ),
-                      );
-                      break;
-                    case 7:  //2
-                      temp = choices2;
-                      break;
-                    case 8:
-                      temp = choices8;
-                      break;
+                  ),
+                ),
+                onTap: () {
+                  if (x.containsKey(questions[question])) {
+                    x.update(questions[question], (value) => choices[selectedIdx]);
+                  } else {
+                    x.putIfAbsent(questions[question], () => choices[selectedIdx]);
                   }
+                  print("question: $question");
+
+                  if (question == 9) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LastSurveyPage(username: username, percent: this.percent + 10),
+                      ),
+                    );
+                  } else if (question == 6 ) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SurveyQues2(username: username, choices: choices7, question: question + 1, percent: this.percent + 10),
+                      ),
+                    );
+                  } else {
+                    List<String> temp = [];
+                    switch(question) {
+                      case 0:
+                        temp = choices2;
+                        break;
+                      case 1:  //2
+                        temp = choices3;
+                        break;
+                      case 2:
+                        temp = choices4;
+                        break;
+                      case 3:  //2
+                        temp = choices2;
+                        break;
+                      case 4:
+                        temp = choices5;
+                        break;
+                      case 5:  //2
+                        temp = choices6;
+                        break;
+                      case 6:
+                        temp = choices7;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SurveyQues2(username: username, choices: temp, question: question + 1, percent: this.percent + 10),
+                          ),
+                        );
+                        break;
+                      case 7:  //2
+                        temp = choices2;
+                        break;
+                      case 8:
+                        temp = choices8;
+                        break;
+                    }
 
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SurveyQues1(username: username, choices: temp, question: question + 1, percent: this.percent + 10),
-                    ),
-                  );
-                }
-
-              },
-            )
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SurveyQues1(username: username, choices: temp, question: question + 1, percent: this.percent + 10),
+                      ),
+                    );
+                  }
+                },
+              )
+            ),
           ],
         ),
       ),
@@ -281,36 +308,28 @@ class _SurveyQues1State extends State<SurveyQues1> {
 
 }
 
-class SurveyQues2 extends StatefulWidget {
-  final String username;
-  final List<String> choices;
-  final int question;
-  final int percent;
-
-  const SurveyQues2({Key? key, required this.username, required this.choices, required this.question, required this.percent}) : super(key: key);
-
-  @override
-  _SurveyQues2State createState() => _SurveyQues2State(this.username, this.choices, this.question, this.percent);
-
-}
-
-GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Function setIdx) {
+GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Function setIdx, Size size) {
   return GestureDetector(
       child: Container(
-        width: 250,
-        height: 50,
+        width: size.width * 0.9,
+        height: 90,
         alignment: Alignment.center,
         child: Text(
           choices[index],
           textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'OpenSans',
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(15)),
             border: Border.all(
               style: BorderStyle.solid,
               width: 3,
-              color: (pressL[index]) ? Colors.blue : Colors.black,
+              color: (pressL[index]) ? Colors.blue : Colors.transparent,
             )
         ),
       ),
@@ -364,6 +383,20 @@ int collectScore(Map<String, String> x) {
   return score;
 }
 
+
+class SurveyQues2 extends StatefulWidget {
+  final String username;
+  final List<String> choices;
+  final int question;
+  final int percent;
+
+  const SurveyQues2({Key? key, required this.username, required this.choices, required this.question, required this.percent}) : super(key: key);
+
+  @override
+  _SurveyQues2State createState() => _SurveyQues2State(this.username, this.choices, this.question, this.percent);
+
+}
+
 class _SurveyQues2State extends State<SurveyQues2> {
 
   final String username;
@@ -385,75 +418,90 @@ class _SurveyQues2State extends State<SurveyQues2> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: getProgressBar(percent, context),
+        backgroundColor: Color(0xff0b3954),
+        actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
+        color: Color(0xff0b3954),
         alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            Container(
-              child: Text(
-                questions[question],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            SizedBox(height: 70),
-            optionBuilder2(choices7, 0, pressL, setIdx2),
-            SizedBox(height: 10),
-            optionBuilder2(choices7, 1, pressL, setIdx2),
-            SizedBox(height: 10),
-            optionBuilder2(choices7, 2, pressL, setIdx2),
-            SizedBox(height: 10),
-            optionBuilder2(choices7, 3, pressL, setIdx2),
-            SizedBox(height: 10),
-            optionBuilder2(choices7, 4, pressL, setIdx2),
-            SizedBox(height: 10),
-            GestureDetector(
-              child: Container(
-                width: 150,
-                height: 30,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.blue,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Next",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 40, bottom: 20, left: 10, right: 10),
+                  child: Container(
+                    child: Text(
+                      questions[question],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              onTap: () {
-                String temp = '';
-                for (int i = 0; i < pressL.length; i++) {
-                  if (pressL[i]) {
-                    temp += choices7[i];
-                    temp += "+";
+                optionBuilder2(choices7, 0, pressL, setIdx2, size),
+                SizedBox(height: 10),
+                optionBuilder2(choices7, 1, pressL, setIdx2, size),
+                SizedBox(height: 10),
+                optionBuilder2(choices7, 2, pressL, setIdx2, size),
+                SizedBox(height: 10),
+                optionBuilder2(choices7, 3, pressL, setIdx2, size),
+                SizedBox(height: 10),
+                optionBuilder2(choices7, 4, pressL, setIdx2, size),
+                SizedBox(height: 10),
+          ],
+        ),
+            Positioned(
+                bottom: 80,
+                left: 20,
+              child: GestureDetector(
+                child: Container(
+                  width: size.width * 0.8,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  String temp = '';
+                  for (int i = 0; i < pressL.length; i++) {
+                    if (pressL[i]) {
+                      temp += choices7[i];
+                      temp += "+";
+                    }
                   }
-                }
-                if (x.containsKey(questions[question])) {
-                  x.update(questions[question], (value) => temp);
-                } else {
-                  x.putIfAbsent(questions[question], () => temp);
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SurveyQues1(username: username, choices: choices2, question: question + 1, percent: this.percent + 10),
-                  ),
-                );
-              },
-            )
+                  if (x.containsKey(questions[question])) {
+                    x.update(questions[question], (value) => temp);
+                  } else {
+                    x.putIfAbsent(questions[question], () => temp);
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SurveyQues1(username: username, choices: choices2, question: question + 1, percent: this.percent + 10),
+                    ),
+                  );
+                },
+              )
+            ),
           ],
         ),
       ),
@@ -482,40 +530,48 @@ class _LastSurveyPage extends State<LastSurveyPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: getProgressBar(percent, context),
+        backgroundColor: Color(0xff0b3954),
+        actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
+        color: Color(0xff0b3954),
         alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              child: Text(
-                "Are you ready to submit?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+              child: Container(
+                child: Text(
+                  "Are you ready to submit?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 300),
             GestureDetector(
               child: Container(
-                width: 150,
-                height: 30,
+                width: size.width * 0.8,
+                height: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.blue,
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   "Submit",
                   style: TextStyle(
+                    fontFamily: 'OpenSans',
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -531,7 +587,7 @@ class _LastSurveyPage extends State<LastSurveyPage> {
                   ),
                 );
               },
-            )
+            ),
           ],
         ),
       ),
