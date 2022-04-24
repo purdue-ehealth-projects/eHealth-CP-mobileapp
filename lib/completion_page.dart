@@ -328,7 +328,6 @@ Widget build(BuildContext context) {
                     ),
                     series: <ChartSeries>[
                       LineSeries<SurveyScores, String>(
-                        color: Colors.transparent,
                         dataSource: ss,
                         xValueMapper: (SurveyScores data, _) => data.date,
                         yValueMapper: (SurveyScores data, _) => data.score,

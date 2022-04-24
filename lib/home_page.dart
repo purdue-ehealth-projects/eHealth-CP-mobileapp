@@ -214,12 +214,7 @@ class _HomePageState extends State<HomePage> {
     print('didsurvey: $didSurvey');
 
     if (signin == true && didSurvey == true) {
-      /*
-      cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
-      )));
-      createDailyReminder(nw);*/
+
     } else {
       print("cancelling...");
       cancelScheduledNotifications();
@@ -331,10 +326,15 @@ class _HomePageState extends State<HomePage> {
       future: loadLocalData(),
       builder: (context, snapshot) {
 
+        DateTime now = DateTime.now();
         if (didSurvey == true) {
           cancelScheduledNotifications();
-          print("I'm here");
+          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+              now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+          )));
+          createDailyReminder(nw);
         }
+
         Size size = MediaQuery.of(context).size;
         return Scaffold(
           backgroundColor: Color(0xff0b3954),
