@@ -212,7 +212,7 @@ class _SurveyQues1State extends State<SurveyQues1> {
               child: GestureDetector(
                 child: Container(
                   width: size.width * 0.8,
-                  height: 100,
+                  height: 70,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.white, width: 2),
