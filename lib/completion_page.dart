@@ -28,11 +28,15 @@ Future<void> updateDatabase() async {
   prefs.setString('date', time);
 
   CollectionReference patients = FirebaseFirestore.instance.collection('patients');
-  //CollectionReference surveys = FirebaseFirestore.instance.collection('surveys');
 
   QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
   QueryDocumentSnapshot doc = query.docs[0];
   DocumentReference docRef = doc.reference;
+
+  int priority = (score >= 0 && score <= 20) ? 3 : ((score >= 25 && score <= 35 ? 2 : 1 ));
+
+  docRef.update({'priority': priority});
+
   DocumentSnapshot docSnap = await docRef.get();
   var docId = docSnap.reference.id;
   CollectionReference surveys = FirebaseFirestore.instance.collection('patients/$docId/surveys');

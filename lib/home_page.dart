@@ -256,7 +256,7 @@ class _HomePageState extends State<HomePage> {
         'gender_id': '',
         'medical_history': '',
         'overall': '',
-        'priority': '',
+        'priority': 3,
         'program': '',
         'race': '',
         'start_date': '',
