@@ -45,7 +45,7 @@ Future<void> main() async {
     helloAlarmID, //Different ID for each alarm
     scheduleHourly,
     wakeup: true, //the device will be woken up when the alarm fires
-    startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0), //Start whit the specific time 5:00 am
+    startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0), //Start whit the specific time 8:00 am
     rescheduleOnReboot: true, //Work after reboot
   );
 }

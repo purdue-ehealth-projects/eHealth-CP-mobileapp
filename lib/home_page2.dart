@@ -12,8 +12,8 @@ class HomePage2 extends StatelessWidget {
 
     DateTime now = DateTime.now();
       cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-          now.year, now.month, now.day, 11, 8, 0, 0, 0
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
       )));
       createDailyReminder(nw);
 

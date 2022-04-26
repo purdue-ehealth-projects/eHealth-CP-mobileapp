@@ -114,8 +114,8 @@ Widget build(BuildContext context) {
       DateTime dt = DateTime.now();
       print("Cancelling...");
       cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-        dt.year, dt.month, dt.day, 10, 38, 0, 0, 0
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+        dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
       )));
 
       /*
