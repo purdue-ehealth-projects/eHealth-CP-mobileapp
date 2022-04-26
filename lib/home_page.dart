@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
         didSurvey == false;
       }
 
-      if (notification.channelKey == 'daily_channel' && didSurvey == false) {
+      if (notification.channelKey == 'daily_channel') {
         //special case where its the first reminder of the day
         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
         cancelScheduledNotifications();
@@ -137,25 +137,17 @@ class _HomePageState extends State<HomePage> {
 
       //no username in local data
       if (usernameP == null || usernameP == "") {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => HomePage(),
-          ),
-              (route) => route.isFirst,
-        );
+        Navigator.push(context, MaterialPageRoute(
+          builder: (_) => HomePage(),
+        ));
       } else {
         //have username in local data
 
         //if done survey for the day
         if (didSurvey) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (_) => HomePage(),
-            ),
-                (route) => route.isFirst,
-          );
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => HomePage(),
+          ));
         } else {
           //not yet done survey
           Navigator.pushAndRemoveUntil(

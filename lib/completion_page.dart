@@ -263,7 +263,7 @@ Widget build(BuildContext context) {
                               child: Text(
                                 "$needs",
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: "OpenSans",
                                   color: Colors.white,
