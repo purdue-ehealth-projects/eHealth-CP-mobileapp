@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xid/xid.dart';
+import 'home_page2.dart';
 import 'notification_week_and_time.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
 
   bool goBack = false;
   String? username = '';
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
       ));*/
     });
 
+    /*
     AwesomeNotifications().displayedStream.listen((notification) async {
       print("Am i in displayed stream");
 
@@ -107,7 +109,7 @@ class _HomePageState extends State<HomePage> {
         )));
         createDailyReminder(nw);
       }
-    });
+    });*/
 
     AwesomeNotifications().actionStream.listen((notification) async {
 
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       //no username in local data
       if (usernameP == null || usernameP == "") {
         Navigator.push(context, MaterialPageRoute(
-          builder: (_) => HomePage(),
+          builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
         ));
       } else {
         //have username in local data
@@ -146,7 +148,7 @@ class _HomePageState extends State<HomePage> {
         //if done survey for the day
         if (didSurvey) {
           Navigator.push(context, MaterialPageRoute(
-            builder: (_) => HomePage(),
+            builder: (_) => HomePage2(),
           ));
         } else {
           //not yet done survey
@@ -160,7 +162,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
 
-      });
+    });
 
     /*
     if (signin == true && didSurvey == true) {
@@ -306,13 +308,16 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
+    AwesomeNotifications().displayedSink.close();
     super.dispose();
   }
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = new TextEditingController();
-    TextEditingController passwordController = new TextEditingController();
+    print("Hello????");
+
 
     return FutureBuilder(
       future: loadLocalData(),
@@ -321,8 +326,8 @@ class _HomePageState extends State<HomePage> {
         DateTime now = DateTime.now();
         if (didSurvey == true) {
           cancelScheduledNotifications();
-          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-              now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+              now.year, now.month, now.day, 11, 8, 0, 0, 0
           )));
           createDailyReminder(nw);
         }
@@ -333,9 +338,9 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             centerTitle: true,
             title: Text(
-                "EMS Health Home Page",
+              "EMS Health Home Page",
               style: TextStyle(
-                fontFamily: "OpenSans"
+                  fontFamily: "OpenSans"
               ),
             ),
             backgroundColor: Color(0xff0b3954),
@@ -378,26 +383,31 @@ class _HomePageState extends State<HomePage> {
                       width: size.width * 0.9,
                       child: TextField(
                         controller: nameController,
+                        onChanged: (val) {
+                          setState(() {
+                            nameController.value = nameController.value;
+                          });
+                        },
                         decoration: InputDecoration(
                           alignLabelWithHint: true,
                           fillColor: Colors.transparent,
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            )
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                                width: 2,
+                              )
                           ),
                           labelText: 'Name',
                           labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'OpenSans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold
+                              color: Colors.white,
+                              fontFamily: 'OpenSans',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
                           ),
                         ),
                         style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'OpenSans'
+                            color: Colors.white,
+                            fontFamily: 'OpenSans'
                         ),
                       ),
                     ),
@@ -408,6 +418,11 @@ class _HomePageState extends State<HomePage> {
                       child: TextField(
                         obscureText: true,
                         controller: passwordController,
+                        onChanged: (val) {
+                          setState(() {
+                            passwordController.value = passwordController.value;
+                          });
+                        },
                         decoration: InputDecoration(
                           alignLabelWithHint: true,
                           fillColor: Colors.transparent,
@@ -541,7 +556,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         alignment: Alignment.center,
                         child: Text(
-                            "You did your survey today! See you tomorrow!",
+                          "You did your survey today! See you tomorrow!",
                           style: TextStyle(
                             fontFamily: "OpenSans",
                             fontSize: 20,
@@ -561,6 +576,10 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 loginFailedAlert(BuildContext context) {

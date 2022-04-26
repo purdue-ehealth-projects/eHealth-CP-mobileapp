@@ -49,6 +49,7 @@ dependencies:
   encrypt: ^5.0.1
   provider: ^6.0.2
   percent_indicator: ^4.0.0
+  android_alarm_manager_plus: ^2.0.5
 
 dev_dependencies:
   flutter_test:

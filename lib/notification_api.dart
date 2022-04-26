@@ -32,7 +32,7 @@ Future<void> createHourlyReminder(
 Future<void> createDailyReminder(
     NotificationWeekAndTime notificationSchedule) async {
   print('create daily reminder');
-  print('scheduling on day ${notificationSchedule.dayOfTheWeek} and hour ${notificationSchedule.timeOfDay.hour}');
+  print('scheduling on day ${notificationSchedule.dayOfTheWeek} and hour ${notificationSchedule.timeOfDay.hour} and min ${notificationSchedule.timeOfDay.minute}');
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       icon: null,
