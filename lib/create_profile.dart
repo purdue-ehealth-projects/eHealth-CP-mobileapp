@@ -198,8 +198,9 @@ class CreateProfile extends StatelessWidget {
                 pushUserFirestore(nameController.text, ageController.text, dobController.text, passwordController.text);
 
                 //then only create notification
+                /*
                 NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                createHourlyReminder(nw);
+                createHourlyReminder(nw);*/
 
                 //go to survey page
                 Navigator.push(

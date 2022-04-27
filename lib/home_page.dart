@@ -132,9 +132,10 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       //special case where its the first reminder of the day
       if (notification.channelKey == 'daily_channel') {
         //special case where its the first reminder of the day
+        /*
         cancelScheduledNotifications();
         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
-        createHourlyReminder(nw);
+        createHourlyReminder(nw);*/
       };
 
       //no username in local data
@@ -210,10 +211,11 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     if (signin == true && didSurvey == true) {
 
     } else {
+      /*
       print("cancelling...");
       cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
-      createHourlyReminder(nw);
+      createHourlyReminder(nw);*/
     }
 
   }
