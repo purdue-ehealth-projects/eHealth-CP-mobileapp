@@ -115,64 +115,69 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     AwesomeNotifications().actionStream.listen((notification) async {
 
       //get username
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String usernameP = prefs.getString('username').toString();
+      SharedPreferences.getInstance().then((prefs) {
+        String usernameP = prefs.getString('username').toString();
 
-      //check if survey's done today
-      String surveyDate = prefs.getString('date').toString();
-      DateTime now = DateTime.now();
-      String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
+        //check if survey's done today
+        String surveyDate = prefs.getString('date').toString();
+        DateTime now = DateTime.now();
+        String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
 
-      if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
-        //not yet did survey
-        didSurvey == false;
-      }
+        if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
+          //not yet did survey
+          didSurvey == false;
+        }
 
-      // --- get data done ---
+        print("Royal");
+        print("username: $usernameP");
+        // --- get data done ---
 
-      //special case where its the first reminder of the day
-      if (notification.channelKey == 'daily_channel') {
         //special case where its the first reminder of the day
-        /*
+        /*if (notification.channelKey == 'daily_channel') {
+          //special case where its the first reminder of the day
+          /*
         cancelScheduledNotifications();
         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
         createHourlyReminder(nw);*/
-      };
+        };*/
 
-      //no username in local data
-      if (usernameP == null || usernameP == "") {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LoginPage(),
-          ),
-              (route) => route.isFirst,
-        );
-      } else {
-        //have username in local data
-
-        //if done survey for the day
-        if (didSurvey) {
+        //no username in local data
+        if (usernameP == null || usernameP == "" || usernameP.isEmpty || usernameP.compareTo("null") == 0) {
+          print("Am i here?");
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (_) => HomePage2(),
+              builder: (_) => LoginPage(),
             ),
                 (route) => route.isFirst,
           );
         } else {
-          //not yet done survey
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SurveyWelcomePage(username: usernameP),
-            ),
-                (route) => route.isFirst,
-          );
+          //have username in local data
+          print("I'm here instead???");
+          //if done survey for the day
+          if (didSurvey) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (_) => HomePage2(),
+              ),
+                  (route) => route.isFirst,
+            );
+          } else {
+            //not yet done survey
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SurveyWelcomePage(username: usernameP),
+              ),
+                  (route) => route.isFirst,
+            );
+          }
         }
-      }
 
-    });
+      });
+      });
+
 
     /*
     if (signin == true && didSurvey == true) {
