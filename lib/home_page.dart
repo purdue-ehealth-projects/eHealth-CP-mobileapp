@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xid/xid.dart';
 import 'home_page2.dart';
+import 'login_page.dart';
 import 'notification_week_and_time.dart';
 
 class HomePage extends StatefulWidget {
@@ -140,17 +141,25 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
       //no username in local data
       if (usernameP == null || usernameP == "") {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
-        ));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LoginPage(),
+          ),
+              (route) => route.isFirst,
+        );
       } else {
         //have username in local data
 
         //if done survey for the day
         if (didSurvey) {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => HomePage2(),
-          ));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HomePage2(),
+            ),
+                (route) => route.isFirst,
+          );
         } else {
           //not yet done survey
           Navigator.pushAndRemoveUntil(
@@ -220,92 +229,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   }
 
-  void pushNameLocal(String name) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', name);
-  }
-
-  void pushUserFirestore(String name, String age, String dob, String password) async {
-
-    //generate a userId
-    Xid userId = Xid();
-
-    //generate password
-    final key = E.Key.fromLength(32);
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
-
-    final encrypted = encrypter.encrypt(password, iv: iv).base64;
-
-    //update patient part
-    CollectionReference patients = FirebaseFirestore.instance.collection('patients');
-    QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-    if (query.docs.isEmpty ) {
-      patients.add({
-        'address': '',
-        'age': 0,
-        'appointment_day': '',
-        'chest': '',
-        'contact_1': '',
-        'contact_2': '',
-        'coords': FieldValue.arrayUnion([0, 0]),
-        'gender_id': '',
-        'medical_history': '',
-        'overall': '',
-        'priority': 3,
-        'program': '',
-        'race': '',
-        'start_date': '',
-        'stomach': '',
-        'zone': 0,
-        'name': name,
-        'userId': userId.toString(),
-      });
-    } else {
-      QueryDocumentSnapshot doc = query.docs[0];
-      DocumentReference docRef = doc.reference;
-      docRef.update({'userId': userId.toString()});
-    }
-
-    //update profile part
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    users.add({
-      'name': name,
-      'userId': userId.toString(),
-      'password': encrypted,
-    });
-
-    print("Success");
-  }
-
-  Future<bool> loginUser(String name, String password) async {
-    CollectionReference patients = FirebaseFirestore.instance.collection('users');
-    QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-    if (query == null) return false;
-    else {
-      QueryDocumentSnapshot doc = query.docs[0];
-      DocumentReference docRecord = doc.reference;
-      DocumentSnapshot docRecSnap = await docRecord.get();
-      var rec = docRecSnap.data().toString();
-
-      //parse password
-      int idx = rec.indexOf('password:');
-      rec = rec.substring(idx + 10);
-      idx = rec.indexOf(',');
-      rec = rec.substring(0, idx);
-
-
-      final key = E.Key.fromLength(32);
-      final iv = E.IV.fromLength(16);
-      final encrypter = E.Encrypter(E.AES(key));
-
-      final encrypted = encrypter.encrypt(password, iv: iv).base64;
-
-      if (rec.compareTo(encrypted) == 0) return true;
-      else return false;
-    }
-  }
-
   @override
   void dispose() {
     AwesomeNotifications().actionSink.close();
@@ -318,13 +241,13 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
-    print("Hello????");
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
 
         DateTime now = DateTime.now();
         if (didSurvey == true) {
+          print("Cancelling...");
           cancelScheduledNotifications();
           NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
               now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
@@ -605,4 +528,90 @@ loginFailedAlert(BuildContext context) {
       return alert;
     },
   );
+}
+
+Future<bool> loginUser(String name, String password) async {
+  CollectionReference patients = FirebaseFirestore.instance.collection('users');
+  QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
+  if (query == null) return false;
+  else {
+    QueryDocumentSnapshot doc = query.docs[0];
+    DocumentReference docRecord = doc.reference;
+    DocumentSnapshot docRecSnap = await docRecord.get();
+    var rec = docRecSnap.data().toString();
+
+    //parse password
+    int idx = rec.indexOf('password:');
+    rec = rec.substring(idx + 10);
+    idx = rec.indexOf(',');
+    rec = rec.substring(0, idx);
+
+
+    final key = E.Key.fromLength(32);
+    final iv = E.IV.fromLength(16);
+    final encrypter = E.Encrypter(E.AES(key));
+
+    final encrypted = encrypter.encrypt(password, iv: iv).base64;
+
+    if (rec.compareTo(encrypted) == 0) return true;
+    else return false;
+  }
+}
+
+void pushNameLocal(String name) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('username', name);
+}
+
+void pushUserFirestore(String name, String age, String dob, String password) async {
+
+  //generate a userId
+  Xid userId = Xid();
+
+  //generate password
+  final key = E.Key.fromLength(32);
+  final iv = E.IV.fromLength(16);
+  final encrypter = E.Encrypter(E.AES(key));
+
+  final encrypted = encrypter.encrypt(password, iv: iv).base64;
+
+  //update patient part
+  CollectionReference patients = FirebaseFirestore.instance.collection('patients');
+  QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
+  if (query.docs.isEmpty ) {
+    patients.add({
+      'address': '',
+      'age': 0,
+      'appointment_day': '',
+      'chest': '',
+      'contact_1': '',
+      'contact_2': '',
+      'coords': FieldValue.arrayUnion([0, 0]),
+      'gender_id': '',
+      'medical_history': '',
+      'overall': '',
+      'priority': 3,
+      'program': '',
+      'race': '',
+      'start_date': '',
+      'stomach': '',
+      'zone': 0,
+      'name': name,
+      'userId': userId.toString(),
+    });
+  } else {
+    QueryDocumentSnapshot doc = query.docs[0];
+    DocumentReference docRef = doc.reference;
+    docRef.update({'userId': userId.toString()});
+  }
+
+  //update profile part
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  users.add({
+    'name': name,
+    'userId': userId.toString(),
+    'password': encrypted,
+  });
+
+  print("Success");
 }

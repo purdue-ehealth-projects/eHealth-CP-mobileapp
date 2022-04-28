@@ -9,9 +9,8 @@ class HomePage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
+    cancelScheduledNotifications();
     DateTime now = DateTime.now();
-      cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
           now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
       )));
@@ -30,18 +29,48 @@ class HomePage2 extends StatelessWidget {
         backgroundColor: Color(0xff0b3954),
         leading: Container(),
       ),
-      body: Container(
-        alignment: Alignment.center,
-        child: Text(
-          "You did your survey today! See you tomorrow!",
-          style: TextStyle(
-            fontFamily: "OpenSans",
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text(
+              "EMS",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: "OpenSans",
+                fontWeight: FontWeight.w700,
+                fontSize: 80,
+                color: Colors.white,
+              ),
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Text(
+              "Health",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: "OpenSans",
+                fontWeight: FontWeight.w700,
+                fontSize: 52,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              "You did your survey today! See you tomorrow!",
+              style: TextStyle(
+                fontFamily: "OpenSans",
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }

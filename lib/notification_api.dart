@@ -61,5 +61,6 @@ Future<void> createDailyReminder(
 
 Future<void> cancelScheduledNotifications() async {
   await AwesomeNotifications().cancelAllSchedules();
+  await AwesomeNotifications().cancelAll();
 }
 
