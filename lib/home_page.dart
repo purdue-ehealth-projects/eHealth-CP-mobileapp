@@ -397,8 +397,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                       onTap: () {
                         print(nameController.text);
                         loginUser(nameController.text, passwordController.text).then((result) {
-                          pushNameLocal(nameController.text);
                           if (result) {
+                            pushNameLocal(nameController.text);
                             cancelScheduledNotifications();
                             NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
                             createHourlyReminder(nw);
@@ -538,7 +538,7 @@ loginFailedAlert(BuildContext context) {
 Future<bool> loginUser(String name, String password) async {
   CollectionReference patients = FirebaseFirestore.instance.collection('users');
   QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-  if (query == null) return false;
+  if (query == null || query.size == 0) return false;
   else {
     QueryDocumentSnapshot doc = query.docs[0];
     DocumentReference docRecord = doc.reference;

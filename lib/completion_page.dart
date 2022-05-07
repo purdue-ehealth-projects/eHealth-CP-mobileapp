@@ -1,4 +1,5 @@
 import 'package:emshealth/home_page.dart';
+import 'package:emshealth/home_page2.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey_data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -17,6 +18,7 @@ final String name;
 final Map<String, String> quizResult;
 CompletionPage({Key? key, required this.score, required this.needs, required this.name, required this.quizResult}) : super(key: key);
 List<SurveyScores> ss = [];
+List<SurveyScores> ss1 = [];
 
 Future<void> updateDatabase() async {
 
@@ -97,7 +99,7 @@ Future<void> updateDatabase() async {
   print('success send update');
 
   //parse into graphs
-  for (int i = 0; i < dates.length; i++) {
+  for (int i = dates.length - 1; i >= 0; i--) {
     ss.add(new SurveyScores(dates[i], scores[i]));
     print('${dates[i]}, ${scores[i]}');
   }
@@ -187,7 +189,7 @@ Widget build(BuildContext context) {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => HomePage(),
+                        builder: (_) => HomePage2(),
                       ),
                           (route) => route.isFirst,
                     );
