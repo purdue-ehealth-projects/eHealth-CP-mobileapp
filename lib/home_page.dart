@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xid/xid.dart';
+import 'graph_survey.dart';
 import 'home_page2.dart';
 import 'login_page.dart';
 import 'notification_week_and_time.dart';
@@ -26,6 +28,9 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   String? username = '';
   bool signin = false;
   bool didSurvey = false;
+  List<SurveyScores> graphSS = [];
+  int scoreToday = -1;
+
 
   @override
   void initState() {
@@ -72,46 +77,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       }
     });
 
-    AwesomeNotifications().createdStream.listen((notification) {
-      /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          'Notification Created on ${notification.channelKey}',
-        ),
-      ));*/
-    });
-
-    /*
-    AwesomeNotifications().displayedStream.listen((notification) async {
-      print("Am i in displayed stream");
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String usernameP = prefs.getString('username').toString();
-
-      //check if survey's done today
-      String surveyDate = prefs.getString('date').toString();
-      DateTime now = DateTime.now();
-      String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
-      if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
-        //not yet did survey
-        didSurvey == false;
-      }
-
-      if (notification.channelKey == 'daily_channel') {
-        //special case where its the first reminder of the day
-        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
-        cancelScheduledNotifications();
-        createHourlyReminder(nw);
-      }
-
-      if (didSurvey == true) {
-        cancelScheduledNotifications();
-        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-            now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
-        )));
-        createDailyReminder(nw);
-      }
-    });*/
-
     AwesomeNotifications().actionStream.listen((notification) async {
 
       //get username
@@ -128,18 +93,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
           didSurvey == false;
         }
 
-        print("Royal");
         print("username: $usernameP");
         // --- get data done ---
-
-        //special case where its the first reminder of the day
-        /*if (notification.channelKey == 'daily_channel') {
-          //special case where its the first reminder of the day
-          /*
-        cancelScheduledNotifications();
-        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
-        createHourlyReminder(nw);*/
-        };*/
 
         //no username in local data
         if (usernameP == null || usernameP == "" || usernameP.isEmpty || usernameP.compareTo("null") == 0) {
@@ -156,10 +111,30 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
           print("I'm here instead???");
           //if done survey for the day
           if (didSurvey) {
+            List<int> x = [];     //score
+            List<String> y = [];  //date
+
+            List<String>? scores = prefs.getStringList("scores");
+            for (String? score in scores!) {
+              if (score.toString().isNotEmpty && score.toString().length != 0)
+                x.add(int.parse(score.toString()));
+            }
+            List<String>? dates = prefs.getStringList("dates");
+            for (String? date in dates!) {
+              if (date.toString().isNotEmpty && date.toString().length != 0)
+                y.add(date.toString());
+            }
+
+            graphSS = []; //reset
+            for (int i = dates.length - 1; i >= 0; i--) {
+              graphSS.add(new SurveyScores(y[i], x[i]));
+              print('${y[i]}, ${x[i]}');
+            }
+            scoreToday = prefs.getInt("scoreToday")!;
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (_) => HomePage2(),
+                builder: (_) => HomePage2(gSS: graphSS, scoreToday: scoreToday),
               ),
                   (route) => route.isFirst,
             );
@@ -178,18 +153,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       });
       });
 
-
-    /*
-    if (signin == true && didSurvey == true) {
-      cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
-      )));
-      createDailyReminder(nw);
-    } else {
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.now());
-      createHourlyReminder(nw);
-    }*/
 
   }
 
@@ -222,14 +185,27 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     print('signin: $signin');
     print('didsurvey: $didSurvey');
 
-    if (signin == true && didSurvey == true) {
+    if (didSurvey && signin) {
+      List<int> x = [];     //score
+      List<String> y = [];  //date
 
-    } else {
-      /*
-      print("cancelling...");
-      cancelScheduledNotifications();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day, timeOfDay: TimeOfDay.now());
-      createHourlyReminder(nw);*/
+      List<String>? scores = prefs.getStringList("scores");
+      for (String? score in scores!) {
+        if (score.toString().isNotEmpty && score.toString().length != 0)
+          x.add(int.parse(score.toString()));
+      }
+      List<String>? dates = prefs.getStringList("dates");
+      for (String? date in dates!) {
+        if (date.toString().isNotEmpty && date.toString().length != 0)
+          y.add(date.toString());
+      }
+
+      for (int i = dates.length - 1; i >= 0; i--) {
+        graphSS.add(new SurveyScores(y[i], x[i]));
+        print('${y[i]}, ${x[i]}');
+      }
+      scoreToday = prefs.getInt("scoreToday")!;
+
     }
 
   }
@@ -276,6 +252,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
           ),
           body: ListView(
             children: <Widget>[
+              scoreToday == -1 ?
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Text(
@@ -288,7 +265,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                     color: Colors.white,
                   ),
                 ),
-              ),
+              ) : Container(),
+              scoreToday == -1 ?
               Padding(
                 padding: EdgeInsets.only(bottom: 20),
                 child: Text(
@@ -301,7 +279,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                     color: Colors.white,
                   ),
                 ),
-              ),
+              ) : Container(),
               username == null || username == '' ?
               Center(
                 child: Column(
@@ -481,19 +459,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                           );
                         },
                       ) :
-                      Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "You did your survey today! See you tomorrow!",
-                          style: TextStyle(
-                            fontFamily: "OpenSans",
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      GraphSurvey(graphSS, scoreToday),
                     ),
                   ],
                 ),

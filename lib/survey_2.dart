@@ -180,7 +180,7 @@ class _SurveyQues1State extends State<SurveyQues1> {
             Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 40, bottom: 20, left: 10, right: 10),
+                  padding: EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
                   child: Container(
                     child: Text(
                       questions[question],
@@ -432,7 +432,7 @@ class _SurveyQues2State extends State<SurveyQues2> {
             Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 40, bottom: 20, left: 10, right: 10),
+                  padding: EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
                   child: Container(
                     child: Text(
                       questions[question],

@@ -104,6 +104,17 @@ Future<void> updateDatabase() async {
     print('${dates[i]}, ${scores[i]}');
   }
 
+
+  //store in local machine
+  List<String> scoreStrs = [];
+  for (int score in scores) {
+    scoreStrs.add(score.toString());
+  }
+
+  prefs.setStringList("scores", scoreStrs);
+  prefs.setStringList("dates", dates);
+  prefs.setInt("scoreToday", score);
+
 }
 
 @override
@@ -154,7 +165,7 @@ Widget build(BuildContext context) {
                 Navigator.popUntil(context, (route) => route.isFirst);
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => HomePage2(),
+                  builder: (_) => HomePage2(gSS: ss, scoreToday: score),
                 ));
               },
             ),
@@ -201,7 +212,7 @@ Widget build(BuildContext context) {
                     );*/
                       Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => HomePage2(),
+                        builder: (_) => HomePage2(gSS: ss, scoreToday: score),
                       ));
                     },
                   ),
@@ -363,7 +374,7 @@ Widget build(BuildContext context) {
           Navigator.popUntil(context, (route) => route.isFirst);
           Navigator.pop(context);
           Navigator.push(context, MaterialPageRoute(
-            builder: (_) => HomePage2(),
+            builder: (_) => HomePage2(gSS: ss, scoreToday: score),
           ));
           return falsing();
         },
