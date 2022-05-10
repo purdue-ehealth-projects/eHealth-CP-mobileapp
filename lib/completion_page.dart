@@ -80,8 +80,11 @@ Future<void> updateDatabase() async {
   print("x:  $conds");
   conds.removeLast();
 
+  DateTime now = DateTime.now();
+  String dateDate = now.toString().substring(0, 16);
+
   await surveys.add({
-    'date': DateTime.now().toString(),
+    'date': dateDate,
     'surveyId': surveyId,
     'score': score,
     'needs': needs,
@@ -203,13 +206,7 @@ Widget build(BuildContext context) {
                     ),
                     onTap: () {
                       Navigator.popUntil(context, (route) => route.isFirst);
-                      /*Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => HomePage2(),
-                      ),
-                          (route) => route.isFirst,
-                    );*/
+
                       Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(
                         builder: (_) => HomePage2(gSS: ss, scoreToday: score),
@@ -345,6 +342,9 @@ Widget build(BuildContext context) {
                           fontFamily: "OpenSans",
                           color: Colors.white,
                         ),
+                          majorGridLines: MajorGridLines(
+                              color: Colors.transparent
+                          )
                       ),
                       primaryYAxis: CategoryAxis(
                         borderColor: Colors.transparent,
@@ -352,6 +352,9 @@ Widget build(BuildContext context) {
                           fontFamily: "OpenSans",
                           color: Colors.white,
                         ),
+                        majorGridLines: MajorGridLines(
+                          color: Colors.transparent
+                        )
                       ),
                       series: <ChartSeries>[
                         LineSeries<SurveyScores, String>(
@@ -362,6 +365,10 @@ Widget build(BuildContext context) {
                             isVisible: true,
                             color: Colors.blueAccent,
                           ),
+                            dataLabelSettings: DataLabelSettings(
+                                isVisible: true,
+                                color: Colors.transparent
+                            )
                         ),
                       ],
                     )

@@ -89,6 +89,9 @@ class GraphSurvey extends StatelessWidget {
                     fontFamily: "OpenSans",
                     color: Colors.white,
                   ),
+                  majorGridLines: MajorGridLines(
+                    color: Colors.transparent
+                  )
                 ),
                 primaryYAxis: CategoryAxis(
                   borderColor: Colors.transparent,
@@ -96,6 +99,9 @@ class GraphSurvey extends StatelessWidget {
                     fontFamily: "OpenSans",
                     color: Colors.white,
                   ),
+                    majorGridLines: MajorGridLines(
+                        color: Colors.transparent
+                    )
                 ),
                 series: <ChartSeries>[
                   LineSeries<SurveyScores, String>(
@@ -106,6 +112,10 @@ class GraphSurvey extends StatelessWidget {
                       isVisible: true,
                       color: Colors.blueAccent,
                     ),
+                    dataLabelSettings: DataLabelSettings(
+                      isVisible: true,
+                      color: Colors.transparent
+                    )
                   ),
                 ],
               )
