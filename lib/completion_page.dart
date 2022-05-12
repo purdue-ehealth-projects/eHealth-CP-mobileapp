@@ -21,6 +21,7 @@ List<SurveyScores> ss = [];
 List<SurveyScores> ss1 = [];
 
 Future<void> updateDatabase() async {
+  cancelScheduledNotifications();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
