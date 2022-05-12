@@ -23,27 +23,30 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 
 GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx, Function setIdx, Size size) {
   return GestureDetector(
-      child: Container(
-        width: size.width * 0.9,
-        height: 80,
-        alignment: Alignment.center,
-        child: Text(
-          choices[index],
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'OpenSans',
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7.5),
+        child: Container(
+          width: size.width * 0.9,
+          height: 80,
+          alignment: Alignment.center,
+          child: Text(
+            choices[index],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'OpenSans',
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            border: Border.all(
-              style: BorderStyle.solid,
-              width: 3,
-              color: (selectedIdx == index) ? Colors.blue : Colors.transparent,
-            )
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              border: Border.all(
+                style: BorderStyle.solid,
+                width: 3,
+                color: (selectedIdx == index) ? Colors.blue : Colors.transparent,
+              )
+          ),
         ),
       ),
       onTap: () {
@@ -75,7 +78,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
         backgroundColor: Color(0xff0b3954),
         actions: <Widget>[getProgressBar(0, context)],
       ),
-      body: Column(
+      body: ListView(
           children: <Widget>[
             Container(
               child: Padding(
@@ -177,7 +180,7 @@ class _SurveyQues1State extends State<SurveyQues1> {
         alignment: Alignment.center,
         child: Stack(
           children: <Widget>[
-            Column(
+            ListView(
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
@@ -207,12 +210,12 @@ class _SurveyQues1State extends State<SurveyQues1> {
           ],
         ),
             Positioned(
-              bottom: 80,
-              left: 40,
+              bottom: 70,
+              left: 80,
               child: GestureDetector(
                 child: Container(
-                  width: size.width * 0.8,
-                  height: 70,
+                  width: size.width * 0.6,
+                  height: 60,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.white, width: 2),
@@ -310,27 +313,30 @@ class _SurveyQues1State extends State<SurveyQues1> {
 
 GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Function setIdx, Size size) {
   return GestureDetector(
-      child: Container(
-        width: size.width * 0.9,
-        height: 80,
-        alignment: Alignment.center,
-        child: Text(
-          choices[index],
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'OpenSans',
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7.5),
+        child: Container(
+          width: size.width * 0.9,
+          height: 80,
+          alignment: Alignment.center,
+          child: Text(
+            choices[index],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'OpenSans',
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            border: Border.all(
-              style: BorderStyle.solid,
-              width: 3,
-              color: (pressL[index]) ? Colors.blue : Colors.transparent,
-            )
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              border: Border.all(
+                style: BorderStyle.solid,
+                width: 3,
+                color: (pressL[index]) ? Colors.blue : Colors.transparent,
+              )
+          ),
         ),
       ),
       onTap: () {
@@ -429,7 +435,7 @@ class _SurveyQues2State extends State<SurveyQues2> {
         alignment: Alignment.center,
         child: Stack(
           children: <Widget>[
-            Column(
+            ListView(
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
@@ -459,11 +465,11 @@ class _SurveyQues2State extends State<SurveyQues2> {
           ],
         ),
             Positioned(
-                bottom: 80,
-                left: 20,
+                bottom: 70,
+                left: 80,
               child: GestureDetector(
                 child: Container(
-                  width: size.width * 0.8,
+                  width: size.width * 0.6,
                   height: 70,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),

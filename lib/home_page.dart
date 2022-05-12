@@ -227,14 +227,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       builder: (context, snapshot) {
 
         DateTime now = DateTime.now();
-        /*if (didSurvey == true) {
-          print("Cancelling...");
-          cancelScheduledNotifications();
-          NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-              now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
-          )));
-          createDailyReminder(nw);
-        }*/
 
         Size size = MediaQuery.of(context).size;
         return Scaffold(
@@ -377,9 +369,9 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                         loginUser(nameController.text, passwordController.text).then((result) {
                           if (result) {
                             pushNameLocal(nameController.text);
-                            cancelScheduledNotifications();
+                            /*cancelScheduledNotifications();
                             NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                            createHourlyReminder(nw);
+                            createHourlyReminder(nw);*/
                             Navigator.push(
                               context,
                               MaterialPageRoute(

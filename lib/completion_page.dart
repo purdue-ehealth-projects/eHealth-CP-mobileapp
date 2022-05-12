@@ -48,6 +48,30 @@ Future<void> updateDatabase() async {
   List<String> dates = [];
   List<int> scores = [];
 
+  List<String> conds = quizResult[questions[7]].toString().split('+').toList();
+  print("x:  $conds");
+  conds.removeLast();
+
+  DateTime now = DateTime.now();
+  String dateDate = now.toString().substring(0, 16);
+
+  //add records
+  await surveys.add({
+    'date': dateDate,
+    'surveyId': surveyId,
+    'score': score,
+    'needs': needs,
+    'breathing': quizResult[questions[0]].toString(),
+    'breathing_compare': quizResult[questions[1]].toString(),
+    'heart': quizResult[questions[2]].toString(),
+    'sleep': quizResult[questions[3]].toString(),
+    'sleep_compare': quizResult[questions[4]].toString(),
+    'weight': quizResult[questions[5]].toString(),
+    'weight_compare': quizResult[questions[6]].toString(),
+    'condition': conds,
+    'energy_levels': quizResult[questions[8]].toString(),
+  });
+
   //get the past 5 records
   QuerySnapshot queryRecords = await surveys.orderBy('date', descending: true).limit(5).get();
   print(queryRecords);
@@ -75,31 +99,6 @@ Future<void> updateDatabase() async {
     //recStrDate = recStrDate.substring(0, 10);
     dates.add(recStrDate);
   }
-
-  List<String> conds = quizResult[questions[7]].toString().split('+').toList();
-  print("x:  $conds");
-  conds.removeLast();
-
-  DateTime now = DateTime.now();
-  String dateDate = now.toString().substring(0, 16);
-
-  await surveys.add({
-    'date': dateDate,
-    'surveyId': surveyId,
-    'score': score,
-    'needs': needs,
-    'breathing': quizResult[questions[0]].toString(),
-    'breathing_compare': quizResult[questions[1]].toString(),
-    'heart': quizResult[questions[2]].toString(),
-    'sleep': quizResult[questions[3]].toString(),
-    'sleep_compare': quizResult[questions[4]].toString(),
-    'weight': quizResult[questions[5]].toString(),
-    'weight_compare': quizResult[questions[6]].toString(),
-    'condition': conds,
-    'energy_levels': quizResult[questions[8]].toString(),
-  });
-
-  print('success send update');
 
   //parse into graphs
   for (int i = dates.length - 1; i >= 0; i--) {
