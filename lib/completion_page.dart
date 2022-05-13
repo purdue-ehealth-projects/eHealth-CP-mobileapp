@@ -138,6 +138,7 @@ Widget build(BuildContext context) {
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
         dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
       )));
+      createDailyReminder(nw);
 
       /*
       * for testing, uncomment this part:-
@@ -145,7 +146,6 @@ Widget build(BuildContext context) {
         dt.year, dt.month, dt.day, dt.hour + 1, 0, 0, 0, 0
       )));
       * */
-      createDailyReminder(nw);
       Size size = MediaQuery.of(context).size;
 
       return WillPopScope(

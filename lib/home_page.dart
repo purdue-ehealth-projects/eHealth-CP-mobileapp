@@ -2,7 +2,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
-import 'package:emshealth/survey.dart';
 import 'package:emshealth/survey_2.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/material.dart';
@@ -222,6 +221,16 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
+
+    if (didSurvey) {
+      cancelScheduledNotifications();
+      DateTime now = DateTime.now();
+      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
+      )));
+      createDailyReminder(nw);
+    }
+
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
@@ -369,9 +378,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                         loginUser(nameController.text, passwordController.text).then((result) {
                           if (result) {
                             pushNameLocal(nameController.text);
-                            /*cancelScheduledNotifications();
-                            NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                            createHourlyReminder(nw);*/
                             Navigator.push(
                               context,
                               MaterialPageRoute(
