@@ -15,12 +15,12 @@ class HomePage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    DateTime dt = DateTime.now();
     cancelScheduledNotifications();
-    DateTime now = DateTime.now();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: now.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-          now.year, now.month, now.day + 1, 8, 0, 0, 0, 0
-      )));
-      createDailyReminder(nw);
+    NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
+        dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
+    )));
+    createDailyReminder(nw);
 
     return Scaffold(
         backgroundColor: Color(0xff0b3954),

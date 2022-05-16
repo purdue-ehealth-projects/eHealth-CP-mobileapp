@@ -99,21 +99,24 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
               ),
             ),
               GestureDetector(
-                child: Container(
-                  width: size.width * 0.8,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 7.5),
+                  child: Container(
+                    width: size.width * 0.8,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Next",
+                      style: TextStyle(
+                        fontFamily: 'OpenSans',
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),

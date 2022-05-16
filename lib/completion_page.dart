@@ -21,7 +21,7 @@ List<SurveyScores> ss = [];
 List<SurveyScores> ss1 = [];
 
 Future<void> updateDatabase() async {
-  cancelScheduledNotifications();
+  await cancelScheduledNotifications();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
@@ -354,7 +354,8 @@ Widget build(BuildContext context) {
                         ),
                         majorGridLines: MajorGridLines(
                           color: Colors.transparent
-                        )
+                        ),
+                        isInversed: true,
                       ),
                       series: <ChartSeries>[
                         LineSeries<SurveyScores, String>(

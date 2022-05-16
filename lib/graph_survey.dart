@@ -101,7 +101,8 @@ class GraphSurvey extends StatelessWidget {
                   ),
                     majorGridLines: MajorGridLines(
                         color: Colors.transparent
-                    )
+                    ),
+                  isInversed: true,
                 ),
                 series: <ChartSeries>[
                   LineSeries<SurveyScores, String>(
