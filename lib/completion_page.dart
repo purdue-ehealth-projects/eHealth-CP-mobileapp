@@ -36,9 +36,7 @@ Future<void> updateDatabase() async {
   QueryDocumentSnapshot doc = query.docs[0];
   DocumentReference docRef = doc.reference;
 
-  int priority = (score >= 0 && score <= 20) ? 3 : ((score >= 25 && score <= 35 ? 2 : 1 ));
-
-  docRef.update({'priority': priority});
+  docRef.update({'priority': score});
 
   DocumentSnapshot docSnap = await docRef.get();
   var docId = docSnap.reference.id;
