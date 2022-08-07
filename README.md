@@ -1,16 +1,18 @@
-# emshealth
+# Empress Daily Survey
 
-A new Flutter project.
 
-## Getting Started
+# Temproary Privacy Policy
 
-This project is a starting point for a Flutter application.
+What information is collected:
+The only information collected from the users is the information answered in their daily surveys.
 
-A few resources to get you started if this is your first Flutter project:
+Why information is collected:
+This information is collected to better allow paramedics to assesss your current health and offer the best care.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Who information is shared with:
+The information is only shared with the paramedics at Empress EMS
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+How is the information protected:
+All of the information sent to and from the survey to the paramedics is protected in accordance to HIPAA regulations 
+
+Contact: purdueehealthprojectdeveloper@gmail.com
