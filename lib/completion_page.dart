@@ -80,16 +80,7 @@ Widget build(BuildContext context) {
             ),
             backgroundColor: Color(0xff0b3954),
             elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.popUntil(context, (route) => route.isFirst);
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => HomePage2(gSS: ss, scoreToday: score),
-                ));
-              },
-            ),
+            leading: null,
           ),
           body: SingleChildScrollView(
             scrollDirection: Axis.vertical,
