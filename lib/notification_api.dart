@@ -4,6 +4,7 @@ import 'notification_week_and_time.dart';
 
 Future<void> createHourlyReminder(
     NotificationWeekAndTime notificationSchedule) async {
+
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       icon: null,
@@ -20,7 +21,7 @@ Future<void> createHourlyReminder(
       ),
     ],
     schedule: NotificationInterval(
-      interval: 3600, //in seconds (for testing, use 600)
+      interval: 10, //in seconds (for testing, use 600)
       timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
       allowWhileIdle: true,
       repeats: true,

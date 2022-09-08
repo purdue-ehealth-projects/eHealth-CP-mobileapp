@@ -75,68 +75,36 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     });
 
     AwesomeNotifications().actionStream.listen((notification) async {
+      print("I am in action stream");
+      await loadLocalData();
+      if (didSurvey) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GraphSurvey(graphSS, scoreToday),
+          ),
+              (route) => route.isFirst,
+        );
+      }
+      else if (signin) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SurveyWelcomePage(username: username.toString()),
+          ),
+              (route) => route.isFirst,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LoginPage(),
+          ),
+              (route) => route.isFirst,
+        );
 
-      //get username
-      SharedPreferences.getInstance().then((prefs) {
-        String usernameP = prefs.getString('username').toString();
-
-        //check if survey's done today
-        String surveyDate = prefs.getString('date').toString();
-        DateTime now = DateTime.now();
-        String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
-
-        if (surveyDate != null && surveyDate != "" && surveyDate.compareTo(time) != 0) {
-          //not yet did survey
-          didSurvey == false;
-        }
-        // --- get data done ---
-
-        //no username in local data
-        if (usernameP == null || usernameP == "" || usernameP.isEmpty || usernameP.compareTo("null") == 0) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (_) => LoginPage(),
-            ),
-                (route) => route.isFirst,
-          );
-        } else {
-          //have username in local data
-          //if done survey for the day
-          if (didSurvey) {
-            List<int> x = [];     //score
-            List<String> y = [];  //date
-
-            List<String>? scores = prefs.getStringList("scores");
-            List<String>? dates = prefs.getStringList("dates");
-            if (scores != null && dates != null) {
-              for (int i = 0; i < scores.length; i++) {
-                graphSS.add(new SurveyScores(dates[i], int.parse(scores[i])));
-              }
-            }
-
-            scoreToday = prefs.getInt("scoreToday")!;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (_) => HomePage2(gSS: graphSS, scoreToday: scoreToday),
-              ),
-                  (route) => route.isFirst,
-            );
-          } else {
-            //not yet done survey
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (_) => SurveyWelcomePage(username: usernameP),
-              ),
-                  (route) => route.isFirst,
-            );
-          }
-        }
-
-      });
-      });
+      }
+    });
   }
 
   Future<void> loadLocalData() async {
@@ -144,7 +112,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
     String curDate = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
 
-    String? username = prefs.getString("username");
+    username = prefs.getString("username");
     String? password = prefs.getString("password");
     String? date = prefs.getString("date");
 
