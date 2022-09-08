@@ -309,8 +309,6 @@ class _SurveyQues1State extends State<SurveyQues1> {
       ),
     );
   }
-
-
 }
 
 GestureDetector optionBuilder2(List<String> choices, int index, List pressL, Function setIdx, Size size) {

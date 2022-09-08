@@ -1,6 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/completion_page.dart';
-import 'package:emshealth/create_profile.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey_2.dart';
 import 'package:encrypt/encrypt.dart' as E;
@@ -262,7 +261,6 @@ void pushNameLocal(String name, String password) async {
 }
 
 void pushUserFirestore(String name, String age, String dob, String password) async {
-
   //generate a userId
   Xid userId = Xid();
 
