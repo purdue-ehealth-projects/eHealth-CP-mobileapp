@@ -42,6 +42,8 @@ Future<void> updateDatabase() async {
   prefs.setStringList("dates", dates);
   prefs.setStringList("scores", scores);
 
+  // UPDATE DATABASE HERE
+
 }
 
 @override

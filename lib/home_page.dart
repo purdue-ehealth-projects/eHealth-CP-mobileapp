@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       future: loadLocalData(),
       builder: (context, snapshot) {
         Size size = MediaQuery.of(context).size;
-        return scoreToday == -1 ? LoginPage() : GraphSurvey(graphSS, scoreToday);
+        return scoreToday == -1 ? (signin ? SurveyWelcomePage(username: username.toString()) : LoginPage()) : GraphSurvey(graphSS, scoreToday);
       },
     );
   }
