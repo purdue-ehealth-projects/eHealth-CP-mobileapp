@@ -9,7 +9,6 @@ import 'notification_week_and_time.dart';
 
 void scheduleHourly() {
   cancelScheduledNotifications();
-  print("Hello");
   DateTime dt = DateTime.now();
   NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.now());
   createHourlyReminder(nw);
@@ -44,7 +43,6 @@ Future<void> main() async {
 
   await AndroidAlarmManager.initialize();
   runApp(MyApp());
-  print("Am i in main");
   final int helloAlarmID = 0;
   await AndroidAlarmManager.periodic(
     Duration(hours: 24), //Do the same every 24 hours

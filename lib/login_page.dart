@@ -155,9 +155,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onTap: () {
-                    print(nameController.text);
                     loginUser(nameController.text, passwordController.text).then((result) {
-                      pushNameLocal(nameController.text);
+                      pushNameLocal(nameController.text, passwordController.text);
                       if (result) {
                         cancelScheduledNotifications();
                         NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
@@ -166,7 +165,6 @@ class _LoginPageState extends State<LoginPage> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => SurveyWelcomePage(username: nameController.text),
-                            //builder: (_) => SurveyPage(name: nameController.text),
                           ),
                         );
                       } else {

@@ -240,7 +240,6 @@ class _SurveyQues1State extends State<SurveyQues1> {
                   } else {
                     x.putIfAbsent(questions[question], () => choices[selectedIdx]);
                   }
-                  print("question: $question");
 
                   if (question == 9) {
                     Navigator.push(
@@ -588,7 +587,6 @@ class _LastSurveyPage extends State<LastSurveyPage> {
               onTap: () {
                 print(x);
                 int scoreQ = collectScore(x);
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(

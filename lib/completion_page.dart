@@ -18,103 +18,30 @@ final String name;
 final Map<String, String> quizResult;
 CompletionPage({Key? key, required this.score, required this.needs, required this.name, required this.quizResult}) : super(key: key);
 List<SurveyScores> ss = [];
-List<SurveyScores> ss1 = [];
 
 Future<void> updateDatabase() async {
   await cancelScheduledNotifications();
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   String time = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
 
-  if (prefs.getString('date').toString().compareTo(time) == 0) return;
-
-  prefs.setString('date', time);
-
-  CollectionReference patients = FirebaseFirestore.instance.collection('patients');
-
-  QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-  QueryDocumentSnapshot doc = query.docs[0];
-  DocumentReference docRef = doc.reference;
-
-  docRef.update({'priority': score});
-
-  DocumentSnapshot docSnap = await docRef.get();
-  var docId = docSnap.reference.id;
-  CollectionReference surveys = FirebaseFirestore.instance.collection('patients/$docId/surveys');
-  //give an id to the survey
-  var xid = Xid();
-  String surveyId = xid.toString();
-  List<String> dates = [];
-  List<int> scores = [];
-
-  List<String> conds = quizResult[questions[7]].toString().split('+').toList();
-  print("x:  $conds");
-  conds.removeLast();
-
-  DateTime now = DateTime.now();
-  String dateDate = now.toString().substring(0, 16);
-
-  //add records
-  await surveys.add({
-    'date': dateDate,
-    'surveyId': surveyId,
-    'score': score,
-    'needs': needs,
-    'breathing': quizResult[questions[0]].toString(),
-    'breathing_compare': quizResult[questions[1]].toString(),
-    'heart': quizResult[questions[2]].toString(),
-    'sleep': quizResult[questions[3]].toString(),
-    'sleep_compare': quizResult[questions[4]].toString(),
-    'weight': quizResult[questions[5]].toString(),
-    'weight_compare': quizResult[questions[6]].toString(),
-    'condition': conds,
-    'energy_levels': quizResult[questions[8]].toString(),
-  });
-
-  //get the past 5 records
-  QuerySnapshot queryRecords = await surveys.orderBy('date', descending: true).limit(5).get();
-  print(queryRecords);
-  List<dynamic> recordList = queryRecords.docs;
-  for (var record in recordList) {
-    QueryDocumentSnapshot doc = record;
-    DocumentReference docRecord = doc.reference;
-    DocumentSnapshot docRecSnap = await docRecord.get();
-    var rec = docRecSnap.data();
-
-    //parse record
-    String recStr = rec.toString();
-    int idx = recStr.indexOf('score:');
-    recStr = recStr.substring(idx + 7);
-    idx = recStr.indexOf(',');
-    recStr = recStr.substring(0, idx);
-    scores.add(int.parse(recStr));
-
-    //parse record
-    String recStrDate = rec.toString();
-    idx = recStrDate.indexOf('date: ');
-    recStrDate = recStrDate.substring(idx + 6);
-    idx = recStrDate.indexOf(',');
-    recStrDate = recStrDate.substring(0, idx);
-    //recStrDate = recStrDate.substring(0, 10);
-    dates.add(recStrDate);
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String>? dates = prefs.getStringList("dates");
+  List<String>? scores = prefs.getStringList("scores");
+  if (!(dates != null && dates.isNotEmpty && scores != null && scores.isNotEmpty)) {
+    dates = [];
+    scores = [];
   }
+  dates.add(time);
+  scores.add(score.toString());
 
-  //parse into graphs
-  for (int i = dates.length - 1; i >= 0; i--) {
-    ss.add(new SurveyScores(dates[i], scores[i]));
-    print('${dates[i]}, ${scores[i]}');
+  for (int i = 0; i < dates.length; i++) {
+    ss.add(new SurveyScores(dates[i], int.parse(scores[i])));
   }
-
-
-  //store in local machine
-  List<String> scoreStrs = [];
-  for (int score in scores) {
-    scoreStrs.add(score.toString());
-  }
-
-  prefs.setStringList("scores", scoreStrs);
-  prefs.setStringList("dates", dates);
+  
   prefs.setInt("scoreToday", score);
+  prefs.setString('date', time);
+  prefs.setStringList("dates", dates);
+  prefs.setStringList("scores", scores);
 
 }
 
@@ -131,19 +58,12 @@ Widget build(BuildContext context) {
     builder: (context, snapshot) {
 
       DateTime dt = DateTime.now();
-      print("Cancelling...");
       cancelScheduledNotifications();
       NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
         dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
       )));
       createDailyReminder(nw);
 
-      /*
-      * for testing, uncomment this part:-
-      * NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-        dt.year, dt.month, dt.day, dt.hour + 1, 0, 0, 0, 0
-      )));
-      * */
       Size size = MediaQuery.of(context).size;
 
       return WillPopScope(

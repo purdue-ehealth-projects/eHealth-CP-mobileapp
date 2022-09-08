@@ -4,7 +4,6 @@ import 'notification_week_and_time.dart';
 
 Future<void> createHourlyReminder(
     NotificationWeekAndTime notificationSchedule) async {
-  print("create interval reminder");
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       icon: null,
@@ -31,8 +30,6 @@ Future<void> createHourlyReminder(
 
 Future<void> createDailyReminder(
     NotificationWeekAndTime notificationSchedule) async {
-  print('create daily reminder');
-  print('scheduling on day ${notificationSchedule.dayOfTheWeek} and hour ${notificationSchedule.timeOfDay.hour} and min ${notificationSchedule.timeOfDay.minute}');
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       icon: null,

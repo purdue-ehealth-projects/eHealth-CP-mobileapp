@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   List<SurveyScores> graphSS = [];
   int scoreToday = -1;
 
-
   @override
   void initState() {
     super.initState();
@@ -91,13 +90,10 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
           //not yet did survey
           didSurvey == false;
         }
-
-        print("username: $usernameP");
         // --- get data done ---
 
         //no username in local data
         if (usernameP == null || usernameP == "" || usernameP.isEmpty || usernameP.compareTo("null") == 0) {
-          print("Am i here?");
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -107,7 +103,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
           );
         } else {
           //have username in local data
-          print("I'm here instead???");
           //if done survey for the day
           if (didSurvey) {
             List<int> x = [];     //score
@@ -151,62 +146,33 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
       });
       });
-
-
   }
 
   Future<void> loadLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('username')) {
-      username = prefs.getString('username');
+
+    String curDate = DateTime.now().year.toString() + ' ' + DateTime.now().month.toString() + ' ' + DateTime.now().day.toString();
+
+    String? username = prefs.getString("username");
+    String? password = prefs.getString("password");
+    String? date = prefs.getString("date");
+
+    if (username != null && username != "" && password != null && username != "") {
       signin = true;
-    } else {
-      username = '';
-      signin = false;
-    }
-    print("username: " + username!);
-
-    DateTime now = DateTime.now();
-
-    String time = now.year.toString() + ' ' + now.month.toString() + ' ' + now.day.toString();
-    if (prefs.containsKey('date')) {
-      String? prevDate = prefs.getString('date');
-      if (prevDate.toString().compareTo(time) == 0) {
-        //did survey before
+      if (date == curDate) {
         didSurvey = true;
-      } else {
-        didSurvey = false;
+        scoreToday = prefs.getInt("scoreToday")!;
+
+        List<String>? scores = prefs.getStringList("scores");
+        List<String>? dates = prefs.getStringList("dates");
+
+        if (scores != null && dates != null) {
+          for (int i = 0; i < scores.length; i++) {
+            graphSS.add(new SurveyScores(dates[i], int.parse(scores[i])));
+          }
+        }
       }
-    } else {
-      didSurvey = false;
     }
-
-    print('signin: $signin');
-    print('didsurvey: $didSurvey');
-
-    if (didSurvey && signin) {
-      List<int> x = [];     //score
-      List<String> y = [];  //date
-
-      List<String>? scores = prefs.getStringList("scores");
-      for (String? score in scores!) {
-        if (score.toString().isNotEmpty && score.toString().length != 0)
-          x.add(int.parse(score.toString()));
-      }
-      List<String>? dates = prefs.getStringList("dates");
-      for (String? date in dates!) {
-        if (date.toString().isNotEmpty && date.toString().length != 0)
-          y.add(date.toString());
-      }
-
-      for (int i = dates.length - 1; i >= 0; i--) {
-        graphSS.add(new SurveyScores(y[i], x[i]));
-        print('${y[i]}, ${x[i]}');
-      }
-      scoreToday = prefs.getInt("scoreToday")!;
-
-    }
-
   }
 
   @override
@@ -221,7 +187,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
-
     if (didSurvey) {
       cancelScheduledNotifications();
       DateTime now = DateTime.now();
@@ -234,9 +199,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
-
-        DateTime now = DateTime.now();
-
         Size size = MediaQuery.of(context).size;
         return Scaffold(
           backgroundColor: Color(0xff0b3954),
@@ -281,7 +243,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   ),
                 ),
               ) : Container(),
-              username == null || username == '' ?
+              !signin ?
               Center(
                 child: Column(
                   children: <Widget>[
@@ -374,15 +336,13 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                         ),
                       ),
                       onTap: () {
-                        print(nameController.text);
                         loginUser(nameController.text, passwordController.text).then((result) {
                           if (result) {
-                            pushNameLocal(nameController.text);
+                            pushNameLocal(nameController.text, passwordController.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => SurveyWelcomePage(username: nameController.text),
-                                //builder: (_) => SurveyPage(name: nameController.text),
                               ),
                             );
                           } else {
@@ -452,7 +412,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                             context,
                             MaterialPageRoute(
                               builder: (_) => SurveyWelcomePage(username: username.toString()),
-                              //builder: (_) => SurveyPage(name: username.toString()),
                             ),
                           );
                         },
@@ -527,9 +486,10 @@ Future<bool> loginUser(String name, String password) async {
   }
 }
 
-void pushNameLocal(String name) async {
+void pushNameLocal(String name, String password) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('username', name);
+  prefs.setString('password', password);
 }
 
 void pushUserFirestore(String name, String age, String dob, String password) async {
@@ -581,6 +541,4 @@ void pushUserFirestore(String name, String age, String dob, String password) asy
     'userId': userId.toString(),
     'password': encrypted,
   });
-
-  print("Success");
 }
