@@ -1,5 +1,4 @@
-import 'package:emshealth/home_page.dart';
-import 'package:emshealth/home_page2.dart';
+import 'package:emshealth/graph_survey.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:xid/xid.dart';
@@ -119,7 +118,7 @@ Widget build(BuildContext context) {
 
                       Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => HomePage2(gSS: ss, scoreToday: score),
+                        builder: (_) => GraphSurvey(ss, score),
                       ));
                     },
                   ),
@@ -292,7 +291,7 @@ Widget build(BuildContext context) {
           Navigator.popUntil(context, (route) => route.isFirst);
           Navigator.pop(context);
           Navigator.push(context, MaterialPageRoute(
-            builder: (_) => HomePage2(gSS: ss, scoreToday: score),
+            builder: (_) => GraphSurvey(ss, score),
           ));
           return falsing();
         },

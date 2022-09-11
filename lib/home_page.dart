@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xid/xid.dart';
 import 'graph_survey.dart';
-import 'home_page2.dart';
 import 'login_page.dart';
 import 'notification_week_and_time.dart';
 
