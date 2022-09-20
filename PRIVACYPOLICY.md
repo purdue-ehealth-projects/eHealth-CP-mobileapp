@@ -1,4 +1,4 @@
-## Empress EMS Daily Survey Application Privacy Policy
+## Empress Daily Survey Application Privacy Policy
 
 **Privacy Policy**
 
