@@ -200,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 GestureDetector(
                   child: Container(
                     width: size.width * 0.8,
@@ -220,8 +220,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  onTap: () => launchUrl(Uri.parse(
-                      'https://gist.github.com/carl2x/3b79730cdd9ae5f8d746c817d2772a2a')),
+                  onTap: () => launchUrl(
+                      Uri.parse(
+                          'https://gist.github.com/carl2x/3b79730cdd9ae5f8d746c817d2772a2a'),
+                      mode: LaunchMode.platformDefault),
                 ),
               ],
             ),
