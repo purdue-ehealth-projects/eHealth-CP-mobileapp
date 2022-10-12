@@ -10,11 +10,13 @@ import 'notification_week_and_time.dart';
 void scheduleHourly() {
   cancelScheduledNotifications();
   DateTime dt = DateTime.now();
-  NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.now());
+  NotificationWeekAndTime? nw =
+      NotificationWeekAndTime(dayOfTheWeek: dt.day, timeOfDay: TimeOfDay.now());
   createHourlyReminder(nw);
-  nw = NotificationWeekAndTime(dayOfTheWeek: dt.day + 1, timeOfDay: TimeOfDay.fromDateTime(DateTime(
-      dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0
-  )));
+  nw = NotificationWeekAndTime(
+      dayOfTheWeek: dt.day + 1,
+      timeOfDay: TimeOfDay.fromDateTime(
+          DateTime(dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0)));
   createDailyReminder(nw);
 }
 
@@ -50,7 +52,8 @@ Future<void> main() async {
     scheduleHourly,
     exact: true,
     wakeup: true, //the device will be woken up when the alarm fires
-    startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0), //Start whit the specific time 8:00 am
+    startAt: DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, 8, 0), //Start whit the specific time 8:00 am
     allowWhileIdle: true,
     rescheduleOnReboot: true, //Work after reboot
   );
@@ -66,7 +69,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.teal,
-        accentColor: Colors.tealAccent,
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.tealAccent),
       ),
       title: 'EMS Health',
       home: HomePage(),
