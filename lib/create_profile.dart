@@ -5,18 +5,18 @@ class CreateProfile extends StatefulWidget {
   CreateProfile(
       {Key? key,
       required this.pushNameLocal,
-      required this.pushUserFirestore,
+      required this.pushUserMongoDB,
       required this.createHourlyReminder})
       : super(key: key);
 
   final Function pushNameLocal;
-  final Function pushUserFirestore;
+  final Function pushUserMongoDB;
   final Function createHourlyReminder;
 
   @override
   State<CreateProfile> createState() => _CreateProfileState(
       pushNameLocal: this.pushNameLocal,
-      pushUserFirestore: this.pushUserFirestore,
+      pushUserMongoDB: this.pushUserMongoDB,
       createHourlyReminder: this.createHourlyReminder);
 }
 
@@ -27,12 +27,12 @@ class _CreateProfileState extends State<CreateProfile> {
   TextEditingController passwordController = new TextEditingController();
 
   final Function pushNameLocal;
-  final Function pushUserFirestore;
+  final Function pushUserMongoDB;
   final Function createHourlyReminder;
 
   _CreateProfileState(
       {required this.pushNameLocal,
-      required this.pushUserFirestore,
+      required this.pushUserMongoDB,
       required this.createHourlyReminder});
 
   @override
@@ -197,7 +197,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 pushNameLocal(nameController.text, passwordController.text);
 
                 //save name on storage
-                pushUserFirestore(nameController.text, ageController.text,
+                pushUserMongoDB(nameController.text, ageController.text,
                     dobController.text, passwordController.text);
 
                 //go to survey page

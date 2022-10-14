@@ -37,20 +37,19 @@ dependencies:
   flutter_launcher_icons: ^0.9.1
   font_awesome_flutter: ^9.1.0
   awesome_notifications: ^0.0.6+10
-  firebase_core:
-  firebase_auth:
-  cloud_firestore:
-  firebase_storage:
   survey_kit: ^0.0.21
   shared_preferences: ^2.0.13
-  xid: ^1.0.7
   fl_chart: ^0.50.1
   syncfusion_flutter_charts: ^20.1.47+1
   encrypt: ^5.0.1
   provider: ^6.0.2
   percent_indicator: ^4.0.0
   android_alarm_manager_plus: ^2.0.5
+  
   url_launcher: ^6.1.5
+  flutter_config: ^2.0.0
+  mongo_dart: ^0.7.4+1
+  crypt: ^4.2.1
 
 dev_dependencies:
   flutter_test:

@@ -1,12 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/completion_page.dart';
+import 'package:emshealth/database.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/survey_2.dart';
-import 'package:encrypt/encrypt.dart' as E;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:xid/xid.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
 import 'notification_week_and_time.dart';
@@ -119,7 +117,7 @@ class _HomePageState extends State<HomePage>
     if (username != null &&
         username != "" &&
         password != null &&
-        username != "") {
+        password != "") {
       signin = true;
       if (date == curDate) {
         didSurvey = true;
@@ -142,6 +140,7 @@ class _HomePageState extends State<HomePage>
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
     AwesomeNotifications().displayedSink.close();
+    MongoDB.cleanupDatabase();
     super.dispose();
   }
 
@@ -204,33 +203,15 @@ loginFailedAlert(BuildContext context) {
 }
 
 Future<bool> loginUser(String name, String password) async {
-  CollectionReference patients = FirebaseFirestore.instance.collection('users');
-  QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-  if (query == null || query.size == 0)
+  if (await MongoDB.existUser(name) == false) {
     return false;
-  else {
-    QueryDocumentSnapshot doc = query.docs[0];
-    DocumentReference docRecord = doc.reference;
-    DocumentSnapshot docRecSnap = await docRecord.get();
-    var rec = docRecSnap.data().toString();
-
-    //parse password
-    int idx = rec.indexOf('password:');
-    rec = rec.substring(idx + 10);
-    idx = rec.indexOf(',');
-    rec = rec.substring(0, idx);
-
-    final key = E.Key.fromLength(32);
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
-
-    final encrypted = encrypter.encrypt(password, iv: iv).base64;
-
-    if (rec.compareTo(encrypted) == 0)
-      return true;
-    else
-      return false;
   }
+  var user = await MongoDB.findUser(name);
+  String storedPassword = user['password'];
+  String salt = user['salt'];
+  final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
+
+  return (storedPassword == encryptedPassword);
 }
 
 void pushNameLocal(String name, String password) async {
@@ -239,54 +220,17 @@ void pushNameLocal(String name, String password) async {
   prefs.setString('password', password);
 }
 
-void pushUserFirestore(
+void pushUserMongoDB(
     String name, String age, String dob, String password) async {
-  //generate a userId
-  Xid userId = Xid();
+  // Generates a salt with length 10
+  final salt = MongoDB.getSalt(10);
+  final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
-  //generate password
-  final key = E.Key.fromLength(32);
-  final iv = E.IV.fromLength(16);
-  final encrypter = E.Encrypter(E.AES(key));
-
-  final encrypted = encrypter.encrypt(password, iv: iv).base64;
-
-  //update patient part
-  CollectionReference patients =
-      FirebaseFirestore.instance.collection('patients');
-  QuerySnapshot query = await patients.where('name', isEqualTo: '$name').get();
-  if (query.docs.isEmpty) {
-    patients.add({
-      'address': '',
-      'age': 0,
-      'appointment_day': '',
-      'chest': '',
-      'contact_1': '',
-      'contact_2': '',
-      'coords': FieldValue.arrayUnion([0, 0]),
-      'gender_id': '',
-      'medical_history': '',
-      'overall': '',
-      'priority': 3,
-      'program': '',
-      'race': '',
-      'start_date': '',
-      'stomach': '',
-      'zone': 0,
-      'name': name,
-      'userId': userId.toString(),
-    });
+  if (await MongoDB.existUser(name) == true) {
+    await MongoDB.updateUser(name, age, dob);
+    print("FOUND");
   } else {
-    QueryDocumentSnapshot doc = query.docs[0];
-    DocumentReference docRef = doc.reference;
-    docRef.update({'userId': userId.toString()});
+    await MongoDB.createUser(name, encryptedPassword, salt);
+    await MongoDB.createPatient(name, age, dob);
   }
-
-  //update profile part
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  users.add({
-    'name': name,
-    'userId': userId.toString(),
-    'password': encrypted,
-  });
 }

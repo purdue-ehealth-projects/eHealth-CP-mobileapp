@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(
                         builder: (_) => CreateProfile(
                             pushNameLocal: pushNameLocal,
-                            pushUserFirestore: pushUserFirestore,
+                            pushUserMongoDB: pushUserMongoDB,
                             createHourlyReminder: createHourlyReminder),
                       ),
                     );
