@@ -166,7 +166,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                 child: Text(
                   questions[question],
                   style: TextStyle(
-                      color: Colors.white,
+                    color: Colors.white,
                     fontSize: 24,
                   ),
                   textAlign: TextAlign.center,
@@ -189,20 +189,19 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                       ),
                     ),
                     items: choices
-                        .map((item) =>
-                        DropdownMenuItem<String>(
-                          value: item,
-                          child: Container(
-                            width: size.width * 0.8,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
+                        .map((item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Container(
+                                width: size.width * 0.8,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ))
+                            ))
                         .toList(),
                     dropdownDecoration: BoxDecoration(
                       color: Color(0xff0b3954),
@@ -222,66 +221,66 @@ class _SurveyQuestions extends State<SurveyQuestions> {
               padding: const EdgeInsets.all(30.0),
               child: SizedBox(
                   child: GestureDetector(
-                    child: Container(
-                      width: 50,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          fontFamily: 'OpenSans',
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                child: Container(
+                  width: 50,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
                     ),
-                    onTap: () {
-                      if (x.containsKey(questions[question])) {
-                        x.update(
-                            questions[question], (value) => selectedVal as String);
-                      } else {
-                        x.putIfAbsent(
-                            questions[question], () => selectedVal as String);
-                      }
+                  ),
+                ),
+                onTap: () {
+                  if (x.containsKey(questions[question])) {
+                    x.update(
+                        questions[question], (value) => selectedVal as String);
+                  } else {
+                    x.putIfAbsent(
+                        questions[question], () => selectedVal as String);
+                  }
 
-                      if (question == 9) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => LastSurveyPage(
-                                username: username, percent: this.percent + 10),
-                          ),
-                        );
-                      } else if (question == 6) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SurveyQuestionsMulti(
-                                username: username,
-                                choices: choicesData[question + 1],
-                                question: question + 1,
-                                percent: this.percent + 10),
-                          ),
-                        );
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SurveyQuestions(
-                                username: username,
-                                choices: choicesData[question + 1],
-                                question: question + 1,
-                                percent: this.percent + 10),
-                          ),
-                        );
-                      }
-                    },
-                  )),
+                  if (question == 9) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LastSurveyPage(
+                            username: username, percent: this.percent + 10),
+                      ),
+                    );
+                  } else if (question == 6) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SurveyQuestionsMulti(
+                            username: username,
+                            choices: choicesData[question + 1],
+                            question: question + 1,
+                            percent: this.percent + 10),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SurveyQuestions(
+                            username: username,
+                            choices: choicesData[question + 1],
+                            question: question + 1,
+                            percent: this.percent + 10),
+                      ),
+                    );
+                  }
+                },
+              )),
             ),
           ],
         ),
@@ -316,12 +315,17 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   final int percent;
   List<String> selectedItems = [];
 
-  _SurveyQuestionsMultiState(this.username, this.choices, this.question, this.percent);
-
+  _SurveyQuestionsMultiState(
+      this.username, this.choices, this.question, this.percent);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    List<double> itemHeights = <double>[];
+    for (int i = 0; i < choices.length; i++) {
+      itemHeights.add(60);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff0b3954),
@@ -330,166 +334,173 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
       body: Container(
         color: Color(0xff0b3954),
         alignment: Alignment.center,
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SizedBox(
-                child: Text(
-                  questions[question],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                  textAlign: TextAlign.center,
+        child: ListView(scrollDirection: Axis.vertical, children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              child: Text(
+                questions[question],
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SizedBox(
-                child: DropdownButtonHideUnderline(
-                child: DropdownButton2(
-                  isExpanded: true,
-                  hint: Align(
-                    alignment: AlignmentDirectional.center,
-                    child: Text(
-                      'Select multiple options.',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                isExpanded: true,
+                hint: Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Text(
+                    'None apply.',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
                     ),
                   ),
-                  items: choices.map((item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: StatefulBuilder(
-                        builder: (context, menuSetState) {
-                          final _isSelected = selectedItems.contains(item);
-                          return InkWell(
-                            onTap: () {
-                              _isSelected
-                                  ? selectedItems.remove(item)
-                                  : selectedItems.add(item);
-                              //This rebuilds the StatefulWidget to update the button's text
-                              setState(() {});
-                              //This rebuilds the dropdownMenu Widget to update the check mark
-                              menuSetState(() {});
-                            },
-                            child: Container(
-                              height: double.infinity,
-                              child: Row(
-                                children: [
-                                  _isSelected
-                                      ? const Icon(Icons.check_box_outlined, color: Colors.white,)
-                                      : const Icon(Icons.check_box_outline_blank, color: Colors.white),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 200,
-                                      child: Text(
-                                        item,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                        ),
-                                        textAlign: TextAlign.center,
+                ),
+                items: choices.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: StatefulBuilder(
+                      builder: (context, menuSetState) {
+                        final _isSelected = selectedItems.contains(item);
+                        return InkWell(
+                          onTap: () {
+                            _isSelected
+                                ? selectedItems.remove(item)
+                                : selectedItems.add(item);
+                            //This rebuilds the StatefulWidget to update the button's text
+                            setState(() {});
+                            //This rebuilds the dropdownMenu Widget to update the check mark
+                            menuSetState(() {});
+                          },
+                          child: Container(
+                            height: double.infinity,
+                            child: Row(
+                              children: [
+                                _isSelected
+                                    ? const Icon(
+                                        Icons.check_box_outlined,
+                                        color: Colors.white,
+                                      )
+                                    : const Icon(Icons.check_box_outline_blank,
+                                        color: Colors.white),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 200,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
                                       ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }).toList(),
-                  value: selectedItems.isEmpty ? null : selectedItems.last,
-                  onChanged: (value) {},
-                  dropdownDecoration: BoxDecoration(
-                    color: Color(0xff0b3954),
-                  ),
-                  iconEnabledColor: Colors.white,
-                  itemHeight: 60,
-                  dropdownMaxHeight: 700,
-                  scrollbarAlwaysShow: true,
-                  selectedItemBuilder: (context) {
-                    return choices.map(
-                          (item) {
-                        return Container(
-                          alignment: AlignmentDirectional.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Container(
-                            width: size.width * 0.8,
-                            child: Text(
-                              selectedItems.join(', '),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                color: Colors.white,
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         );
                       },
-                    ).toList();
-                  },
-                )),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: SizedBox(
-                  child: GestureDetector(
-                    child: Container(
-                      width: 50,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          fontFamily: 'OpenSans',
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
                     ),
-                    onTap: () {
-                      String temp = '';
-                      for (int i = 0; i < selectedItems.length; i++) {
-                          temp += selectedItems[i];
-                          temp += "+";
-                        }
-                      if (x.containsKey(questions[question])) {
-                        x.update(questions[question], (value) => temp);
-                      } else {
-                        x.putIfAbsent(questions[question], () => temp);
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SurveyQuestions(
-                              username: username,
-                              choices: choicesData[question + 1],
-                              question: question + 1,
-                              percent: this.percent + 10),
+                  );
+                }).toList(),
+                //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+                value: selectedItems.isEmpty ? null : selectedItems.last,
+                onChanged: (value) {},
+                dropdownDecoration: BoxDecoration(
+                  color: Color(0xff0b3954),
+                ),
+                iconEnabledColor: Colors.white,
+                itemHeight: 100,
+                customItemsHeights: itemHeights,
+                dropdownMaxHeight: 700,
+                scrollbarAlwaysShow: true,
+                selectedItemBuilder: (context) {
+                  return choices.map(
+                    (item) {
+                      return Container(
+                        alignment: AlignmentDirectional.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        width: size.width * 0.8,
+                        height: double.infinity,
+                        child: Text(
+                          selectedItems.join(', '),
+                          maxLines: 5,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            overflow: TextOverflow.ellipsis,
+                            color: Colors.white,
+                          ),
                         ),
                       );
                     },
+                  ).toList();
+                },
+              )),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: SizedBox(
+              child: GestureDetector(
+                child: Container(
+                  width: 50,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  String temp = '';
+                  if (selectedItems.isEmpty) {
+                    temp = "None";
+                  } else {
+                    for (int i = 0; i < selectedItems.length; i++) {
+                      temp += selectedItems[i];
+                      temp += "+";
+                    }
+                  }
+                  if (x.containsKey(questions[question])) {
+                    x.update(questions[question], (value) => temp);
+                  } else {
+                    x.putIfAbsent(questions[question], () => temp);
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SurveyQuestions(
+                          username: username,
+                          choices: choicesData[question + 1],
+                          question: question + 1,
+                          percent: this.percent + 10),
+                    ),
+                  );
+                },
               ),
             ),
-          ]
-        ),
+          ),
+        ]),
       ),
     );
   }
@@ -628,4 +639,3 @@ int collectScore(Map<String, String> x) {
 
   return score;
 }
-
