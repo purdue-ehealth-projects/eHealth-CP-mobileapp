@@ -202,6 +202,56 @@ loginFailedAlert(BuildContext context) {
   );
 }
 
+registerFailedAlert(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Register Failed"),
+    content: Text("Username already exists or is empty."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+badPasswordAlert(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Insecure Password"),
+    content: Text("Password is too weak."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 Future<bool> loginUser(String name, String password) async {
   if (await MongoDB.existUser(name) == false) {
     return false;
@@ -212,6 +262,16 @@ Future<bool> loginUser(String name, String password) async {
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
   return (storedPassword == encryptedPassword);
+}
+
+Future<bool> validateUsername(String name) async {
+  if (await MongoDB.existUser(name) == true) {
+    return false;
+  }
+  if (name.isEmpty) {
+    return false;
+  }
+  return true;
 }
 
 void pushNameLocal(String name, String password) async {

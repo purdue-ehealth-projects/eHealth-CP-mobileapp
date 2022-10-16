@@ -51,6 +51,7 @@ dependencies:
   mongo_dart: ^0.7.4+1
   crypt: ^4.2.1
   dropdown_button2: ^1.8.5
+  flutter_pw_validator: ^1.4.2
 
 dev_dependencies:
   flutter_test:

@@ -192,10 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => CreateProfile(
-                            pushNameLocal: pushNameLocal,
-                            pushUserMongoDB: pushUserMongoDB,
-                            createHourlyReminder: createHourlyReminder),
+                        builder: (_) => CreateProfile(),
                       ),
                     );
                   },

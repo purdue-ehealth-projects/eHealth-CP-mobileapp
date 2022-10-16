@@ -1,23 +1,17 @@
 import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 
-class CreateProfile extends StatefulWidget {
-  CreateProfile(
-      {Key? key,
-      required this.pushNameLocal,
-      required this.pushUserMongoDB,
-      required this.createHourlyReminder})
-      : super(key: key);
+import 'home_page.dart';
+import 'notification_api.dart';
+import 'notification_week_and_time.dart';
 
-  final Function pushNameLocal;
-  final Function pushUserMongoDB;
-  final Function createHourlyReminder;
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+
+class CreateProfile extends StatefulWidget {
+  CreateProfile({Key? key}) : super(key: key);
 
   @override
-  State<CreateProfile> createState() => _CreateProfileState(
-      pushNameLocal: this.pushNameLocal,
-      pushUserMongoDB: this.pushUserMongoDB,
-      createHourlyReminder: this.createHourlyReminder);
+  State<CreateProfile> createState() => _CreateProfileState();
 }
 
 class _CreateProfileState extends State<CreateProfile> {
@@ -26,14 +20,7 @@ class _CreateProfileState extends State<CreateProfile> {
   TextEditingController dobController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  final Function pushNameLocal;
-  final Function pushUserMongoDB;
-  final Function createHourlyReminder;
-
-  _CreateProfileState(
-      {required this.pushNameLocal,
-      required this.pushUserMongoDB,
-      required this.createHourlyReminder});
+  bool _goodPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +85,58 @@ class _CreateProfileState extends State<CreateProfile> {
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
                 child: TextField(
+                  obscureText: true,
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    alignLabelWithHint: true,
+                    fillColor: Colors.transparent,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 2,
+                    )),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'OpenSans',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                width: size.width * 0.9,
+                child: new FlutterPwValidator(
+                    controller: passwordController,
+                    minLength: 6,
+                    uppercaseCharCount: 1,
+                    numericCharCount: 1,
+                    specialCharCount: 0,
+                    width: 400,
+                    height: 90,
+                    onSuccess: () {
+                      setState(() {
+                        _goodPassword = true;
+                      });
+                    },
+                    onFail: () {
+                      setState(() {
+                        _goodPassword = false;
+                      });
+                    }),
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                width: size.width * 0.9,
+                child: TextField(
                   controller: ageController,
                   decoration: InputDecoration(
                     alignLabelWithHint: true,
@@ -144,33 +183,6 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                width: size.width * 0.9,
-                child: TextField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    alignLabelWithHint: true,
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    )),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
-                ),
-              ),
-            ),
             SizedBox(height: 50),
             Center(
                 child: GestureDetector(
@@ -192,22 +204,32 @@ class _CreateProfileState extends State<CreateProfile> {
                   ),
                 ),
               ),
-              onTap: () {
-                //save name on local data
-                pushNameLocal(nameController.text, passwordController.text);
+              onTap: () async {
+                bool result = await validateUsername(nameController.text);
+                if (result == false) {
+                  registerFailedAlert(context);
+                }
+                if (result == true && _goodPassword == false) {
+                  badPasswordAlert(context);
+                }
+                if (result == true && _goodPassword == true) {
+                  pushNameLocal(nameController.text, passwordController.text);
+                  pushUserMongoDB(nameController.text, ageController.text,
+                      dobController.text, passwordController.text);
 
-                //save name on storage
-                pushUserMongoDB(nameController.text, ageController.text,
-                    dobController.text, passwordController.text);
-
-                //go to survey page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        SurveyWelcomePage(username: nameController.text),
-                  ),
-                );
+                  cancelScheduledNotifications();
+                  NotificationWeekAndTime? nw = NotificationWeekAndTime(
+                      dayOfTheWeek: DateTime.now().day,
+                      timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
+                  createHourlyReminder(nw);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          SurveyWelcomePage(username: nameController.text),
+                    ),
+                  );
+                }
               },
             )),
           ],
