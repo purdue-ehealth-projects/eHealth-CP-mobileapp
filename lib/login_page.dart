@@ -1,4 +1,4 @@
-import 'package:emshealth/survey_2.dart';
+import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 
 import 'create_profile.dart';

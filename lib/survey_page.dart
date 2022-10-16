@@ -439,7 +439,7 @@ class _SurveyQues2State extends State<SurveyQues2> {
   final int question;
   final int percent;
 
-  List pressL = [false, false, false, false, false];
+  List pressL = [false, false, false, false, true];
 
   _SurveyQues2State(this.username, this.choices, this.question, this.percent);
 
