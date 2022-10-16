@@ -1,10 +1,12 @@
-import 'package:emshealth/survey_2.dart';
+import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 
 import 'create_profile.dart';
 import 'home_page.dart';
 import 'notification_api.dart';
 import 'notification_week_and_time.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -26,9 +28,7 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true,
         title: Text(
           "EMS Health Home Page",
-          style: TextStyle(
-              fontFamily: "OpenSans"
-          ),
+          style: TextStyle(fontFamily: "OpenSans"),
         ),
         backgroundColor: Color(0xff0b3954),
         leading: Container(),
@@ -79,22 +79,18 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          )
-                      ),
+                        color: Colors.white,
+                        width: 2,
+                      )),
                       labelText: 'Name',
                       labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
                           fontSize: 18,
-                          fontWeight: FontWeight.bold
-                      ),
+                          fontWeight: FontWeight.bold),
                     ),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans'
-                    ),
+                    style:
+                        TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -114,22 +110,18 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          )
-                      ),
+                        color: Colors.white,
+                        width: 2,
+                      )),
                       labelText: 'Password',
                       labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
                           fontSize: 18,
-                          fontWeight: FontWeight.bold
-                      ),
+                          fontWeight: FontWeight.bold),
                     ),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans'
-                    ),
+                    style:
+                        TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                   ),
                 ),
                 SizedBox(height: 40),
@@ -153,16 +145,21 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onTap: () {
-                    loginUser(nameController.text, passwordController.text).then((result) {
-                      pushNameLocal(nameController.text, passwordController.text);
+                    loginUser(nameController.text, passwordController.text)
+                        .then((result) {
+                      pushNameLocal(
+                          nameController.text, passwordController.text);
                       if (result) {
                         cancelScheduledNotifications();
-                        NotificationWeekAndTime? nw = NotificationWeekAndTime(dayOfTheWeek: DateTime.now().day, timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
+                        NotificationWeekAndTime? nw = NotificationWeekAndTime(
+                            dayOfTheWeek: DateTime.now().day,
+                            timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
                         createHourlyReminder(nw);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => SurveyWelcomePage(username: nameController.text),
+                            builder: (_) => SurveyWelcomePage(
+                                username: nameController.text),
                           ),
                         );
                       } else {
@@ -195,10 +192,38 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => CreateProfile(pushNameLocal: pushNameLocal, pushUserFirestore: pushUserFirestore, createHourlyReminder: createHourlyReminder),
+                        builder: (_) => CreateProfile(
+                            pushNameLocal: pushNameLocal,
+                            pushUserMongoDB: pushUserMongoDB,
+                            createHourlyReminder: createHourlyReminder),
                       ),
                     );
                   },
+                ),
+                SizedBox(height: 40),
+                GestureDetector(
+                  child: Container(
+                    width: size.width * 0.8,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Privacy Policy",
+                      style: TextStyle(
+                        fontFamily: 'OpenSans',
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  onTap: () => launchUrl(
+                      Uri.parse(
+                          'https://gist.github.com/carl2x/3b79730cdd9ae5f8d746c817d2772a2a'),
+                      mode: LaunchMode.platformDefault),
                 ),
               ],
             ),
@@ -208,4 +233,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

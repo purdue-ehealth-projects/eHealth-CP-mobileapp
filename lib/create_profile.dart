@@ -1,15 +1,23 @@
-import 'package:emshealth/survey_2.dart';
+import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 
 class CreateProfile extends StatefulWidget {
-  CreateProfile({Key? key, required this.pushNameLocal, required this.pushUserFirestore, required this.createHourlyReminder}) : super(key: key);
+  CreateProfile(
+      {Key? key,
+      required this.pushNameLocal,
+      required this.pushUserMongoDB,
+      required this.createHourlyReminder})
+      : super(key: key);
 
-  Function pushNameLocal;
-  Function pushUserFirestore;
-  Function createHourlyReminder;
+  final Function pushNameLocal;
+  final Function pushUserMongoDB;
+  final Function createHourlyReminder;
 
   @override
-  State<CreateProfile> createState() => _CreateProfileState(pushNameLocal: this.pushNameLocal, pushUserFirestore: this.pushUserFirestore, createHourlyReminder: this.createHourlyReminder);
+  State<CreateProfile> createState() => _CreateProfileState(
+      pushNameLocal: this.pushNameLocal,
+      pushUserMongoDB: this.pushUserMongoDB,
+      createHourlyReminder: this.createHourlyReminder);
 }
 
 class _CreateProfileState extends State<CreateProfile> {
@@ -19,27 +27,28 @@ class _CreateProfileState extends State<CreateProfile> {
   TextEditingController passwordController = new TextEditingController();
 
   final Function pushNameLocal;
-  final Function pushUserFirestore;
+  final Function pushUserMongoDB;
   final Function createHourlyReminder;
 
-  _CreateProfileState({Key? key, required this.pushNameLocal, required this.pushUserFirestore, required this.createHourlyReminder});
+  _CreateProfileState(
+      {required this.pushNameLocal,
+      required this.pushUserMongoDB,
+      required this.createHourlyReminder});
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xff0b3954),
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "EMS Health",
-          style: TextStyle(
-              fontFamily: "OpenSans"
-          ),
-        ),
         backgroundColor: Color(0xff0b3954),
-      ),
-      body: ListView(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "EMS Health",
+            style: TextStyle(fontFamily: "OpenSans"),
+          ),
+          backgroundColor: Color(0xff0b3954),
+        ),
+        body: ListView(
           children: <Widget>[
             Center(
               child: Padding(
@@ -52,8 +61,7 @@ class _CreateProfileState extends State<CreateProfile> {
                         fontFamily: "OpenSans",
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
-                        fontSize: 18
-                    ),
+                        fontSize: 18),
                   ),
                 ),
               ),
@@ -70,22 +78,17 @@ class _CreateProfileState extends State<CreateProfile> {
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        )
-                    ),
+                      color: Colors.white,
+                      width: 2,
+                    )),
                     labelText: 'Name',
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    ),
+                        fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'OpenSans'
-                  ),
+                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
@@ -101,22 +104,17 @@ class _CreateProfileState extends State<CreateProfile> {
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        )
-                    ),
+                      color: Colors.white,
+                      width: 2,
+                    )),
                     labelText: 'Age',
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    ),
+                        fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'OpenSans'
-                  ),
+                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
@@ -132,22 +130,17 @@ class _CreateProfileState extends State<CreateProfile> {
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        )
-                    ),
+                      color: Colors.white,
+                      width: 2,
+                    )),
                     labelText: 'Date of Birth (MM/DD/YYYY)',
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    ),
+                        fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'OpenSans'
-                  ),
+                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
@@ -164,68 +157,60 @@ class _CreateProfileState extends State<CreateProfile> {
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        )
-                    ),
+                      color: Colors.white,
+                      width: 2,
+                    )),
                     labelText: 'Password',
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    ),
+                        fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'OpenSans'
-                  ),
+                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
             SizedBox(height: 50),
             Center(
-              child: GestureDetector(
-                child: Container(
-                  width: size.width * 0.8,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                    ),
+                child: GestureDetector(
+              child: Container(
+                width: size.width * 0.8,
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                onTap: () {
-                  //save name on local data
-                  pushNameLocal(nameController.text, passwordController.text);
+              ),
+              onTap: () {
+                //save name on local data
+                pushNameLocal(nameController.text, passwordController.text);
 
-                  //save name on storage
-                  pushUserFirestore(
-                      nameController.text, ageController.text, dobController.text,
-                      passwordController.text);
+                //save name on storage
+                pushUserMongoDB(nameController.text, ageController.text,
+                    dobController.text, passwordController.text);
 
-                  //go to survey page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          SurveyWelcomePage(username: nameController.text),
-                    ),
-                  );
-                },
-              )
-            ),
+                //go to survey page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        SurveyWelcomePage(username: nameController.text),
+                  ),
+                );
+              },
+            )),
           ],
-        )
-    );
+        ));
   }
 }
