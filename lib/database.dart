@@ -1,35 +1,32 @@
-/*
- * This class handles database operations.
- */
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:crypt/crypt.dart';
 import 'dart:math';
 import 'dart:convert';
 
+///
+/// This class handles database operations.
 class MongoDB {
-  // Global static database and collection objects.
+  /// Global static database and collection objects.
   static var db, userCollection, patientCollection;
 
   static Future cleanupDatabase() async {
     await db.close();
   }
 
-  /*
-   * @Parameters: integer for the length of the random string.
-   * @Return: a random string (salt).
-   */
+  /// @Parameters: integer for the length of the random string.
+  ///
+  /// @Return: a random string (salt).
   static String getSalt(int len) {
     var random = Random.secure();
     var values = List<int>.generate(len, (i) => random.nextInt(255));
     return base64UrlEncode(values);
   }
 
-  /*
-   * @Parameters: string for password, string for salt.
-   * @Return: a hashed and salted password. 
-   * Each user's password should have its unique salt.
-   */
+  /// @Parameters: string for password, string for salt.
+  ///
+  /// @Return: a hashed and salted password.
+  /// Each user's password should have its unique salt.
   static String hashPassWithSalt(String password, String salt) {
     final secure = Crypt.sha256(password, salt: salt, rounds: 1000);
     return secure.toString();
