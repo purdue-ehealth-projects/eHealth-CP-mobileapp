@@ -63,18 +63,22 @@ class MongoDB {
     await userCollection.save(user);
   }
 
-  static createUser(String name, String password, String salt) async {
+  static Future<ObjectId> createUser(
+      String name, String password, String salt) async {
+    ObjectId userId = ObjectId();
     await userCollection.insertOne({
-      '_id': ObjectId(),
+      '_id': userId,
       'name': name,
       'password': password,
       'salt': salt,
     });
+    return userId;
   }
 
-  static createPatient(String name, String age, String dob) async {
+  static createPatient(
+      String name, String age, String dob, ObjectId userId) async {
     await patientCollection.insertOne({
-      '_id': ObjectId(),
+      '_id': userId,
       'name': name,
       'address': '',
       'age': age,
@@ -105,6 +109,13 @@ class MongoDB {
     await userCollection.deleteOne({'name': name});
   }
 
+  static dropTest() async {
+    await db.dropCollection('patients');
+    await db.dropCollection('users');
+    patientCollection = db.collection('patients');
+    userCollection = db.collection('users');
+  }
+
   static test() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
@@ -121,7 +132,7 @@ class MongoDB {
       {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
     ]);
 
-    await createPatient('JAMIE', '19', '03/07/2001');
+    await createPatient('JAMIE', '19', '03/07/2001', ObjectId());
     String salt = getSalt(10);
     String password = hashPassWithSalt("password", salt);
     await createUser('BOB', password, salt);
