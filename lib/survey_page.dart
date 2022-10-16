@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/survey_data.dart';
 import 'package:flutter/material.dart';
@@ -18,40 +19,6 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
     animation: true,
     animationDuration: 500,
   );
-}
-
-GestureDetector optionBuilder(List<String> choices, int index, int selectedIdx,
-    Function setIdx, Size size) {
-  return GestureDetector(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 7.5),
-        child: Container(
-          width: size.width * 0.9,
-          height: 80,
-          alignment: Alignment.center,
-          child: Text(
-            choices[index],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'OpenSans',
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              border: Border.all(
-                style: BorderStyle.solid,
-                width: 3,
-                color:
-                    (selectedIdx == index) ? Colors.blue : Colors.transparent,
-              )),
-        ),
-      ),
-      onTap: () {
-        setIdx(index);
-      });
 }
 
 class SurveyWelcomePage extends StatefulWidget {
@@ -96,40 +63,43 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
               ),
             ),
           ),
-          GestureDetector(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 7.5),
-              child: Container(
-                width: size.width * 0.8,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "Next",
-                  style: TextStyle(
-                    fontFamily: 'OpenSans',
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 7.5),
+                child: Container(
+                  width: size.width * 0.8,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SurveyQuestions(
+                        username: this.username,
+                        choices: choicesData[0],
+                        question: 0,
+                        percent: 0.toInt()),
+                  ),
+                );
+              },
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SurveyQues1(
-                      username: this.username,
-                      choices: choices1,
-                      question: 0,
-                      percent: 0.toInt()),
-                ),
-              );
-            },
           ),
         ],
       ),
@@ -137,13 +107,13 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   }
 }
 
-class SurveyQues1 extends StatefulWidget {
+class SurveyQuestions extends StatefulWidget {
   final List<String> choices;
   final int question;
   final int percent;
   final String username;
 
-  const SurveyQues1(
+  const SurveyQuestions(
       {Key? key,
       required this.choices,
       required this.question,
@@ -152,27 +122,28 @@ class SurveyQues1 extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SurveyQues1State createState() => _SurveyQues1State(
+  _SurveyQuestions createState() => _SurveyQuestions(
       this.username, this.choices, this.question, this.percent);
 }
 
 Map<String, String> x = new Map();
 int score = 0;
 
-class _SurveyQues1State extends State<SurveyQues1> {
+class _SurveyQuestions extends State<SurveyQuestions> {
   final String username;
   final List<String> choices;
   final int question;
   final int percent;
 
-  int selectedIdx = 0;
+  String? selectedVal;
 
-  _SurveyQues1State(this.username, this.choices, this.question, this.percent);
+  _SurveyQuestions(this.username, this.choices, this.question, this.percent);
 
-  void setIdx(int idx) {
-    setState(() {
-      selectedIdx = idx;
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedVal = choices[0];
   }
 
   @override
@@ -186,147 +157,132 @@ class _SurveyQues1State extends State<SurveyQues1> {
       body: Container(
         color: Color(0xff0b3954),
         alignment: Alignment.center,
-        child: Stack(
+        child: ListView(
+          scrollDirection: Axis.vertical,
           children: <Widget>[
-            ListView(
-              children: <Widget>[
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
-                  child: Container(
-                    child: Text(
-                      questions[question],
-                      style: TextStyle(
-                        fontFamily: "OpenSans",
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                child: Text(
+                  questions[question],
+                  style: TextStyle(
+                      color: Colors.white,
+                    fontSize: 24,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    hint: Container(
+                      width: size.width * 0.8,
+                      child: Text(
+                        "Choose an option.",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
+                    items: choices
+                        .map((item) =>
+                        DropdownMenuItem<String>(
+                          value: item,
+                          child: Container(
+                            width: size.width * 0.8,
+                            child: Text(
+                              item,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ))
+                        .toList(),
+                    dropdownDecoration: BoxDecoration(
+                      color: Color(0xff0b3954),
+                    ),
+                    iconEnabledColor: Colors.white,
+                    value: selectedVal,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedVal = value as String;
+                      });
+                    },
                   ),
                 ),
-                optionBuilder(choices, 0, selectedIdx, setIdx, size),
-                SizedBox(height: 10),
-                optionBuilder(choices, 1, selectedIdx, setIdx, size),
-                SizedBox(height: 10),
-                optionBuilder(choices, 2, selectedIdx, setIdx, size),
-                SizedBox(height: 10),
-                (choices.length > 3)
-                    ? optionBuilder(choices, 3, selectedIdx, setIdx, size)
-                    : Container(),
-                (choices.length > 3) ? SizedBox(height: 10) : Container(),
-                (choices.length > 4)
-                    ? optionBuilder(choices, 4, selectedIdx, setIdx, size)
-                    : Container(),
-                (choices.length > 4) ? SizedBox(height: 10) : Container(),
-              ],
+              ),
             ),
-            Positioned(
-                bottom: 70,
-                left: 80,
-                child: GestureDetector(
-                  child: Container(
-                    width: size.width * 0.6,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Next",
-                      style: TextStyle(
-                        fontFamily: 'OpenSans',
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: SizedBox(
+                  child: GestureDetector(
+                    child: Container(
+                      width: 50,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  onTap: () {
-                    if (x.containsKey(questions[question])) {
-                      x.update(
-                          questions[question], (value) => choices[selectedIdx]);
-                    } else {
-                      x.putIfAbsent(
-                          questions[question], () => choices[selectedIdx]);
-                    }
-
-                    if (question == 9) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => LastSurveyPage(
-                              username: username, percent: this.percent + 10),
-                        ),
-                      );
-                    } else if (question == 6) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SurveyQues2(
-                              username: username,
-                              choices: choices7,
-                              question: question + 1,
-                              percent: this.percent + 10),
-                        ),
-                      );
-                    } else {
-                      List<String> temp = [];
-                      switch (question) {
-                        case 0:
-                          temp = choices2;
-                          break;
-                        case 1: //2
-                          temp = choices3;
-                          break;
-                        case 2:
-                          temp = choices4;
-                          break;
-                        case 3: //2
-                          temp = choices2;
-                          break;
-                        case 4:
-                          temp = choices5;
-                          break;
-                        case 5: //2
-                          temp = choices6;
-                          break;
-                        case 6:
-                          temp = choices7;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SurveyQues2(
-                                  username: username,
-                                  choices: temp,
-                                  question: question + 1,
-                                  percent: this.percent + 10),
-                            ),
-                          );
-                          break;
-                        case 7: //2
-                          temp = choices2;
-                          break;
-                        case 8:
-                          temp = choices8;
-                          break;
+                    onTap: () {
+                      if (x.containsKey(questions[question])) {
+                        x.update(
+                            questions[question], (value) => selectedVal as String);
+                      } else {
+                        x.putIfAbsent(
+                            questions[question], () => selectedVal as String);
                       }
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SurveyQues1(
-                              username: username,
-                              choices: temp,
-                              question: question + 1,
-                              percent: this.percent + 10),
-                        ),
-                      );
-                    }
-                  },
-                )),
+                      if (question == 9) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => LastSurveyPage(
+                                username: username, percent: this.percent + 10),
+                          ),
+                        );
+                      } else if (question == 6) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SurveyQuestionsMulti(
+                                username: username,
+                                choices: choicesData[question + 1],
+                                question: question + 1,
+                                percent: this.percent + 10),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SurveyQuestions(
+                                username: username,
+                                choices: choicesData[question + 1],
+                                question: question + 1,
+                                percent: this.percent + 10),
+                          ),
+                        );
+                      }
+                    },
+                  )),
+            ),
           ],
         ),
       ),
@@ -334,93 +290,13 @@ class _SurveyQues1State extends State<SurveyQues1> {
   }
 }
 
-GestureDetector optionBuilder2(
-    List<String> choices, int index, List pressL, Function setIdx, Size size) {
-  return GestureDetector(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 7.5),
-        child: Container(
-          width: size.width * 0.9,
-          height: 80,
-          alignment: Alignment.center,
-          child: Text(
-            choices[index],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'OpenSans',
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              border: Border.all(
-                style: BorderStyle.solid,
-                width: 3,
-                color: (pressL[index]) ? Colors.blue : Colors.transparent,
-              )),
-        ),
-      ),
-      onTap: () {
-        setIdx(index, pressL);
-      });
-}
-
-int collectScore(Map<String, String> x) {
-  int score = 0;
-  for (String q in questions) {
-    String temp = x[q].toString();
-
-    if (q.compareTo('I have: \nChoose all that apply.') == 0) {
-      List<String> list = temp.split('+');
-      score += list.length * 5;
-      continue;
-    }
-
-    if (q.compareTo("Energy level: \nChoose one option.") == 0) {
-      if (temp.compareTo("Better than yesterday") == 0) score -= 5;
-      if (temp.compareTo("Same as yesterday") == 0) score += 0;
-      if (temp.compareTo("Worse than yesterday") == 0) score += 5;
-      continue;
-    }
-
-    if (temp.compareTo("I am breathing well") == 0) score += 0;
-    if (temp.compareTo("I run out of breath when walking") == 0) score += 5;
-    if (temp.compareTo("I run out of breath when talking") == 0) score += 10;
-
-    if (temp.compareTo("I feel great") == 0) score += 0;
-    if (temp.compareTo("My heart is racing") == 0) score += 5;
-    if (temp.compareTo("I have chest pain") == 0) score += 10;
-
-    if (temp.compareTo("I slept well last night") == 0) score += 0;
-    if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
-      score += 10;
-
-    if (temp.compareTo("My weight went up 2 or more pounds since yesterday") ==
-        0) score += 10;
-    if (temp.compareTo("My clothes and shoes feel tight") == 0) score += 5;
-    if (temp.compareTo("I can see swelling in my ankles") == 0) score += 5;
-    if (temp.compareTo("My weight is the same or less than yesterday") == 0)
-      score += 0;
-
-    if (temp.compareTo("I slept well last night") == 0) score += 0;
-    if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
-      score += 10;
-  }
-
-  return score;
-}
-
-class SurveyQues2 extends StatefulWidget {
+class SurveyQuestionsMulti extends StatefulWidget {
   final String username;
   final List<String> choices;
   final int question;
   final int percent;
 
-  const SurveyQues2(
+  const SurveyQuestionsMulti(
       {Key? key,
       required this.username,
       required this.choices,
@@ -429,26 +305,19 @@ class SurveyQues2 extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SurveyQues2State createState() => _SurveyQues2State(
+  _SurveyQuestionsMultiState createState() => _SurveyQuestionsMultiState(
       this.username, this.choices, this.question, this.percent);
 }
 
-class _SurveyQues2State extends State<SurveyQues2> {
+class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   final String username;
   final List<String> choices;
   final int question;
   final int percent;
+  List<String> selectedItems = [];
 
-  List pressL = [false, false, false, false, true];
+  _SurveyQuestionsMultiState(this.username, this.choices, this.question, this.percent);
 
-  _SurveyQues2State(this.username, this.choices, this.question, this.percent);
-
-  void setIdx2(int idx, List pressL) {
-    setState(() {
-      print(idx);
-      pressL[idx] = !pressL[idx];
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -461,86 +330,165 @@ class _SurveyQues2State extends State<SurveyQues2> {
       body: Container(
         color: Color(0xff0b3954),
         alignment: Alignment.center,
-        child: Stack(
+        child: ListView(
+          scrollDirection: Axis.vertical,
           children: <Widget>[
-            ListView(
-              children: <Widget>[
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: 30, bottom: 10, left: 10, right: 10),
-                  child: Container(
-                    child: Text(
-                      questions[question],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: "OpenSans",
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                child: Text(
+                  questions[question],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                optionBuilder2(choices7, 0, pressL, setIdx2, size),
-                SizedBox(height: 10),
-                optionBuilder2(choices7, 1, pressL, setIdx2, size),
-                SizedBox(height: 10),
-                optionBuilder2(choices7, 2, pressL, setIdx2, size),
-                SizedBox(height: 10),
-                optionBuilder2(choices7, 3, pressL, setIdx2, size),
-                SizedBox(height: 10),
-                optionBuilder2(choices7, 4, pressL, setIdx2, size),
-                SizedBox(height: 10),
-              ],
+              ),
             ),
-            Positioned(
-                bottom: 70,
-                left: 80,
-                child: GestureDetector(
-                  child: Container(
-                    width: size.width * 0.6,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    alignment: Alignment.center,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                child: DropdownButtonHideUnderline(
+                child: DropdownButton2(
+                  isExpanded: true,
+                  hint: Align(
+                    alignment: AlignmentDirectional.center,
                     child: Text(
-                      "Next",
+                      'Select multiple options.',
                       style: TextStyle(
-                        fontFamily: 'OpenSans',
+                        fontSize: 20,
                         color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  onTap: () {
-                    String temp = '';
-                    for (int i = 0; i < pressL.length; i++) {
-                      if (pressL[i]) {
-                        temp += choices7[i];
-                        temp += "+";
-                      }
-                    }
-                    if (x.containsKey(questions[question])) {
-                      x.update(questions[question], (value) => temp);
-                    } else {
-                      x.putIfAbsent(questions[question], () => temp);
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SurveyQues1(
-                            username: username,
-                            choices: choices2,
-                            question: question + 1,
-                            percent: this.percent + 10),
+                  items: choices.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: StatefulBuilder(
+                        builder: (context, menuSetState) {
+                          final _isSelected = selectedItems.contains(item);
+                          return InkWell(
+                            onTap: () {
+                              _isSelected
+                                  ? selectedItems.remove(item)
+                                  : selectedItems.add(item);
+                              //This rebuilds the StatefulWidget to update the button's text
+                              setState(() {});
+                              //This rebuilds the dropdownMenu Widget to update the check mark
+                              menuSetState(() {});
+                            },
+                            child: Container(
+                              height: double.infinity,
+                              child: Row(
+                                children: [
+                                  _isSelected
+                                      ? const Icon(Icons.check_box_outlined, color: Colors.white,)
+                                      : const Icon(Icons.check_box_outline_blank, color: Colors.white),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height: 200,
+                                      child: Text(
+                                        item,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
+                  }).toList(),
+                  value: selectedItems.isEmpty ? null : selectedItems.last,
+                  onChanged: (value) {},
+                  dropdownDecoration: BoxDecoration(
+                    color: Color(0xff0b3954),
+                  ),
+                  iconEnabledColor: Colors.white,
+                  itemHeight: 60,
+                  dropdownMaxHeight: 700,
+                  scrollbarAlwaysShow: true,
+                  selectedItemBuilder: (context) {
+                    return choices.map(
+                          (item) {
+                        return Container(
+                          alignment: AlignmentDirectional.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Container(
+                            width: size.width * 0.8,
+                            child: Text(
+                              selectedItems.join(', '),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                overflow: TextOverflow.ellipsis,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList();
                   },
                 )),
-          ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: SizedBox(
+                  child: GestureDetector(
+                    child: Container(
+                      width: 50,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      String temp = '';
+                      for (int i = 0; i < selectedItems.length; i++) {
+                          temp += selectedItems[i];
+                          temp += "+";
+                        }
+                      if (x.containsKey(questions[question])) {
+                        x.update(questions[question], (value) => temp);
+                      } else {
+                        x.putIfAbsent(questions[question], () => temp);
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SurveyQuestions(
+                              username: username,
+                              choices: choicesData[question + 1],
+                              question: question + 1,
+                              percent: this.percent + 10),
+                        ),
+                      );
+                    },
+                  ),
+              ),
+            ),
+          ]
         ),
       ),
     );
@@ -633,3 +581,51 @@ class _LastSurveyPage extends State<LastSurveyPage> {
     );
   }
 }
+
+int collectScore(Map<String, String> x) {
+  int score = 0;
+  for (String q in questions) {
+    String temp = x[q].toString();
+
+    if (q.compareTo('I have: \nChoose all that apply.') == 0) {
+      List<String> list = temp.split('+');
+      score += list.length * 5;
+      continue;
+    }
+
+    if (q.compareTo("Energy level: \nChoose one option.") == 0) {
+      if (temp.compareTo("Better than yesterday") == 0) score -= 5;
+      if (temp.compareTo("Same as yesterday") == 0) score += 0;
+      if (temp.compareTo("Worse than yesterday") == 0) score += 5;
+      continue;
+    }
+
+    if (temp.compareTo("I am breathing well") == 0) score += 0;
+    if (temp.compareTo("I run out of breath when walking") == 0) score += 5;
+    if (temp.compareTo("I run out of breath when talking") == 0) score += 10;
+
+    if (temp.compareTo("I feel great") == 0) score += 0;
+    if (temp.compareTo("My heart is racing") == 0) score += 5;
+    if (temp.compareTo("I have chest pain") == 0) score += 10;
+
+    if (temp.compareTo("I slept well last night") == 0) score += 0;
+    if (temp.compareTo("My sleep was restless") == 0) score += 5;
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
+      score += 10;
+
+    if (temp.compareTo("My weight went up 2 or more pounds since yesterday") ==
+        0) score += 10;
+    if (temp.compareTo("My clothes and shoes feel tight") == 0) score += 5;
+    if (temp.compareTo("I can see swelling in my ankles") == 0) score += 5;
+    if (temp.compareTo("My weight is the same or less than yesterday") == 0)
+      score += 0;
+
+    if (temp.compareTo("I slept well last night") == 0) score += 0;
+    if (temp.compareTo("My sleep was restless") == 0) score += 5;
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
+      score += 10;
+  }
+
+  return score;
+}
+
