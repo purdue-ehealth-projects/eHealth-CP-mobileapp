@@ -20,6 +20,31 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
   );
 }
 
+noSelectionAlert(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: const Text("OK"),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("No Option Selected"),
+    content: const Text("Please select an option."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 class SurveyWelcomePage extends StatefulWidget {
   final String username;
   const SurveyWelcomePage({Key? key, required this.username}) : super(key: key);
@@ -224,6 +249,10 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                   ),
                 ),
                 onTap: () {
+                  if (selectedVal == null) {
+                    noSelectionAlert(context);
+                  }
+
                   if (x.containsKey(questions[question])) {
                     x.update(
                         questions[question], (value) => selectedVal as String);
