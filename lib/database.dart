@@ -8,7 +8,7 @@ import 'dart:convert';
 /// This class handles database operations.
 class MongoDB {
   /// Global static database and collection objects.
-  static var db, userCollection, patientCollection;
+  static dynamic db, userCollection, patientCollection, surveyCollection;
 
   static Future cleanupDatabase() async {
     await db.close();
@@ -33,11 +33,12 @@ class MongoDB {
   }
 
   static connect() async {
-    print(FlutterConfig.get('MONGO_CONN_URL'));
+    //print(FlutterConfig.get('MONGO_CONN_URL'));
     db = await Db.create(FlutterConfig.get('MONGO_CONN_URL'));
     await db.open();
     userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
     patientCollection = db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
+    surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
 
     if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
       return;
@@ -56,6 +57,7 @@ class MongoDB {
     return res;
   }
 
+  /// Currently not used
   static updateUser(String name, String password, String salt) async {
     var user = await findUser(name);
     user['password'] = password;
@@ -82,13 +84,11 @@ class MongoDB {
       'name': name,
       'address': '',
       'age': age,
-      'dob': dob,
       'appointment_day': '',
       'chest': '',
       'contact_1': '',
       'contact_2': '',
       'coords': [0, 0],
-      //FieldValue.arrayUnion([0, 0]),
       'gender_id': '',
       'medical_history': '',
       'overall': '',
@@ -99,6 +99,14 @@ class MongoDB {
       'stomach': '',
       'zone': 0,
     });
+  }
+
+  static addSurvey(Map<String, String> rawSurvey) async {
+    Map<String, dynamic> survey = <String, dynamic>{};
+    for (final entry in rawSurvey.entries) {
+      survey.putIfAbsent(entry.key, () => entry.value);
+    }
+    await surveyCollection.insertOne(survey);
   }
 
   static deletePatient(String name) async {
@@ -116,6 +124,7 @@ class MongoDB {
     userCollection = db.collection('users');
   }
 
+  /// Test database functions
   static test() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
@@ -138,13 +147,13 @@ class MongoDB {
     await createUser('BOB', password, salt);
     await updateUser('BOB', 'testpass', 'salty');
     if (!ret.isSuccess) {
-      print('Error detected in record insertion');
+      //print('Error detected in record insertion');
     }
 
-    var res = await patientCollection
-        .findOne(where.eq('name', 'Liz').gt('rating', 7));
+    //dynamic res = await patientCollection
+    //    .findOne(where.eq('name', 'Liz').gt('rating', 7));
 
-    print('First document fetched: ${res['name']} - ${res['state']}');
+    //print('First document fetched: ${res['name']} - ${res['state']}');
     await cleanupDatabase();
   }
 }

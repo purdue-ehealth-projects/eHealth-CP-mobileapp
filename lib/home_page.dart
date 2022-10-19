@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage>
@@ -38,14 +38,14 @@ class _HomePageState extends State<HomePage>
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Allow Notifications'),
-            content: Text('Our app would like to send you notifications'),
+            title: const Text('Allow Notifications'),
+            content: const Text('Our app would like to send you notifications'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text(
+                child: const Text(
                   'Don\'t Allow',
                   style: TextStyle(
                     color: Colors.grey,
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage>
                   onPressed: () => AwesomeNotifications()
                       .requestPermissionToSendNotifications()
                       .then((_) => Navigator.pop(context)),
-                  child: Text(
+                  child: const Text(
                     'Allow',
                     style: TextStyle(
                       color: Colors.teal,
@@ -72,9 +72,9 @@ class _HomePageState extends State<HomePage>
     });
 
     AwesomeNotifications().actionStream.listen((notification) async {
-      print("I am in action stream");
       await loadLocalData();
       if (didSurvey) {
+        if (!mounted) return;
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage>
           (route) => route.isFirst,
         );
       } else if (signin) {
+        if (!mounted) return;
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -91,10 +92,11 @@ class _HomePageState extends State<HomePage>
           (route) => route.isFirst,
         );
       } else {
+        if (!mounted) return;
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (_) => LoginPage(),
+            builder: (_) => const LoginPage(),
           ),
           (route) => route.isFirst,
         );
@@ -105,11 +107,8 @@ class _HomePageState extends State<HomePage>
   Future<void> loadLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String curDate = DateTime.now().year.toString() +
-        ' ' +
-        DateTime.now().month.toString() +
-        ' ' +
-        DateTime.now().day.toString();
+    String curDate =
+        '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
 
     username = prefs.getString("username");
     String? password = prefs.getString("password");
@@ -129,7 +128,7 @@ class _HomePageState extends State<HomePage>
 
         if (scores != null && dates != null) {
           for (int i = 0; i < scores.length; i++) {
-            graphSS.add(new SurveyScores(dates[i], int.parse(scores[i])));
+            graphSS.add(SurveyScores(dates[i], int.parse(scores[i])));
           }
         }
       }
@@ -145,11 +144,12 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (didSurvey) {
       cancelScheduledNotifications();
       DateTime now = DateTime.now();
@@ -167,28 +167,28 @@ class _HomePageState extends State<HomePage>
         return scoreToday == -1
             ? (signin
                 ? SurveyWelcomePage(username: username.toString())
-                : LoginPage())
+                : const LoginPage())
             : GraphSurvey(graphSS, scoreToday);
       },
     );
   }
 
   @override
-  // TODO: implement wantKeepAlive
+  // implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 
 loginFailedAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: const Text("OK"),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Login Failed"),
-    content: Text("Wrong username or password. Please try again."),
+    title: const Text("Login Failed"),
+    content: const Text("Wrong username or password. Please try again."),
     actions: [
       okButton,
     ],
@@ -206,14 +206,14 @@ loginFailedAlert(BuildContext context) {
 registerFailedAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: const Text("OK"),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Register Failed"),
-    content: Text("Username already exists or is empty."),
+    title: const Text("Register Failed"),
+    content: const Text("Username already exists or is empty."),
     actions: [
       okButton,
     ],
@@ -231,14 +231,14 @@ registerFailedAlert(BuildContext context) {
 badPasswordAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: const Text("OK"),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Insecure Password"),
-    content: Text("Password is too weak."),
+    title: const Text("Insecure Password"),
+    content: const Text("Password is too weak."),
     actions: [
       okButton,
     ],
@@ -287,12 +287,7 @@ void pushUserMongoDB(
   final salt = MongoDB.getSalt(10);
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
-  if (await MongoDB.existUser(name) == true) {
-    await MongoDB.updateUser(name, age, dob);
-    print("FOUND");
-  } else {
-    mongo_dart.ObjectId uesrId =
-        await MongoDB.createUser(name, encryptedPassword, salt);
-    await MongoDB.createPatient(name, age, dob, uesrId);
-  }
+  mongo_dart.ObjectId uesrId =
+      await MongoDB.createUser(name, encryptedPassword, salt);
+  await MongoDB.createPatient(name, age, dob, uesrId);
 }

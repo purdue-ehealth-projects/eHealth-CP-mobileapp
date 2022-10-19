@@ -46,10 +46,10 @@ Future<void> main() async {
   );
 
   await AndroidAlarmManager.initialize();
-  runApp(MyApp());
-  final int helloAlarmID = 0;
+  runApp(const MyApp());
+  const int helloAlarmID = 0;
   await AndroidAlarmManager.periodic(
-    Duration(hours: 24), //Do the same every 24 hours
+    const Duration(hours: 24), //Do the same every 24 hours
     helloAlarmID, //Different ID for each alarm
     scheduleHourly,
     exact: true,
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSwatch().copyWith(secondary: Colors.tealAccent),
       ),
       title: 'EMS Health',
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

@@ -8,17 +8,17 @@ import 'notification_week_and_time.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 class CreateProfile extends StatefulWidget {
-  CreateProfile({Key? key}) : super(key: key);
+  const CreateProfile({Key? key}) : super(key: key);
 
   @override
   State<CreateProfile> createState() => _CreateProfileState();
 }
 
 class _CreateProfileState extends State<CreateProfile> {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController ageController = new TextEditingController();
-  TextEditingController dobController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   bool _goodPassword = false;
 
@@ -26,23 +26,23 @@ class _CreateProfileState extends State<CreateProfile> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         appBar: AppBar(
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "EMS Health",
             style: TextStyle(fontFamily: "OpenSans"),
           ),
-          backgroundColor: Color(0xff0b3954),
+          backgroundColor: const Color(0xff0b3954),
         ),
         body: ListView(
           children: <Widget>[
             Center(
               child: Padding(
-                padding: EdgeInsets.only(left: 10, right: 10, top: 30),
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
                 child: Container(
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     "You need to create a profile.",
                     style: TextStyle(
                         fontFamily: "OpenSans",
@@ -53,14 +53,14 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
                 child: TextField(
                   controller: nameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     alignLabelWithHint: true,
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
@@ -75,19 +75,20 @@ class _CreateProfileState extends State<CreateProfile> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
                 child: TextField(
                   obscureText: true,
                   controller: passwordController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     alignLabelWithHint: true,
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
@@ -102,16 +103,17 @@ class _CreateProfileState extends State<CreateProfile> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
-                child: new FlutterPwValidator(
+                child: FlutterPwValidator(
                     controller: passwordController,
                     minLength: 6,
                     uppercaseCharCount: 1,
@@ -131,14 +133,14 @@ class _CreateProfileState extends State<CreateProfile> {
                     }),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
                 child: TextField(
                   controller: ageController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     alignLabelWithHint: true,
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
@@ -153,18 +155,19 @@ class _CreateProfileState extends State<CreateProfile> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: size.width * 0.9,
                 child: TextField(
                   controller: dobController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     alignLabelWithHint: true,
                     fillColor: Colors.transparent,
                     enabledBorder: UnderlineInputBorder(
@@ -179,22 +182,23 @@ class _CreateProfileState extends State<CreateProfile> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
-                  style: TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'OpenSans'),
                 ),
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Center(
                 child: GestureDetector(
               child: Container(
                 width: size.width * 0.8,
                 height: 80,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
                   border: Border.all(color: Colors.white, width: 2),
                 ),
                 alignment: Alignment.center,
-                child: Text(
+                child: const Text(
                   "Submit",
                   style: TextStyle(
                     fontFamily: 'OpenSans',
@@ -207,9 +211,11 @@ class _CreateProfileState extends State<CreateProfile> {
               onTap: () async {
                 bool result = await validateUsername(nameController.text);
                 if (result == false) {
+                  if (!mounted) return;
                   registerFailedAlert(context);
                 }
                 if (result == true && _goodPassword == false) {
+                  if (!mounted) return;
                   badPasswordAlert(context);
                 }
                 if (result == true && _goodPassword == true) {
@@ -222,6 +228,8 @@ class _CreateProfileState extends State<CreateProfile> {
                       dayOfTheWeek: DateTime.now().day,
                       timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
                   createHourlyReminder(nw);
+
+                  if (!mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(

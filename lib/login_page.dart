@@ -12,30 +12,30 @@ class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController nameController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xff0b3954),
+      backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "EMS Health Home Page",
           style: TextStyle(fontFamily: "OpenSans"),
         ),
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         leading: Container(),
       ),
       body: ListView(
         children: <Widget>[
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(top: 20),
             child: Text(
               "EMS",
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: Text(
               "Health",
@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   width: size.width * 0.9,
                   child: TextField(
                     controller: nameController,
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                         nameController.value = nameController.value;
                       });
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       alignLabelWithHint: true,
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
@@ -89,13 +89,13 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    style:
-                        TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'OpenSans'),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   width: size.width * 0.9,
                   child: TextField(
                     obscureText: true,
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                         passwordController.value = passwordController.value;
                       });
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       alignLabelWithHint: true,
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
@@ -120,21 +120,21 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    style:
-                        TextStyle(color: Colors.white, fontFamily: 'OpenSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'OpenSans'),
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 GestureDetector(
                   child: Container(
                     width: size.width * 0.8,
                     height: 80,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       "Login",
                       style: TextStyle(
                         fontFamily: 'OpenSans',
@@ -168,17 +168,17 @@ class _LoginPageState extends State<LoginPage> {
                     });
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   child: Container(
                     width: size.width * 0.8,
                     height: 80,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       "Create a Profile",
                       style: TextStyle(
                         fontFamily: 'OpenSans',
@@ -192,22 +192,22 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => CreateProfile(),
+                        builder: (_) => const CreateProfile(),
                       ),
                     );
                   },
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 GestureDetector(
                   child: Container(
                     width: size.width * 0.8,
                     height: 40,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       "Privacy Policy",
                       style: TextStyle(
                         fontFamily: 'OpenSans',

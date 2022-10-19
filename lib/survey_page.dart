@@ -9,13 +9,12 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
     alignment: MainAxisAlignment.center,
     width: MediaQuery.of(context).size.width -
         MediaQuery.of(context).size.width * 0.4,
-    center: Text(percent.toString() + "%",
-        style: const TextStyle(color: Colors.black)),
+    center: Text("$percent%", style: const TextStyle(color: Colors.black)),
     lineHeight: 25.0,
     percent: (percent / 100).toDouble(),
     backgroundColor: Colors.white,
     barRadius: const Radius.circular(10),
-    progressColor: Color(0xff0b3954).withOpacity(0.5),
+    progressColor: const Color(0xff0b3954).withOpacity(0.5),
     animation: true,
     animationDuration: 500,
   );
@@ -26,40 +25,35 @@ class SurveyWelcomePage extends StatefulWidget {
   const SurveyWelcomePage({Key? key, required this.username}) : super(key: key);
 
   @override
-  _SurveyWelcomePageState createState() =>
-      _SurveyWelcomePageState(this.username);
+  State<SurveyWelcomePage> createState() => _SurveyWelcomePageState();
 }
 
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
-  final String username;
-
-  _SurveyWelcomePageState(this.username);
-
   @override
   Widget build(BuildContext context) {
+    final String username = widget.username;
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
-      backgroundColor: Color(0xff0b3954),
+      backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[getProgressBar(0, context)],
       ),
       body: ListView(
         children: <Widget>[
-          Container(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-              child: Container(
-                height: size.height * 0.5,
-                child: Text(
-                  "Welcome to the survey! \nThis will only take 5 minutes.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+            child: SizedBox(
+              height: size.height * 0.5,
+              child: const Text(
+                "Welcome to the survey! \nThis will only take 5 minutes.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
               ),
             ),
           ),
@@ -67,16 +61,16 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
             padding: const EdgeInsets.all(20.0),
             child: GestureDetector(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 7.5),
+                padding: const EdgeInsets.symmetric(horizontal: 7.5),
                 child: Container(
                   width: size.width * 0.8,
                   height: 100,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(
                       fontFamily: 'OpenSans',
@@ -92,7 +86,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => SurveyQuestions(
-                        username: this.username,
+                        username: username,
                         choices: choicesData[0],
                         question: 0,
                         percent: 0.toInt()),
@@ -122,40 +116,30 @@ class SurveyQuestions extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SurveyQuestions createState() => _SurveyQuestions(
-      this.username, this.choices, this.question, this.percent);
+  State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
 
-Map<String, String> x = new Map();
+Map<String, String> x = {};
 int score = 0;
 
-class _SurveyQuestions extends State<SurveyQuestions> {
-  final String username;
-  final List<String> choices;
-  final int question;
-  final int percent;
-
+class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
-
-  _SurveyQuestions(this.username, this.choices, this.question, this.percent);
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    selectedVal = choices[0];
-  }
 
   @override
   Widget build(BuildContext context) {
+    final String username = widget.username;
+    final int question = widget.question;
+    final List<String> choices = widget.choices;
+    final int percent = widget.percent;
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
-        color: Color(0xff0b3954),
+        color: const Color(0xff0b3954),
         alignment: Alignment.center,
         child: ListView(
           scrollDirection: Axis.vertical,
@@ -165,7 +149,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
               child: SizedBox(
                 child: Text(
                   questions[question],
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                   ),
@@ -178,9 +162,9 @@ class _SurveyQuestions extends State<SurveyQuestions> {
               child: SizedBox(
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
-                    hint: Container(
+                    hint: SizedBox(
                       width: size.width * 0.8,
-                      child: Text(
+                      child: const Text(
                         "Choose an option.",
                         style: TextStyle(
                           fontSize: 20,
@@ -191,7 +175,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                     items: choices
                         .map((item) => DropdownMenuItem<String>(
                               value: item,
-                              child: Container(
+                              child: SizedBox(
                                 width: size.width * 0.8,
                                 child: Text(
                                   item,
@@ -203,7 +187,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                               ),
                             ))
                         .toList(),
-                    dropdownDecoration: BoxDecoration(
+                    dropdownDecoration: const BoxDecoration(
                       color: Color(0xff0b3954),
                     ),
                     iconEnabledColor: Colors.white,
@@ -225,11 +209,11 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                   width: 50,
                   height: 60,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(
                       fontFamily: 'OpenSans',
@@ -253,7 +237,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => LastSurveyPage(
-                            username: username, percent: this.percent + 10),
+                            username: username, percent: percent + 10),
                       ),
                     );
                   } else if (question == 6) {
@@ -264,7 +248,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                             username: username,
                             choices: choicesData[question + 1],
                             question: question + 1,
-                            percent: this.percent + 10),
+                            percent: percent + 10),
                       ),
                     );
                   } else {
@@ -275,7 +259,7 @@ class _SurveyQuestions extends State<SurveyQuestions> {
                             username: username,
                             choices: choicesData[question + 1],
                             question: question + 1,
-                            percent: this.percent + 10),
+                            percent: percent + 10),
                       ),
                     );
                   }
@@ -304,35 +288,34 @@ class SurveyQuestionsMulti extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SurveyQuestionsMultiState createState() => _SurveyQuestionsMultiState(
-      this.username, this.choices, this.question, this.percent);
+  State<SurveyQuestionsMulti> createState() => _SurveyQuestionsMultiState();
 }
 
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
-  final String username;
-  final List<String> choices;
-  final int question;
-  final int percent;
   List<String> selectedItems = [];
-
-  _SurveyQuestionsMultiState(
-      this.username, this.choices, this.question, this.percent);
 
   @override
   Widget build(BuildContext context) {
+    final String username = widget.username;
+    final List<String> choices = widget.choices;
+    final int question = widget.question;
+    final int percent = widget.percent;
+
+    List<String> selectedItems = [];
     Size size = MediaQuery.of(context).size;
     List<double> itemHeights = <double>[];
+
     for (int i = 0; i < choices.length; i++) {
       itemHeights.add(60);
     }
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
-        color: Color(0xff0b3954),
+        color: const Color(0xff0b3954),
         alignment: Alignment.center,
         child: ListView(scrollDirection: Axis.vertical, children: <Widget>[
           Padding(
@@ -340,7 +323,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
             child: SizedBox(
               child: Text(
                 questions[question],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                 ),
@@ -354,7 +337,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
               child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
                 isExpanded: true,
-                hint: Align(
+                hint: const Align(
                   alignment: AlignmentDirectional.center,
                   child: Text(
                     'None apply.',
@@ -369,10 +352,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                     value: item,
                     child: StatefulBuilder(
                       builder: (context, menuSetState) {
-                        final _isSelected = selectedItems.contains(item);
+                        final isSelected = selectedItems.contains(item);
                         return InkWell(
                           onTap: () {
-                            _isSelected
+                            isSelected
                                 ? selectedItems.remove(item)
                                 : selectedItems.add(item);
                             //This rebuilds the StatefulWidget to update the button's text
@@ -380,11 +363,11 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                             //This rebuilds the dropdownMenu Widget to update the check mark
                             menuSetState(() {});
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: double.infinity,
                             child: Row(
                               children: [
-                                _isSelected
+                                isSelected
                                     ? const Icon(
                                         Icons.check_box_outlined,
                                         color: Colors.white,
@@ -417,7 +400,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
                 value: selectedItems.isEmpty ? null : selectedItems.last,
                 onChanged: (value) {},
-                dropdownDecoration: BoxDecoration(
+                dropdownDecoration: const BoxDecoration(
                   color: Color(0xff0b3954),
                 ),
                 iconEnabledColor: Colors.white,
@@ -457,11 +440,11 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                   width: 50,
                   height: 60,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(
                       fontFamily: 'OpenSans',
@@ -493,7 +476,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                           username: username,
                           choices: choicesData[question + 1],
                           question: question + 1,
-                          percent: this.percent + 10),
+                          percent: percent + 10),
                     ),
                   );
                 },
@@ -515,53 +498,49 @@ class LastSurveyPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _LastSurveyPage createState() => _LastSurveyPage(this.username, this.percent);
+  State<LastSurveyPage> createState() => _LastSurveyPageState();
 }
 
-class _LastSurveyPage extends State<LastSurveyPage> {
-  final String username;
-  final int percent;
-
-  _LastSurveyPage(this.username, this.percent);
-
+class _LastSurveyPageState extends State<LastSurveyPage> {
   @override
   Widget build(BuildContext context) {
+    final String username = widget.username;
+    final int percent = widget.percent;
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff0b3954),
+        backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[getProgressBar(percent, context)],
       ),
       body: Container(
-        color: Color(0xff0b3954),
+        color: const Color(0xff0b3954),
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-              child: Container(
-                child: Text(
-                  "Are you ready to submit?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                ),
+              child: Text(
+                "Are you ready to submit?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
               ),
             ),
-            SizedBox(height: 300),
+            const SizedBox(height: 300),
             GestureDetector(
               child: Container(
                 width: size.width * 0.8,
                 height: 100,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
                   border: Border.all(color: Colors.white, width: 2),
                 ),
                 alignment: Alignment.center,
-                child: Text(
+                child: const Text(
                   "Submit",
                   style: TextStyle(
                     fontFamily: 'OpenSans',
@@ -572,7 +551,6 @@ class _LastSurveyPage extends State<LastSurveyPage> {
                 ),
               ),
               onTap: () {
-                print(x);
                 int scoreQ = collectScore(x);
                 Navigator.push(
                   context,
@@ -621,20 +599,23 @@ int collectScore(Map<String, String> x) {
 
     if (temp.compareTo("I slept well last night") == 0) score += 0;
     if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) {
       score += 10;
+    }
 
     if (temp.compareTo("My weight went up 2 or more pounds since yesterday") ==
         0) score += 10;
     if (temp.compareTo("My clothes and shoes feel tight") == 0) score += 5;
     if (temp.compareTo("I can see swelling in my ankles") == 0) score += 5;
-    if (temp.compareTo("My weight is the same or less than yesterday") == 0)
+    if (temp.compareTo("My weight is the same or less than yesterday") == 0) {
       score += 0;
+    }
 
     if (temp.compareTo("I slept well last night") == 0) score += 0;
     if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0)
+    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) {
       score += 10;
+    }
   }
 
   return score;
