@@ -38,7 +38,14 @@ class MongoDB {
 
   static connect() async {
     //print(FlutterConfig.get('MONGO_CONN_URL'));
-    db = await Db.create(FlutterConfig.get('MONGO_CONN_URL'));
+
+    final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
+    final String pass =
+        Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
+    final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
+    String connection = "$prePass$pass$postPass";
+    print(connection);
+    db = await Db.create(connection);
     await db.open();
     userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
     patientCollection = db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
@@ -92,18 +99,17 @@ class MongoDB {
       'address': '',
       'age': age,
       'appointment_day': '',
-      'chest': '',
       'contact_1': '',
       'contact_2': '',
-      'coords': [0, 0],
+      'diagnosis_one': '',
+      'diagnosis_two': '',
       'gender_id': '',
-      'medical_history': '',
-      'overall': '',
-      'priority': 3,
+      'medic': '',
+      'priority': '',
       'program': '',
       'race': '',
       'start_date': '',
-      'stomach': '',
+      'userId': userId,
       'zone': 0,
     });
   }
