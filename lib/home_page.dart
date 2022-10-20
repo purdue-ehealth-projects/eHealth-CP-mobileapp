@@ -9,6 +9,7 @@ import 'graph_survey.dart';
 import 'login_page.dart';
 import 'notification_week_and_time.dart';
 
+/// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+/// Homepage state
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   bool goBack = false;
@@ -103,6 +105,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  /// Load local date from storage to app memory
   Future<void> loadLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -177,6 +180,7 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 }
 
+/// Login failed alert pop up
 loginFailedAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
@@ -202,6 +206,7 @@ loginFailedAlert(BuildContext context) {
   );
 }
 
+/// Register failed alert pop up
 registerFailedAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
@@ -227,6 +232,7 @@ registerFailedAlert(BuildContext context) {
   );
 }
 
+/// Bad password alert pop up
 badPasswordAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
@@ -252,6 +258,7 @@ badPasswordAlert(BuildContext context) {
   );
 }
 
+/// Helper function log in user.
 Future<bool> loginUser(String name, String password) async {
   if (await MongoDB.existUser(name) == false) {
     return false;
@@ -264,6 +271,7 @@ Future<bool> loginUser(String name, String password) async {
   return (storedPassword == encryptedPassword);
 }
 
+/// Ensure new username is not a duplicate or empty.
 Future<bool> validateUsername(String name) async {
   if (await MongoDB.existUser(name) == true) {
     return false;
@@ -274,12 +282,15 @@ Future<bool> validateUsername(String name) async {
   return true;
 }
 
+/// Push name and password to storage
 void pushNameLocal(String name, String password) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('username', name);
   prefs.setString('password', password);
 }
 
+/// Register user and create user & patient profiles in MongoDB by calling
+/// respective functions in database.dart.
 void pushUserMongoDB(
     String name, String age, String dob, String password) async {
   // Generates a salt with length 10

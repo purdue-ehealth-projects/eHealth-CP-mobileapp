@@ -4,7 +4,6 @@ import 'package:crypt/crypt.dart';
 import 'dart:math';
 import 'dart:convert';
 
-///
 /// This class handles database operations.
 class MongoDB {
   /// Global static database and collection objects.
@@ -36,15 +35,14 @@ class MongoDB {
     return secure.toString();
   }
 
+  /// Connect app to MongoDB database
   static connect() async {
-    //print(FlutterConfig.get('MONGO_CONN_URL'));
-
     final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
     final String pass =
         Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
     final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
     String connection = "$prePass$pass$postPass";
-    print(connection);
+    //print(connection);
     db = await Db.create(connection);
     await db.open();
     userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
@@ -58,6 +56,7 @@ class MongoDB {
     }
   }
 
+  /// Checks if user exists in the database
   static Future<bool> existUser(String name) async {
     if (await userCollection.findOne(where.eq('name', name)) != null) {
       return true;
@@ -65,6 +64,7 @@ class MongoDB {
     return false;
   }
 
+  /// Finds and returns user in the database.
   static Future<Map<String, dynamic>> findUser(String name) async {
     var res = await userCollection.findOne(where.eq('name', name));
     return res;
@@ -78,6 +78,7 @@ class MongoDB {
     await userCollection.save(user);
   }
 
+  /// Creates a user entry in the database.
   static Future<String> createUser(
       String name, String password, String salt) async {
     String userId = ObjectId().toString();
@@ -91,6 +92,7 @@ class MongoDB {
     return userId;
   }
 
+  /// Creates a patient entry in the database.
   static createPatient(
       String name, String age, String dob, String userId) async {
     await patientCollection.insertOne({
@@ -114,6 +116,7 @@ class MongoDB {
     });
   }
 
+  /// Adds a survey entry in the database.
   static Future<String> addSurvey(
       Map<String, dynamic> survey, String userId) async {
     String surveyId = ObjectId().toString();
@@ -124,6 +127,7 @@ class MongoDB {
     return surveyId;
   }
 
+  /// Adds a raw survey entry in the database.
   static addRawSurvey(
       Map<String, String> rawSurvey, String surveyId, String userId) async {
     Map<String, dynamic> toAdd = {};
@@ -135,10 +139,12 @@ class MongoDB {
     await rawSurveyCollection.insertOne(toAdd);
   }
 
+  /// Deletes a patient entry with the corresponding name.
   static deletePatient(String name) async {
     await patientCollection.deleteOne({'name': name});
   }
 
+  /// Deletes a user entry with the corresponding name.
   static deleteUser(String name) async {
     await userCollection.deleteOne({'name': name});
   }

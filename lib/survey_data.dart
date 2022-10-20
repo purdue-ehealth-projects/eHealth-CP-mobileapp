@@ -1,5 +1,6 @@
 //import 'package:flutter/cupertino.dart';
 
+/// List of questions to ask in the survey.
 const List<String> questions = [
   "How is your breathing? \n(Choose one option)",
   "And this is: \n(Compare your breathing to yesterday)",
@@ -13,6 +14,7 @@ const List<String> questions = [
   "I feel like I need: \n(Choose one option)"
 ];
 
+/// List of possible choices to each question.
 const List<List<String>> choicesData = [
   [
     "I am breathing well",

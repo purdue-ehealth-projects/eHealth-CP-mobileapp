@@ -4,6 +4,7 @@ import 'package:emshealth/survey_data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+/// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
   return LinearPercentIndicator(
     alignment: MainAxisAlignment.center,
@@ -20,13 +21,13 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
   );
 }
 
+/// Alert pop up when no option is seleted.
 noSelectionAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
     child: const Text("OK"),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
-
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: const Text("No Option Selected"),
@@ -35,7 +36,6 @@ noSelectionAlert(BuildContext context) {
       okButton,
     ],
   );
-
   // show the dialog
   showDialog(
     context: context,
@@ -45,6 +45,7 @@ noSelectionAlert(BuildContext context) {
   );
 }
 
+/// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
   final String username;
   const SurveyWelcomePage({Key? key, required this.username}) : super(key: key);
@@ -53,6 +54,7 @@ class SurveyWelcomePage extends StatefulWidget {
   State<SurveyWelcomePage> createState() => _SurveyWelcomePageState();
 }
 
+/// Welcome page state.
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   @override
   Widget build(BuildContext context) {
@@ -126,6 +128,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   }
 }
 
+/// Survey page for single select questions.
 class SurveyQuestions extends StatefulWidget {
   final List<String> choices;
   final int question;
@@ -144,9 +147,10 @@ class SurveyQuestions extends StatefulWidget {
   State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
 
+/// Maps user answer to each question.
 Map<String, String> x = {};
-int score = 0;
 
+/// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
 
@@ -303,6 +307,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
   }
 }
 
+/// Survey page for multi option questions.
 class SurveyQuestionsMulti extends StatefulWidget {
   final String username;
   final List<String> choices;
@@ -321,6 +326,7 @@ class SurveyQuestionsMulti extends StatefulWidget {
   State<SurveyQuestionsMulti> createState() => _SurveyQuestionsMultiState();
 }
 
+/// Survey multi question page state.
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   List<String> selectedItems = [];
 
@@ -518,6 +524,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   }
 }
 
+/// Last survey page to ask for user to confirm
 class LastSurveyPage extends StatefulWidget {
   final String username;
   final int percent;
@@ -530,6 +537,7 @@ class LastSurveyPage extends StatefulWidget {
   State<LastSurveyPage> createState() => _LastSurveyPageState();
 }
 
+/// Last survey page state.
 class _LastSurveyPageState extends State<LastSurveyPage> {
   @override
   Widget build(BuildContext context) {
@@ -597,6 +605,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
   }
 }
 
+/// Collect different metrics from the survey in a hashmap and return it.
 Map<String, dynamic> collectScore(Map<String, String> x) {
   Map<String, dynamic> scoreData = {};
   int score = 0;

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'notification_week_and_time.dart';
 import 'database.dart';
 
+/// Completion page that is shown when the user submits the survey.
 class CompletionPage extends StatefulWidget {
   final Map<String, dynamic> scoreData;
   final String name;
@@ -23,9 +24,11 @@ class CompletionPage extends StatefulWidget {
   State<CompletionPage> createState() => _CompletionPageState();
 }
 
+/// Completion page state.
 class _CompletionPageState extends State<CompletionPage> {
   List<SurveyScores> ss = [];
 
+  /// Updates local and remote databases.
   Future<void> updateDatabase() async {
     int score = widget.scoreData["score"]!;
 
@@ -313,6 +316,7 @@ class _CompletionPageState extends State<CompletionPage> {
   }
 }
 
+/// Survey score model.
 class SurveyScores {
   SurveyScores(this.date, this.score);
   final String date;

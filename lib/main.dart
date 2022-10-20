@@ -21,6 +21,8 @@ void scheduleHourly() {
   createDailyReminder(nw);
 }
 
+/// Main imports environmental variables, connect to MongoDB, and calls
+/// MyApp.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
@@ -61,6 +63,7 @@ Future<void> main() async {
   );
 }
 
+/// Main app screen that is called first by default. Redirects to homepage.
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 

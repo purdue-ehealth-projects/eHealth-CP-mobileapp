@@ -7,6 +7,8 @@ import 'notification_week_and_time.dart';
 
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
+/// Create profile page that is pushed from the login page to create a new
+/// profile.
 class CreateProfile extends StatefulWidget {
   const CreateProfile({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class CreateProfile extends StatefulWidget {
   State<CreateProfile> createState() => _CreateProfileState();
 }
 
+/// Create profile page state.
 class _CreateProfileState extends State<CreateProfile> {
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();

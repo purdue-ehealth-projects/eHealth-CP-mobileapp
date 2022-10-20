@@ -8,6 +8,7 @@ import 'notification_week_and_time.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+/// Login page that is shown when the user is not logged in.
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -15,6 +16,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+/// Login page state.
 class _LoginPageState extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
