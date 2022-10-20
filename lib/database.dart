@@ -8,7 +8,11 @@ import 'dart:convert';
 /// This class handles database operations.
 class MongoDB {
   /// Global static database and collection objects.
-  static dynamic db, userCollection, patientCollection, surveyCollection;
+  static dynamic db,
+      userCollection,
+      patientCollection,
+      surveyCollection,
+      rawSurveyCollection;
 
   static Future cleanupDatabase() async {
     await db.close();
@@ -39,6 +43,8 @@ class MongoDB {
     userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
     patientCollection = db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
     surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
+    rawSurveyCollection =
+        db.collection(FlutterConfig.get('RAW_SURVEY_COLLECTION'));
 
     if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
       return;
@@ -65,9 +71,10 @@ class MongoDB {
     await userCollection.save(user);
   }
 
-  static Future<ObjectId> createUser(
+  static Future<String> createUser(
       String name, String password, String salt) async {
-    ObjectId userId = ObjectId();
+    String userId = ObjectId().toString();
+    userId = userId.substring(10, userId.length - 2);
     await userCollection.insertOne({
       '_id': userId,
       'name': name,
@@ -78,7 +85,7 @@ class MongoDB {
   }
 
   static createPatient(
-      String name, String age, String dob, ObjectId userId) async {
+      String name, String age, String dob, String userId) async {
     await patientCollection.insertOne({
       '_id': userId,
       'name': name,
@@ -101,12 +108,25 @@ class MongoDB {
     });
   }
 
-  static addSurvey(Map<String, String> rawSurvey) async {
-    Map<String, dynamic> survey = <String, dynamic>{};
-    for (final entry in rawSurvey.entries) {
-      survey.putIfAbsent(entry.key, () => entry.value);
-    }
+  static Future<String> addSurvey(
+      Map<String, dynamic> survey, String userId) async {
+    String surveyId = ObjectId().toString();
+    surveyId = surveyId.substring(10, surveyId.length - 2);
+    survey['_id'] = surveyId;
+    survey['userId'] = userId;
     await surveyCollection.insertOne(survey);
+    return surveyId;
+  }
+
+  static addRawSurvey(
+      Map<String, String> rawSurvey, String surveyId, String userId) async {
+    Map<String, dynamic> toAdd = {};
+    toAdd['_id'] = surveyId;
+    toAdd['userId'] = userId;
+    for (final entry in rawSurvey.entries) {
+      toAdd.putIfAbsent(entry.key, () => entry.value);
+    }
+    await rawSurveyCollection.insertOne(toAdd);
   }
 
   static deletePatient(String name) async {
@@ -117,6 +137,7 @@ class MongoDB {
     await userCollection.deleteOne({'name': name});
   }
 
+  /// Do not use
   static dropTest() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
@@ -141,7 +162,7 @@ class MongoDB {
       {'_id': 7, 'name': 'John', 'state': 'idle', 'rating': 72, 'score': 7}
     ]);
 
-    await createPatient('JAMIE', '19', '03/07/2001', ObjectId());
+    await createPatient('JAMIE', '19', '03/07/2001', 'testingid123');
     String salt = getSalt(10);
     String password = hashPassWithSalt("password", salt);
     await createUser('BOB', password, salt);

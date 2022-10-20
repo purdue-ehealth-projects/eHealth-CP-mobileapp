@@ -9,14 +9,12 @@ import 'notification_week_and_time.dart';
 import 'database.dart';
 
 class CompletionPage extends StatefulWidget {
-  final int score;
-  final String needs;
+  final Map<String, dynamic> scoreData;
   final String name;
   final Map<String, String> quizResult;
   const CompletionPage(
       {Key? key,
-      required this.score,
-      required this.needs,
+      required this.scoreData,
       required this.name,
       required this.quizResult})
       : super(key: key);
@@ -29,6 +27,8 @@ class _CompletionPageState extends State<CompletionPage> {
   List<SurveyScores> ss = [];
 
   Future<void> updateDatabase() async {
+    int score = widget.scoreData["score"]!;
+
     await cancelScheduledNotifications();
 
     String time =
@@ -45,23 +45,31 @@ class _CompletionPageState extends State<CompletionPage> {
       scores = [];
     }
     dates.add(time);
-    scores.add(widget.score.toString());
+    scores.add(score.toString());
 
     for (int i = 0; i < dates.length; i++) {
       ss.add(SurveyScores(dates[i], int.parse(scores[i])));
     }
 
-    prefs.setInt("scoreToday", widget.score);
+    prefs.setInt("scoreToday", score);
     prefs.setString('date', time);
     prefs.setStringList("dates", dates);
     prefs.setStringList("scores", scores);
 
     // UPDATE DATABASE HERE
-    await MongoDB.addSurvey(widget.quizResult);
+    Map<String, dynamic> user = await MongoDB.findUser(widget.name);
+    String userId = user['_id'];
+    widget.scoreData["date"] = '${DateTime.now()}';
+    widget.scoreData["name"] = widget.name;
+    String surveyId = await MongoDB.addSurvey(widget.scoreData, userId);
+    await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    int score = widget.scoreData["score"]!;
+    final String needs = widget.scoreData["needs"];
+
     Future<bool> falsing() async {
       return false;
     }
@@ -130,7 +138,7 @@ class _CompletionPageState extends State<CompletionPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => GraphSurvey(ss, widget.score),
+                            builder: (_) => GraphSurvey(ss, score),
                           ));
                     },
                   ),
@@ -160,18 +168,16 @@ class _CompletionPageState extends State<CompletionPage> {
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    color: (widget.score >= 0 &&
-                                            widget.score <= 20)
+                                    color: (score >= 0 && score <= 20)
                                         ? Colors.green
-                                        : ((widget.score >= 25 &&
-                                                widget.score <= 35
+                                        : ((score >= 25 && score <= 35
                                             ? Colors.yellow
                                             : Colors.red)),
                                     shape: BoxShape.circle,
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "${widget.score}",
+                                    "$score",
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 20,
@@ -204,7 +210,7 @@ class _CompletionPageState extends State<CompletionPage> {
                                   height: 50,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    widget.needs,
+                                    needs,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -297,7 +303,7 @@ class _CompletionPageState extends State<CompletionPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GraphSurvey(ss, widget.score),
+                  builder: (_) => GraphSurvey(ss, score),
                 ));
             return falsing();
           },

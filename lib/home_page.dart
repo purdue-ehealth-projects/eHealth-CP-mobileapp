@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
 import 'notification_week_and_time.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -287,7 +286,6 @@ void pushUserMongoDB(
   final salt = MongoDB.getSalt(10);
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
-  mongo_dart.ObjectId uesrId =
-      await MongoDB.createUser(name, encryptedPassword, salt);
+  final String uesrId = await MongoDB.createUser(name, encryptedPassword, salt);
   await MongoDB.createPatient(name, age, dob, uesrId);
 }

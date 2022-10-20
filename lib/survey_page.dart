@@ -251,6 +251,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                 onTap: () {
                   if (selectedVal == null) {
                     noSelectionAlert(context);
+                    return;
                   }
 
                   if (x.containsKey(questions[question])) {
@@ -330,10 +331,8 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     final int question = widget.question;
     final int percent = widget.percent;
 
-    List<String> selectedItems = [];
     Size size = MediaQuery.of(context).size;
     List<double> itemHeights = <double>[];
-
     for (int i = 0; i < choices.length; i++) {
       itemHeights.add(60);
     }
@@ -444,7 +443,6 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                         alignment: AlignmentDirectional.center,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         width: size.width * 0.8,
-                        height: double.infinity,
                         child: Text(
                           selectedItems.join(', '),
                           maxLines: 5,
@@ -490,7 +488,9 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                   } else {
                     for (int i = 0; i < selectedItems.length; i++) {
                       temp += selectedItems[i];
-                      temp += "+";
+                      if (i < selectedItems.length - 1) {
+                        temp += "+";
+                      }
                     }
                   }
                   if (x.containsKey(questions[question])) {
@@ -580,15 +580,12 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                 ),
               ),
               onTap: () {
-                int scoreQ = collectScore(x);
+                Map<String, dynamic> scoreData = collectScore(x);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => CompletionPage(
-                        name: username,
-                        score: scoreQ,
-                        quizResult: x,
-                        needs: x[questions[9]].toString()),
+                        name: username, scoreData: scoreData, quizResult: x),
                   ),
                 );
               },
@@ -600,52 +597,169 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
   }
 }
 
-int collectScore(Map<String, String> x) {
+Map<String, dynamic> collectScore(Map<String, String> x) {
+  Map<String, dynamic> scoreData = {};
   int score = 0;
+  int breathing = 0;
+  String breathingCompare = '';
+  int energyLevels = 0;
+  int heart = 0;
+  int sleep = 0;
+  String sleepCompare = '';
+  int weight = 0;
+  String weightCompare = '';
+  // need
+  String needs = x[questions[9]].toString();
+  // conditions
+  List<String> condition = [];
+
   for (String q in questions) {
-    String temp = x[q].toString();
-
-    if (q.compareTo('I have: \nChoose all that apply.') == 0) {
-      List<String> list = temp.split('+');
-      score += list.length * 5;
-      continue;
+    if (q.compareTo(questions[9].toString()) == 0) {
+      break;
     }
+    String ans = x[q].toString();
 
-    if (q.compareTo("Energy level: \nChoose one option.") == 0) {
-      if (temp.compareTo("Better than yesterday") == 0) score -= 5;
-      if (temp.compareTo("Same as yesterday") == 0) score += 0;
-      if (temp.compareTo("Worse than yesterday") == 0) score += 5;
-      continue;
-    }
-
-    if (temp.compareTo("I am breathing well") == 0) score += 0;
-    if (temp.compareTo("I run out of breath when walking") == 0) score += 5;
-    if (temp.compareTo("I run out of breath when talking") == 0) score += 10;
-
-    if (temp.compareTo("I feel great") == 0) score += 0;
-    if (temp.compareTo("My heart is racing") == 0) score += 5;
-    if (temp.compareTo("I have chest pain") == 0) score += 10;
-
-    if (temp.compareTo("I slept well last night") == 0) score += 0;
-    if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) {
-      score += 10;
-    }
-
-    if (temp.compareTo("My weight went up 2 or more pounds since yesterday") ==
-        0) score += 10;
-    if (temp.compareTo("My clothes and shoes feel tight") == 0) score += 5;
-    if (temp.compareTo("I can see swelling in my ankles") == 0) score += 5;
-    if (temp.compareTo("My weight is the same or less than yesterday") == 0) {
-      score += 0;
-    }
-
-    if (temp.compareTo("I slept well last night") == 0) score += 0;
-    if (temp.compareTo("My sleep was restless") == 0) score += 5;
-    if (temp.compareTo("I had to use pillows to sit up in bed") == 0) {
-      score += 10;
+    switch (q) {
+      case "How is your breathing? \n(Choose one option)":
+        switch (ans) {
+          case "I am breathing well":
+            score += 0;
+            breathing = 0;
+            break;
+          case "I run out of breath when walking":
+            score += 5;
+            breathing = 5;
+            break;
+          case "I run out of breath when talking":
+            score += 10;
+            breathing = 10;
+            break;
+        }
+        break;
+      case "And this is: \n(Compare your breathing to yesterday)":
+        switch (ans) {
+          case "Better than yesterday":
+            breathingCompare = "better";
+            break;
+          case "Same as yesterday":
+            breathingCompare = "same";
+            break;
+          case "Worse than yesterday":
+            breathingCompare = "worse";
+            break;
+        }
+        break;
+      case "How is your heart? \n(Choose one option)":
+        switch (ans) {
+          case "I feel great":
+            score += 0;
+            heart = 0;
+            break;
+          case "My heart is racing":
+            score += 5;
+            heart = 5;
+            break;
+          case "I have chest pain":
+            score += 10;
+            heart = 10;
+            break;
+        }
+        break;
+      case "How did you sleep last night? \n(Choose one option)":
+        switch (ans) {
+          case "I slept well last night":
+            score += 0;
+            sleep = 0;
+            break;
+          case "My sleep was restless":
+            score += 5;
+            sleep = 5;
+            break;
+          case "I had to use pillows to sit up in bed":
+            score += 10;
+            sleep = 10;
+            break;
+        }
+        break;
+      case "And this is: \n(Compare your sleep to yesterday)":
+        switch (ans) {
+          case "Better than yesterday":
+            sleepCompare = "better";
+            break;
+          case "Same as yesterday":
+            sleepCompare = "same";
+            break;
+          case "Worse than yesterday":
+            sleepCompare = "worse";
+            break;
+        }
+        break;
+      case "How do you weigh today? \n(Choose one option)":
+        switch (ans) {
+          case "My weight went up 2 or more pounds since yesterday":
+            score += 10;
+            sleep = 10;
+            break;
+          case "My clothes and shoes feel tight":
+            score += 5;
+            sleep = 5;
+            break;
+          case "I can see swelling in my ankles":
+            score += 5;
+            sleep = 5;
+            break;
+          case "My weight is the same or less than yesterday":
+            score += 0;
+            sleep = 0;
+            break;
+        }
+        break;
+      case "And this is: \n(Compare your weight to yesterday)":
+        switch (ans) {
+          case "Better than yesterday":
+            weightCompare = "better";
+            break;
+          case "Same as yesterday":
+            weightCompare = "same";
+            break;
+          case "Worse than yesterday":
+            weightCompare = "worse";
+            break;
+        }
+        break;
+      case "Energy level: \n(Choose one option)":
+        switch (ans) {
+          case "Better than yesterday":
+            score -= 5;
+            energyLevels = -5;
+            break;
+          case "Same as yesterday":
+            score += 0;
+            energyLevels = 0;
+            break;
+          case "Worse than yesterday":
+            score += 5;
+            energyLevels = 5;
+            break;
+        }
+        break;
+      case 'I have: \n(Choose all that apply)':
+        condition = ans.split('+');
+        score += condition.length * 5;
+        break;
     }
   }
 
-  return score;
+  scoreData['score'] = score;
+  scoreData['breathing'] = breathing;
+  scoreData['breathing_compare'] = breathingCompare;
+  scoreData['energy_levels'] = energyLevels;
+  scoreData['heart'] = heart;
+  scoreData['sleep'] = sleep;
+  scoreData['sleep_compare'] = sleepCompare;
+  scoreData['weight'] = weight;
+  scoreData['weight_compare'] = weightCompare;
+  scoreData['needs'] = needs;
+  scoreData['condition'] = condition;
+  return scoreData;
 }

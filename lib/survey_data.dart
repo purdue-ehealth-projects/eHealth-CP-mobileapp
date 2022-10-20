@@ -1,6 +1,6 @@
 //import 'package:flutter/cupertino.dart';
 
-List<String> questions = [
+const List<String> questions = [
   "How is your breathing? \n(Choose one option)",
   "And this is: \n(Compare your breathing to yesterday)",
   "How is your heart? \n(Choose one option)",
@@ -13,7 +13,7 @@ List<String> questions = [
   "I feel like I need: \n(Choose one option)"
 ];
 
-List<List<String>> choicesData = [
+const List<List<String>> choicesData = [
   [
     "I am breathing well",
     "I run out of breath when walking",
