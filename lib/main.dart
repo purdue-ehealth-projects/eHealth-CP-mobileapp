@@ -26,7 +26,7 @@ Future<void> main() async {
   
   AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
-      null,
+      'asset://assets/ems_health_icon3_small.png',
       [
         NotificationChannel(
             channelGroupKey: 'basic_tests',
