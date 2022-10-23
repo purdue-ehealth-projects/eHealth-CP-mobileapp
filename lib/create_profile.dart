@@ -2,8 +2,6 @@ import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
-import 'notification_api.dart';
-import 'notification_week_and_time.dart';
 
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
@@ -225,12 +223,6 @@ class _CreateProfileState extends State<CreateProfile> {
                   pushNameLocal(nameController.text, passwordController.text);
                   pushUserMongoDB(nameController.text, ageController.text,
                       dobController.text, passwordController.text);
-
-                  cancelScheduledNotifications();
-                  NotificationWeekAndTime? nw = NotificationWeekAndTime(
-                      dayOfTheWeek: DateTime.now().day,
-                      timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                  createHourlyReminder(nw);
 
                   if (!mounted) return;
                   Navigator.push(

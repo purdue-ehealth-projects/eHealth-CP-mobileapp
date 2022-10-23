@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'create_profile.dart';
 import 'home_page.dart';
-import 'notification_api.dart';
-import 'notification_week_and_time.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -152,11 +150,6 @@ class _LoginPageState extends State<LoginPage> {
                       pushNameLocal(
                           nameController.text, passwordController.text);
                       if (result) {
-                        cancelScheduledNotifications();
-                        NotificationWeekAndTime? nw = NotificationWeekAndTime(
-                            dayOfTheWeek: DateTime.now().day,
-                            timeOfDay: TimeOfDay.fromDateTime(DateTime.now()));
-                        createHourlyReminder(nw);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

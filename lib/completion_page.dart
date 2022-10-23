@@ -1,12 +1,13 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:emshealth/awesome_notification_api.dart';
 import 'package:emshealth/graph_survey.dart';
-import 'package:emshealth/notification_api.dart';
+import 'package:emshealth/main.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'notification_week_and_time.dart';
 import 'database.dart';
+
 
 /// Completion page that is shown when the user submits the survey.
 class CompletionPage extends StatefulWidget {
@@ -31,8 +32,6 @@ class _CompletionPageState extends State<CompletionPage> {
   /// Updates local and remote databases.
   Future<void> updateDatabase() async {
     int score = widget.scoreData["score"]!;
-
-    await cancelScheduledNotifications();
 
     String time =
         '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
@@ -66,6 +65,10 @@ class _CompletionPageState extends State<CompletionPage> {
     widget.scoreData["name"] = widget.name;
     String surveyId = await MongoDB.addSurvey(widget.scoreData, userId);
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
+
+    //reschedule for the next day
+    await AwesomeNotifications().cancelAll();
+    schedule24HoursAheadAN();
   }
 
   @override
@@ -80,13 +83,6 @@ class _CompletionPageState extends State<CompletionPage> {
     return FutureBuilder(
       future: updateDatabase(),
       builder: (context, snapshot) {
-        DateTime dt = DateTime.now();
-        cancelScheduledNotifications();
-        NotificationWeekAndTime? nw = NotificationWeekAndTime(
-            dayOfTheWeek: dt.day + 1,
-            timeOfDay: TimeOfDay.fromDateTime(
-                DateTime(dt.year, dt.month, dt.day + 1, 8, 0, 0, 0, 0)));
-        createDailyReminder(nw);
 
         Size size = MediaQuery.of(context).size;
 
