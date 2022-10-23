@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -52,7 +52,7 @@ android {
 
     defaultConfig {
         applicationId "ehealth.emshealth.id"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

@@ -1,13 +1,12 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/database.dart';
-import 'package:emshealth/notification_api.dart';
+import 'package:emshealth/main.dart';
 import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
-import 'notification_week_and_time.dart';
 
 /// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {
@@ -30,79 +29,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-
-    //get local data
-    //DateTime now = DateTime.now();
-
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Allow Notifications'),
-            content: const Text('Our app would like to send you notifications'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Don\'t Allow',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              TextButton(
-                  onPressed: () => AwesomeNotifications()
-                      .requestPermissionToSendNotifications()
-                      .then((_) => Navigator.pop(context)),
-                  child: const Text(
-                    'Allow',
-                    style: TextStyle(
-                      color: Colors.teal,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ))
-            ],
-          ),
-        );
-      }
-    });
-
-    AwesomeNotifications().actionStream.listen((notification) async {
-      await loadLocalData();
-      if (didSurvey) {
-        if (!mounted) return;
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => GraphSurvey(graphSS, scoreToday),
-          ),
-          (route) => route.isFirst,
-        );
-      } else if (signin) {
-        if (!mounted) return;
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SurveyWelcomePage(username: username.toString()),
-          ),
-          (route) => route.isFirst,
-        );
-      } else {
-        if (!mounted) return;
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const LoginPage(),
-          ),
-          (route) => route.isFirst,
-        );
-      }
-    });
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
   }
 
   /// Load local date from storage to app memory
@@ -139,9 +67,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
-    AwesomeNotifications().actionSink.close();
-    AwesomeNotifications().createdSink.close();
-    AwesomeNotifications().displayedSink.close();
     MongoDB.cleanupDatabase();
     super.dispose();
   }
@@ -152,20 +77,10 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (didSurvey) {
-      cancelScheduledNotifications();
-      DateTime now = DateTime.now();
-      NotificationWeekAndTime? nw = NotificationWeekAndTime(
-          dayOfTheWeek: now.day + 1,
-          timeOfDay: TimeOfDay.fromDateTime(
-              DateTime(now.year, now.month, now.day + 1, 8, 0, 0, 0, 0)));
-      createDailyReminder(nw);
-    }
 
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
-        //Size size = MediaQuery.of(context).size;
         return scoreToday == -1
             ? (signin
                 ? SurveyWelcomePage(username: username.toString())
