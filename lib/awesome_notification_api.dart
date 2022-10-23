@@ -1,6 +1,14 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+
+Future<void> timezoneInit() async {
+  tz.initializeTimeZones();
+  final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
+}
 
 Future<void> schedule24HoursAheadAN() async {
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
@@ -39,7 +47,7 @@ Future<void> scheduleHourlyAN(int id, DateTime dt) async {
           title: 'Survey Reminder',
           body:'Please complete your survey today.',
           notificationLayout: NotificationLayout.BigPicture,
-          largeIcon: 'asset://assets/health.png',
+          largeIcon: 'asset://assets/ems_health_icon3_small.png',
           fullScreenIntent: true,
           wakeUpScreen: true,
       ),

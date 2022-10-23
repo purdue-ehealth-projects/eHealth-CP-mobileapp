@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'home_page.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:emshealth/database.dart';
-import 'notification_api.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -18,31 +17,7 @@ Future<void> main() async {
   await FlutterConfig.loadEnvVariables();
   await MongoDB.connect();
 
-  // Initialize local notification plugin. (TODO: Configure for iOS)
-  /*const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('app_icon');
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: androidInitializationSettings,
-  );
-
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse nr) {
-      Navigator.push(navigatorKey.currentState!.context, MaterialPageRoute(
-        builder: (_) => HomePage(),
-      ));
-    }
-  );
-  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
-
-  // Initialize time zone.
-  await timezoneInit();
-
-  // Schedule first day.
-  //await schedule24HoursAhead();
-  await scheduleEveryMinNotification();*/
-
-  /// using awesome_notification package.
+  /// using awesome_notification package. (TODO: Configure for iOS)
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       AwesomeNotifications().requestPermissionToSendNotifications();
@@ -58,7 +33,7 @@ Future<void> main() async {
             channelKey: 'basic_channel',
             channelName: 'Basic notifications',
             channelDescription: 'Notification channel for basic tests',
-            defaultColor: const Color(0xFF9D50DD),
+            defaultColor: Colors.blueAccent,
             ledColor: Colors.white,
             importance: NotificationImportance.High,
 
