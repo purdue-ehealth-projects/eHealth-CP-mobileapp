@@ -10,8 +10,8 @@ import 'package:emshealth/database.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-/// Main imports environmental variables, connect to MongoDB, and calls
-/// MyApp.
+/// Main imports environmental variables, connect to MongoDB, set up
+/// Notifications, and runs MyApp.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
@@ -23,19 +23,18 @@ Future<void> main() async {
       AwesomeNotifications().requestPermissionToSendNotifications();
     }
   });
-  
+
   AwesomeNotifications().initialize(
-      null,  //icon is null right now
+      null, //icon is null right now
       [
         NotificationChannel(
-            channelGroupKey: 'basic_tests',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: Colors.blueAccent,
-            ledColor: Colors.white,
-            importance: NotificationImportance.High,
-
+          channelGroupKey: 'basic_tests',
+          channelKey: 'basic_channel',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Colors.blueAccent,
+          ledColor: Colors.white,
+          importance: NotificationImportance.High,
         ),
       ],
       // Channel groups are only visual and are not required
@@ -44,8 +43,7 @@ Future<void> main() async {
             channelGroupKey: 'basic_tests',
             channelGroupName: 'Basic test group')
       ],
-      debug: true
-  );
+      debug: true);
 
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: receiveMethod,
@@ -58,9 +56,11 @@ Future<void> main() async {
 }
 
 Future<void> receiveMethod(ReceivedAction ra) async {
-  Navigator.push(navigatorKey.currentState!.context, MaterialPageRoute(
-    builder: (_) => HomePage(),
-  ));
+  Navigator.push(
+      navigatorKey.currentState!.context,
+      MaterialPageRoute(
+        builder: (_) => const HomePage(),
+      ));
 }
 
 /// Main app screen that is called first by default. Redirects to homepage.
