@@ -1,7 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:emshealth/awesome_notification_api.dart';
+import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/graph_survey.dart';
-import 'package:emshealth/main.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
 
