@@ -22,9 +22,16 @@ Future<void> schedule24HoursAheadAN() async {
     /// survey not complete; schedule for next hours until 8am next day
     var tzDateTime = tz.TZDateTime(tz.local, now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
     int id = 0;
-    for (int i = now.hour; i != 8; i = (i + 1) % 24) {
-      tzDateTime = tzDateTime.add(const Duration(hours: 1));
-      await scheduleHourlyAN(id++, tzDateTime);
+    if (now.hour == 8) {  // to handle special case where it is 8am now when it is first installed
+      for (int i = 0; i < 24; i++) {
+        tzDateTime = tzDateTime.add(const Duration(hours: 1));
+        await scheduleHourlyAN(id++, tzDateTime);
+      }
+    } else {
+      for (int i = now.hour; i != 8; i = (i + 1) % 24) {
+        tzDateTime = tzDateTime.add(const Duration(hours: 1));
+        await scheduleHourlyAN(id++, tzDateTime);
+      }
     }
   } else {
     /// survey completed; schedule for tomorrow

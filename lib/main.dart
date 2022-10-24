@@ -17,7 +17,7 @@ Future<void> main() async {
   await FlutterConfig.loadEnvVariables();
   await MongoDB.connect();
 
-  /// using awesome_notification package. (TODO: Configure for iOS)
+  // using awesome_notification package
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       AwesomeNotifications().requestPermissionToSendNotifications();
@@ -25,8 +25,7 @@ Future<void> main() async {
   });
   
   AwesomeNotifications().initialize(
-    // set the icon to null if you want to use the default app icon
-      null,
+      null,  //icon is null right now
       [
         NotificationChannel(
             channelGroupKey: 'basic_tests',
@@ -48,6 +47,10 @@ Future<void> main() async {
       debug: true
   );
 
+  AwesomeNotifications().setListeners(
+    onActionReceivedMethod: receiveMethod,
+  );
+
   await timezoneInit();
   await schedule24HoursAheadAN();
 
@@ -63,13 +66,6 @@ Future<void> receiveMethod(ReceivedAction ra) async {
 /// Main app screen that is called first by default. Redirects to homepage.
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  @override
-  initState() {
-    AwesomeNotifications().setListeners(
-        onActionReceivedMethod: receiveMethod,
-    );
-  }
 
   // This widget is the root of your application.
   @override
