@@ -198,7 +198,8 @@ Future<bool> loginUser(String name, String password) async {
   return (storedPassword == encryptedPassword);
 }
 
-/// Ensure that a patient profile for user already exists.
+/// Ensure that a patient profile for user already exists. Returns an error
+/// code (0 for no error).
 Future<int> validateUsername(String name) async {
   if (name.isEmpty) {
     return 1;
