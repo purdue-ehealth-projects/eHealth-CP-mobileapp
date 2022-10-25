@@ -154,16 +154,16 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
               onTap: () async {
-                bool result = await validateUsername(nameController.text);
-                if (result == false) {
+                int result = await validateUsername(nameController.text);
+                if (result != 0) {
                   if (!mounted) return;
-                  registerFailedAlert(context);
+                  registerFailedAlert(context, result);
                 }
-                if (result == true && _goodPassword == false) {
+                if (result == 0 && _goodPassword == false) {
                   if (!mounted) return;
                   badPasswordAlert(context);
                 }
-                if (result == true && _goodPassword == true) {
+                if (result == 0 && _goodPassword == true) {
                   pushNameLocal(nameController.text, passwordController.text);
                   pushUserMongoDB(nameController.text, passwordController.text);
 

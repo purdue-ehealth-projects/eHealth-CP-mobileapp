@@ -124,7 +124,7 @@ loginFailedAlert(BuildContext context) {
 }
 
 /// Register failed alert pop up
-registerFailedAlert(BuildContext context) {
+registerFailedAlert(BuildContext context, int errCode) {
   // set up the button
   Widget okButton = TextButton(
     child: const Text("OK"),
@@ -132,13 +132,34 @@ registerFailedAlert(BuildContext context) {
   );
 
   // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: const Text("Register Failed"),
-    content: const Text("User doesn't have a profile or username is empty."),
-    actions: [
-      okButton,
-    ],
-  );
+  AlertDialog alert = const AlertDialog();
+  if (errCode == 1) {
+    alert = AlertDialog(
+      title: const Text("Register Failed"),
+      content: const Text("Username cannot be empty."),
+      actions: [
+        okButton,
+      ],
+    );
+  } else if (errCode == 2) {
+    alert = AlertDialog(
+      title: const Text("Register Failed"),
+      content: const Text(
+          "This user doesn't have a patient profile. Please check with your paramedic."),
+      actions: [
+        okButton,
+      ],
+    );
+  } else if (errCode == 3) {
+    alert = AlertDialog(
+      title: const Text("Register Failed"),
+      content: const Text(
+          "User with username already exists. Please log in instead."),
+      actions: [
+        okButton,
+      ],
+    );
+  }
 
   // show the dialog
   showDialog(
@@ -189,14 +210,17 @@ Future<bool> loginUser(String name, String password) async {
 }
 
 /// Ensure that a patient profile for user already exists.
-Future<bool> validateUsername(String name) async {
-  if (await MongoDB.existPatient(name) == false) {
-    return false;
-  }
+Future<int> validateUsername(String name) async {
   if (name.isEmpty) {
-    return false;
+    return 1;
   }
-  return true;
+  if (await MongoDB.existPatient(name) == false) {
+    return 2;
+  }
+  if (await MongoDB.existUser(name) == true) {
+    return 3;
+  }
+  return 0;
 }
 
 /// Push name and password to storage

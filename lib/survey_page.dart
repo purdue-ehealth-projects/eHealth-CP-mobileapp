@@ -194,7 +194,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     hint: SizedBox(
                       width: size.width * 0.8,
                       child: const Text(
-                        "Choose an option.",
+                        "Tap to choose an option.",
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -217,7 +217,8 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                             ))
                         .toList(),
                     dropdownDecoration: const BoxDecoration(
-                      color: Color(0xff0b3954),
+                      color: Color.fromARGB(255, 17, 87, 127),
+                      //color: Color(0xff0b3954),
                     ),
                     iconEnabledColor: Colors.white,
                     value: selectedVal,
@@ -226,6 +227,17 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                         selectedVal = value as String;
                       });
                     },
+                    buttonPadding: const EdgeInsets.only(left: 10, right: 0),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      color: selectedVal != null
+                          ? const Color.fromARGB(255, 17, 87, 127)
+                          : const Color(0xff0b3954),
+                    ),
+                    buttonElevation: 2,
                   ),
                 ),
               ),
@@ -257,7 +269,6 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     noSelectionAlert(context);
                     return;
                   }
-
                   if (x.containsKey(questions[question])) {
                     x.update(
                         questions[question], (value) => selectedVal as String);
@@ -374,7 +385,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 hint: const Align(
                   alignment: AlignmentDirectional.center,
                   child: Text(
-                    'None apply.',
+                    'No symptoms (tap to add more).',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
@@ -435,12 +446,22 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 value: selectedItems.isEmpty ? null : selectedItems.last,
                 onChanged: (value) {},
                 dropdownDecoration: const BoxDecoration(
-                  color: Color(0xff0b3954),
+                  color: Color.fromARGB(255, 17, 87, 127),
+                  //color: Color(0xff0b3954),
                 ),
                 iconEnabledColor: Colors.white,
-                itemHeight: 100,
+                itemHeight: 80,
                 customItemsHeights: itemHeights,
                 dropdownMaxHeight: 700,
+                buttonPadding: const EdgeInsets.only(left: 10, right: 0),
+                buttonDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                  color: const Color.fromARGB(255, 17, 87, 127),
+                ),
+                buttonElevation: 2,
                 scrollbarAlwaysShow: true,
                 selectedItemBuilder: (context) {
                   return choices.map(
