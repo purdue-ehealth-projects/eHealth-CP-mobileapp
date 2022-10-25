@@ -208,8 +208,7 @@ void pushNameLocal(String name, String password) async {
 
 /// Register user and create user & patient profiles in MongoDB by calling
 /// respective functions in database.dart.
-void pushUserMongoDB(
-    String name, String age, String dob, String password) async {
+void pushUserMongoDB(String name, String password) async {
   // Generates a salt with length 10
   final salt = MongoDB.getSalt(10);
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);

@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     alignment: Alignment.center,
                     child: const Text(
-                      "Create a Profile",
+                      "Create User",
                       style: TextStyle(
                         fontFamily: 'OpenSans',
                         color: Colors.white,
