@@ -52,7 +52,6 @@ dependencies:
   crypt: ^4.2.1
   dropdown_button2: ^1.8.5
   flutter_pw_validator: ^1.4.2
-  flutter_local_notifications: ^12.0.2
   flutter_native_timezone: ^2.0.0
   timezone: ^0.9.0
 

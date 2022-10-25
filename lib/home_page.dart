@@ -1,9 +1,7 @@
 import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/database.dart';
-import 'package:emshealth/main.dart';
 import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
@@ -25,15 +23,6 @@ class _HomePageState extends State<HomePage>
   bool didSurvey = false;
   List<SurveyScores> graphSS = [];
   int scoreToday = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestPermission();
-  }
 
   /// Load local date from storage to app memory
   Future<void> loadLocalData() async {

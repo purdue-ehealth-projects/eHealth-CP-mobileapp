@@ -1,14 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'home_page.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:emshealth/database.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 /// Main imports environmental variables, connect to MongoDB, set up
 /// Notifications, and runs MyApp.
