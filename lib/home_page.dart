@@ -29,8 +29,10 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestPermission();
   }
 
   /// Load local date from storage to app memory
@@ -132,7 +134,7 @@ registerFailedAlert(BuildContext context) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: const Text("Register Failed"),
-    content: const Text("Username already exists or is empty."),
+    content: const Text("User doesn't have a profile or username is empty."),
     actions: [
       okButton,
     ],
@@ -186,9 +188,9 @@ Future<bool> loginUser(String name, String password) async {
   return (storedPassword == encryptedPassword);
 }
 
-/// Ensure new username is not a duplicate or empty.
+/// Ensure that a patient profile for user already exists.
 Future<bool> validateUsername(String name) async {
-  if (await MongoDB.existUser(name) == true) {
+  if (await MongoDB.existPatient(name) == false) {
     return false;
   }
   if (name.isEmpty) {
@@ -212,6 +214,6 @@ void pushUserMongoDB(
   final salt = MongoDB.getSalt(10);
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
-  final String uesrId = await MongoDB.createUser(name, encryptedPassword, salt);
-  await MongoDB.createPatient(name, age, dob, uesrId);
+  await MongoDB.createUser(name, encryptedPassword, salt);
+  //await MongoDB.createPatient(name, age, dob, uesrId);
 }

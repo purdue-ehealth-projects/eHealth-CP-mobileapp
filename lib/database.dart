@@ -64,6 +64,14 @@ class MongoDB {
     return false;
   }
 
+  /// Checks if patient exists in the database
+  static Future<bool> existPatient(String name) async {
+    if (await patientCollection.findOne(where.eq('name', name)) != null) {
+      return true;
+    }
+    return false;
+  }
+
   /// Finds and returns user in the database.
   static Future<Map<String, dynamic>> findUser(String name) async {
     var res = await userCollection.findOne(where.eq('name', name));
