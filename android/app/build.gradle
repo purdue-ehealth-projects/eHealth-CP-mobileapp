@@ -54,8 +54,8 @@ android {
         applicationId "ehealth.emshealth.id"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 6
-        versionName "1.6"
+        versionCode 7
+        versionName "1.7"
         multiDexEnabled true
         resValue "string", "build_config_package", "com.example.emshealth"
     }
