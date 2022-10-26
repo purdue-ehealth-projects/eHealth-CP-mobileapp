@@ -13,6 +13,7 @@ import 'package:emshealth/notification_api.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  /// Global navigator key
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
@@ -37,10 +38,12 @@ class _HomePageState extends State<HomePage>
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: receiveMethod,
     );
+    // cannot make initState async (need to create helper function)
     _scheduleNotif();
     super.initState();
   }
 
+  /// Schedules notification
   void _scheduleNotif() async {
     await timezoneInit();
     await schedule24HoursAheadAN();
@@ -74,6 +77,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  /// Page push after user clicks on notification
   static Future<void> receiveMethod(ReceivedAction ra) async {
     Navigator.push(
         HomePage.navigatorKey.currentState!.context,
@@ -253,7 +257,7 @@ void pushNameLocal(String name, String password) async {
   prefs.setString('password', password);
 }
 
-/// Register user and create user acctoun in MongoDB.
+/// Register user and create user account in MongoDB.
 void pushUserMongoDB(String name, String password) async {
   // Generates a salt with length 10
   final salt = MongoDB.getSalt(10);
