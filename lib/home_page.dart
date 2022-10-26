@@ -6,9 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:emshealth/notification_api.dart';
+
 /// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,12 +23,64 @@ class HomePage extends StatefulWidget {
 /// Homepage state
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // This is just a basic example. For real apps, you must show some
+        // friendly dialog box before call the request method.
+        // This is very important to not harm the user experience
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: receiveMethod,
+    );
+    _scheduleNotif();
+    super.initState();
+  }
+
+  void _scheduleNotif() async {
+    await timezoneInit();
+    await schedule24HoursAheadAN();
+  }
+
   bool goBack = false;
   String? username = '';
   bool signin = false;
   bool didSurvey = false;
   List<SurveyScores> graphSS = [];
   int scoreToday = -1;
+
+  @override
+  void dispose() {
+    MongoDB.cleanupDatabase();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return FutureBuilder(
+      future: loadLocalData(),
+      builder: (context, snapshot) {
+        return scoreToday == -1
+            ? (signin
+                ? SurveyWelcomePage(username: username.toString())
+                : const LoginPage())
+            : GraphSurvey(graphSS, scoreToday);
+      },
+    );
+  }
+
+  static Future<void> receiveMethod(ReceivedAction ra) async {
+    Navigator.push(
+        HomePage.navigatorKey.currentState!.context,
+        MaterialPageRoute(
+          builder: (_) => const HomePage(),
+        ));
+  }
 
   /// Load local date from storage to app memory
   Future<void> loadLocalData() async {
@@ -54,31 +112,6 @@ class _HomePageState extends State<HomePage>
         }
       }
     }
-  }
-
-  @override
-  void dispose() {
-    MongoDB.cleanupDatabase();
-    super.dispose();
-  }
-
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
-    return FutureBuilder(
-      future: loadLocalData(),
-      builder: (context, snapshot) {
-        return scoreToday == -1
-            ? (signin
-                ? SurveyWelcomePage(username: username.toString())
-                : const LoginPage())
-            : GraphSurvey(graphSS, scoreToday);
-      },
-    );
   }
 
   @override
@@ -220,8 +253,7 @@ void pushNameLocal(String name, String password) async {
   prefs.setString('password', password);
 }
 
-/// Register user and create user & patient profiles in MongoDB by calling
-/// respective functions in database.dart.
+/// Register user and create user acctoun in MongoDB.
 void pushUserMongoDB(String name, String password) async {
   // Generates a salt with length 10
   final salt = MongoDB.getSalt(10);
