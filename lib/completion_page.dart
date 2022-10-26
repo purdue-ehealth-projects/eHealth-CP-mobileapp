@@ -62,6 +62,7 @@ class _CompletionPageState extends State<CompletionPage> {
     widget.scoreData["date"] = '${DateTime.now()}';
     widget.scoreData["name"] = widget.name;
     String surveyId = await MongoDB.addSurvey(widget.scoreData, userId);
+    widget.quizResult["date"] = '${DateTime.now()}';
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
 
     //reschedule for the next day
