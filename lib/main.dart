@@ -1,14 +1,12 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'home_page.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:emshealth/database.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 /// Main imports environmental variables, connect to MongoDB, and calls
 /// MyApp.
@@ -17,14 +15,7 @@ Future<void> main() async {
   await FlutterConfig.loadEnvVariables();
   await MongoDB.connect();
 
-  // using awesome_notification package
-  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    if (!isAllowed) {
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-  });
-  
-  AwesomeNotifications().initialize(
+  await AwesomeNotifications().initialize(
       null,  //icon is null right now
       [
         NotificationChannel(
@@ -51,22 +42,19 @@ Future<void> main() async {
     onActionReceivedMethod: receiveMethod,
   );
 
-  await timezoneInit();
-  await schedule24HoursAheadAN();
-
   runApp(const MyApp());
 }
 
 Future<void> receiveMethod(ReceivedAction ra) async {
   Navigator.push(navigatorKey.currentState!.context, MaterialPageRoute(
-    builder: (_) => HomePage(),
+    builder: (_) => const HomePage(),
   ));
 }
 
 /// Main app screen that is called first by default. Redirects to homepage.
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

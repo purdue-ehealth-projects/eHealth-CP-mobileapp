@@ -1,8 +1,14 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+
+final notificationPermissions = [
+  NotificationPermission.Alert,
+  NotificationPermission.FullScreenIntent,
+  NotificationPermission.PreciseAlarms,];
 
 Future<void> timezoneInit() async {
   tz.initializeTimeZones();
@@ -45,6 +51,7 @@ Future<void> schedule24HoursAheadAN() async {
 }
 
 Future<void> scheduleHourlyAN(int id, DateTime dt) async {
+  print("scheduling for $dt with id $id...\n");
   String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
   await AwesomeNotifications().createNotification(
@@ -69,4 +76,45 @@ Future<void> scheduleHourlyAN(int id, DateTime dt) async {
         preciseAlarm: true,
         timeZone: localTimeZone,
       ));
+}
+
+Future<void> requestPermission() async {
+  await AwesomeNotifications().requestPermissionToSendNotifications(
+    channelKey: 'basic_channel',
+    permissions: notificationPermissions,
+  );
+}
+
+showAlert(BuildContext context) async {
+  print("Am i here");
+  final permissionList = await AwesomeNotifications().checkPermissionList(
+    channelKey: 'basic_channel',
+    permissions: notificationPermissions,
+  );
+
+  if (permissionList.length == notificationPermissions.length) {
+    return;
+  }
+
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Notifications Permission"),
+        content: const Text("EMS needs your permission to send notifications."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            }, child: const Text("Deny"),
+          ),
+          TextButton(
+            onPressed: () async {
+              await requestPermission();
+              await timezoneInit();
+              await schedule24HoursAheadAN().then((value) => Navigator.pop(context));
+            }, child: const Text("Approve"),
+          ),
+        ],
+      )
+  );
 }

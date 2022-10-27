@@ -1,12 +1,11 @@
 import 'package:emshealth/completion_page.dart';
 import 'package:emshealth/database.dart';
-import 'package:emshealth/main.dart';
 import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
+import 'notification_api.dart';
 
 /// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {
@@ -17,21 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 /// Homepage state
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage> {
   bool goBack = false;
   String? username = '';
   bool signin = false;
   bool didSurvey = false;
   List<SurveyScores> graphSS = [];
   int scoreToday = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
-  }
 
   /// Load local date from storage to app memory
   Future<void> loadLocalData() async {
@@ -75,9 +66,15 @@ class _HomePageState extends State<HomePage>
   TextEditingController passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) => showAlert(context));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
