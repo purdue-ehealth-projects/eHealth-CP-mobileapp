@@ -68,11 +68,12 @@ class _HomePageState extends State<HomePage>
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
+        // didSurvey == false
         return scoreToday == -1
             ? (signin
                 ? SurveyWelcomePage(username: username.toString())
                 : const LoginPage())
-            : GraphSurvey(graphSS, scoreToday);
+            : GraphSurvey(graphSS, scoreToday, username!);
       },
     );
   }

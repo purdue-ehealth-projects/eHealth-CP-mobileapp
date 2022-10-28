@@ -135,7 +135,7 @@ class _CompletionPageState extends State<CompletionPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => GraphSurvey(ss, score),
+                            builder: (_) => GraphSurvey(ss, score, widget.name),
                           ));
                     },
                   ),
@@ -300,7 +300,7 @@ class _CompletionPageState extends State<CompletionPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GraphSurvey(ss, score),
+                  builder: (_) => GraphSurvey(ss, score, widget.name),
                 ));
             return falsing();
           },

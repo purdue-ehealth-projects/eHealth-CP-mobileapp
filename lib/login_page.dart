@@ -86,11 +86,13 @@ class _LoginPageState extends State<LoginPage> {
                       labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
                     style: const TextStyle(
-                        color: Colors.white, fontFamily: 'OpenSans'),
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'OpenSans'),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -117,11 +119,13 @@ class _LoginPageState extends State<LoginPage> {
                       labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
                     style: const TextStyle(
-                        color: Colors.white, fontFamily: 'OpenSans'),
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'OpenSans'),
                   ),
                 ),
                 const SizedBox(height: 40),
