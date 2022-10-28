@@ -35,7 +35,7 @@ Future<void> schedule24HoursAheadAN() async {
     }
   } else {
     /// survey completed; schedule for tomorrow
-    var tzDateTime = tz.TZDateTime(tz.local, now.year, now.month, now.day, 7, 0, 0, 0, 0);
+    var tzDateTime = tz.TZDateTime(tz.local, now.year, now.month, now.day + 1, 7, 0, 0, 0, 0);
     for (int i = 0; i <= 23; i++) {
       tzDateTime = tzDateTime.add(const Duration(hours: 1));
       await scheduleHourlyAN(i, tzDateTime);

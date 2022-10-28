@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 
   /// Global navigator key
   static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState>();
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage>
         // didSurvey == false
         return scoreToday == -1
             ? (signin
-                ? SurveyWelcomePage(username: username.toString())
-                : const LoginPage())
+            ? SurveyWelcomePage(username: username.toString())
+            : const LoginPage())
             : GraphSurvey(graphSS, scoreToday, username!);
       },
     );
