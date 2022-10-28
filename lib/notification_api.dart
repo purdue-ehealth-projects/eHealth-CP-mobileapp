@@ -45,7 +45,6 @@ Future<void> schedule24HoursAheadAN() async {
 }
 
 Future<void> scheduleHourlyAN(int id, DateTime dt) async {
-  print("scheduling for $dt with id $id...\n");
   String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
   await AwesomeNotifications().createNotification(
