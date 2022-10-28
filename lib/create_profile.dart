@@ -17,8 +17,6 @@ class CreateProfile extends StatefulWidget {
 /// Create profile page state.
 class _CreateProfileState extends State<CreateProfile> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController dobController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   bool _goodPassword = false;
@@ -134,60 +132,6 @@ class _CreateProfileState extends State<CreateProfile> {
                     }),
               ),
             ),
-            const SizedBox(height: 10),
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                width: size.width * 0.9,
-                child: TextField(
-                  controller: ageController,
-                  decoration: const InputDecoration(
-                    alignLabelWithHint: true,
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    )),
-                    labelText: 'Age',
-                    labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  style: const TextStyle(
-                      color: Colors.white, fontFamily: 'OpenSans'),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                width: size.width * 0.9,
-                child: TextField(
-                  controller: dobController,
-                  decoration: const InputDecoration(
-                    alignLabelWithHint: true,
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    )),
-                    labelText: 'Date of Birth (MM/DD/YYYY)',
-                    labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  style: const TextStyle(
-                      color: Colors.white, fontFamily: 'OpenSans'),
-                ),
-              ),
-            ),
             const SizedBox(height: 50),
             Center(
                 child: GestureDetector(
@@ -210,19 +154,18 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
               onTap: () async {
-                bool result = await validateUsername(nameController.text);
-                if (result == false) {
+                int result = await validateUsername(nameController.text);
+                if (result != 0) {
                   if (!mounted) return;
-                  registerFailedAlert(context);
+                  registerFailedAlert(context, result);
                 }
-                if (result == true && _goodPassword == false) {
+                if (result == 0 && _goodPassword == false) {
                   if (!mounted) return;
                   badPasswordAlert(context);
                 }
-                if (result == true && _goodPassword == true) {
+                if (result == 0 && _goodPassword == true) {
                   pushNameLocal(nameController.text, passwordController.text);
-                  pushUserMongoDB(nameController.text, ageController.text,
-                      dobController.text, passwordController.text);
+                  pushUserMongoDB(nameController.text, passwordController.text);
 
                   if (!mounted) return;
                   Navigator.push(

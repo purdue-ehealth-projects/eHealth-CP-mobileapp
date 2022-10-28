@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database.dart';
 
-
 /// Completion page that is shown when the user submits the survey.
 class CompletionPage extends StatefulWidget {
   final Map<String, dynamic> scoreData;
@@ -59,10 +58,11 @@ class _CompletionPageState extends State<CompletionPage> {
 
     // UPDATE DATABASE HERE
     Map<String, dynamic> user = await MongoDB.findUser(widget.name);
-    String userId = user['_id'];
+    dynamic userId = user['_id'];
     widget.scoreData["date"] = '${DateTime.now()}';
     widget.scoreData["name"] = widget.name;
     String surveyId = await MongoDB.addSurvey(widget.scoreData, userId);
+    widget.quizResult["date"] = '${DateTime.now()}';
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
 
     //reschedule for the next day
@@ -82,7 +82,6 @@ class _CompletionPageState extends State<CompletionPage> {
     return FutureBuilder(
       future: updateDatabase(),
       builder: (context, snapshot) {
-
         Size size = MediaQuery.of(context).size;
 
         return WillPopScope(
@@ -136,7 +135,7 @@ class _CompletionPageState extends State<CompletionPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => GraphSurvey(ss, score),
+                            builder: (_) => GraphSurvey(ss, score, widget.name),
                           ));
                     },
                   ),
@@ -301,7 +300,7 @@ class _CompletionPageState extends State<CompletionPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GraphSurvey(ss, score),
+                  builder: (_) => GraphSurvey(ss, score, widget.name),
                 ));
             return falsing();
           },

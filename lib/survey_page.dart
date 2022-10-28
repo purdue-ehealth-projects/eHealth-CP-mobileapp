@@ -45,6 +45,11 @@ noSelectionAlert(BuildContext context) {
   );
 }
 
+/// Maps user answer to each question.
+Map<String, String> x = {};
+double _continueFontSize = 32;
+double _itemHeight = 80;
+
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
   final String username;
@@ -73,10 +78,10 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
             padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
             child: SizedBox(
               height: size.height * 0.5,
-              child: const Text(
-                "Welcome to the survey! \nThis will only take 5 minutes.",
+              child: Text(
+                "Hello, ${widget.username}.\nWelcome to the survey!\n\nThis will only take 5 minutes.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontFamily: 'OpenSans',
                     fontSize: 30,
                     fontWeight: FontWeight.w500,
@@ -97,12 +102,12 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: Text(
                     "Next",
                     style: TextStyle(
                       fontFamily: 'OpenSans',
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: _continueFontSize,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -146,9 +151,6 @@ class SurveyQuestions extends StatefulWidget {
   @override
   State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
-
-/// Maps user answer to each question.
-Map<String, String> x = {};
 
 /// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
@@ -194,9 +196,9 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     hint: SizedBox(
                       width: size.width * 0.8,
                       child: const Text(
-                        "Choose an option.",
+                        "Tap to choose an option.",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 24,
                           color: Colors.white,
                         ),
                       ),
@@ -209,7 +211,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                                 child: Text(
                                   item,
                                   style: const TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 24,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -217,7 +219,8 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                             ))
                         .toList(),
                     dropdownDecoration: const BoxDecoration(
-                      color: Color(0xff0b3954),
+                      color: Color.fromARGB(255, 17, 87, 127),
+                      //color: Color(0xff0b3954),
                     ),
                     iconEnabledColor: Colors.white,
                     value: selectedVal,
@@ -226,10 +229,23 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                         selectedVal = value as String;
                       });
                     },
+                    itemHeight: _itemHeight,
+                    buttonPadding: const EdgeInsets.only(left: 10, right: 0),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      color: selectedVal != null
+                          ? const Color.fromARGB(255, 17, 87, 127)
+                          : const Color(0xff0b3954),
+                    ),
+                    buttonElevation: 2,
                   ),
                 ),
               ),
             ),
+            SizedBox(height: size.height / 2.5),
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: SizedBox(
@@ -239,17 +255,26 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                   height: 60,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: selectedVal == null
+                        ? Border.all(color: Colors.grey, width: 2)
+                        : Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: Text(
                     "Next",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: selectedVal == null
+                        ? TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.grey,
+                            fontSize: _continueFontSize,
+                            fontWeight: FontWeight.w500,
+                          )
+                        : TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.white,
+                            fontSize: _continueFontSize,
+                            fontWeight: FontWeight.w500,
+                          ),
                   ),
                 ),
                 onTap: () {
@@ -257,7 +282,6 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     noSelectionAlert(context);
                     return;
                   }
-
                   if (x.containsKey(questions[question])) {
                     x.update(
                         questions[question], (value) => selectedVal as String);
@@ -329,6 +353,7 @@ class SurveyQuestionsMulti extends StatefulWidget {
 /// Survey multi question page state.
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   List<String> selectedItems = [];
+  bool greyNext = false;
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +365,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     Size size = MediaQuery.of(context).size;
     List<double> itemHeights = <double>[];
     for (int i = 0; i < choices.length; i++) {
-      itemHeights.add(60);
+      itemHeights.add(_itemHeight);
     }
 
     return Scaffold(
@@ -370,13 +395,18 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
             child: SizedBox(
               child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
+                onMenuStateChange: ((isOpen) {
+                  setState(() {
+                    greyNext = isOpen;
+                  });
+                }),
                 isExpanded: true,
                 hint: const Align(
                   alignment: AlignmentDirectional.center,
                   child: Text(
-                    'None apply.',
+                    'No symptoms (tap to add more).',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       color: Colors.white,
                     ),
                   ),
@@ -416,7 +446,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                                     child: Text(
                                       item,
                                       style: const TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 24,
                                         color: Colors.white,
                                       ),
                                       textAlign: TextAlign.center,
@@ -435,12 +465,22 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 value: selectedItems.isEmpty ? null : selectedItems.last,
                 onChanged: (value) {},
                 dropdownDecoration: const BoxDecoration(
-                  color: Color(0xff0b3954),
+                  color: Color.fromARGB(255, 17, 87, 127),
+                  //color: Color(0xff0b3954),
                 ),
                 iconEnabledColor: Colors.white,
-                itemHeight: 100,
+                itemHeight: 120,
                 customItemsHeights: itemHeights,
                 dropdownMaxHeight: 700,
+                buttonPadding: const EdgeInsets.only(left: 10, right: 0),
+                buttonDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                  color: const Color.fromARGB(255, 17, 87, 127),
+                ),
+                buttonElevation: 2,
                 scrollbarAlwaysShow: true,
                 selectedItemBuilder: (context) {
                   return choices.map(
@@ -453,7 +493,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                           selectedItems.join(', '),
                           maxLines: 5,
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 24,
                             overflow: TextOverflow.ellipsis,
                             color: Colors.white,
                           ),
@@ -465,6 +505,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
               )),
             ),
           ),
+          SizedBox(height: size.height / 2.5),
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: SizedBox(
@@ -474,17 +515,26 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                   height: 60,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: greyNext == true
+                        ? Border.all(color: Colors.grey, width: 2)
+                        : Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: Text(
                     "Next",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: greyNext == true
+                        ? TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.grey,
+                            fontSize: _continueFontSize,
+                            fontWeight: FontWeight.w500,
+                          )
+                        : TextStyle(
+                            fontFamily: 'OpenSans',
+                            color: Colors.white,
+                            fontSize: _continueFontSize,
+                            fontWeight: FontWeight.w500,
+                          ),
                   ),
                 ),
                 onTap: () {
@@ -577,12 +627,12 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                   border: Border.all(color: Colors.white, width: 2),
                 ),
                 alignment: Alignment.center,
-                child: const Text(
+                child: Text(
                   "Submit",
                   style: TextStyle(
                     fontFamily: 'OpenSans',
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: _continueFontSize,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

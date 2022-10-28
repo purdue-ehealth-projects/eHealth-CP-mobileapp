@@ -5,8 +5,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class GraphSurvey extends StatelessWidget {
   final List<SurveyScores> gSS;
   final int scoreToday;
+  final String name;
 
-  const GraphSurvey(this.gSS, this.scoreToday, {super.key});
+  const GraphSurvey(this.gSS, this.scoreToday, this.name, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +29,14 @@ class GraphSurvey extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text(
-                "Your Score Today",
+                "Your Score Today:",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: "OpenSans",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 40,
-                  color: Colors.white,
-                ),
+                    fontFamily: "OpenSans",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 35,
+                    color: Colors.white,
+                    overflow: TextOverflow.ellipsis),
               ),
             ),
             Padding(
@@ -79,10 +80,12 @@ class GraphSurvey extends StatelessWidget {
               child: Text(
                 "Your past 5 records: ",
                 style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "OpenSans",
-                    color: Colors.white),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "OpenSans",
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             Container(

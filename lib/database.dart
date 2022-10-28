@@ -64,10 +64,22 @@ class MongoDB {
     return false;
   }
 
+  /// Checks if patient exists in the database
+  static Future<bool> existPatient(String name) async {
+    if (await patientCollection.findOne(where.eq('name', name)) != null) {
+      return true;
+    }
+    return false;
+  }
+
   /// Finds and returns user in the database.
   static Future<Map<String, dynamic>> findUser(String name) async {
-    var res = await userCollection.findOne(where.eq('name', name));
-    return res;
+    return await userCollection.findOne(where.eq('name', name));
+  }
+
+  /// Finds and returns patient in the database.
+  static Future<Map<String, dynamic>> findPatient(String name) async {
+    return await patientCollection.findOne(where.eq('name', name));
   }
 
   /// Currently not used
@@ -79,40 +91,14 @@ class MongoDB {
   }
 
   /// Creates a user entry in the database.
-  static Future<String> createUser(
-      String name, String password, String salt) async {
-    String userId = ObjectId().toString();
-    userId = userId.substring(10, userId.length - 2);
+  static createUser(String name, String password, String salt) async {
+    var patient = await MongoDB.findPatient(name);
+    dynamic userId = patient['_id'];
     await userCollection.insertOne({
       '_id': userId,
       'name': name,
       'password': password,
       'salt': salt,
-    });
-    return userId;
-  }
-
-  /// Creates a patient entry in the database.
-  static createPatient(
-      String name, String age, String dob, String userId) async {
-    await patientCollection.insertOne({
-      '_id': userId,
-      'name': name,
-      'address': '',
-      'age': age,
-      'appointment_day': '',
-      'contact_1': '',
-      'contact_2': '',
-      'diagnosis_one': '',
-      'diagnosis_two': '',
-      'gender_id': '',
-      'medic': '',
-      'priority': '',
-      'program': '',
-      'race': '',
-      'start_date': '',
-      'userId': userId,
-      'zone': 0,
     });
   }
 
@@ -139,6 +125,30 @@ class MongoDB {
     await rawSurveyCollection.insertOne(toAdd);
   }
 
+  /// Creates a patient entry in the database.
+  static createPatient(
+      String name, String age, String dob, String userId) async {
+    await patientCollection.insertOne({
+      '_id': userId,
+      'name': name,
+      'address': '',
+      'age': age,
+      'appointment_day': '',
+      'contact_1': '',
+      'contact_2': '',
+      'diagnosis_one': '',
+      'diagnosis_two': '',
+      'gender_id': '',
+      'medic': '',
+      'priority': '',
+      'program': '',
+      'race': '',
+      'start_date': '',
+      'userId': userId,
+      'zone': 0,
+    });
+  }
+
   /// Deletes a patient entry with the corresponding name.
   static deletePatient(String name) async {
     await patientCollection.deleteOne({'name': name});
@@ -149,13 +159,15 @@ class MongoDB {
     await userCollection.deleteOne({'name': name});
   }
 
-  /// Do not use
+  /// Testing only
+  /*
   static dropTest() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
     patientCollection = db.collection('patients');
     userCollection = db.collection('users');
   }
+  */
 
   /// Test database functions
   static test() async {
