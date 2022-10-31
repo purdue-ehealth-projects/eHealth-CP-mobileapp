@@ -58,18 +58,12 @@ class MongoDB {
 
   /// Checks if user exists in the database
   static Future<bool> existUser(String name) async {
-    if (await userCollection.findOne(where.eq('name', name)) != null) {
-      return true;
-    }
-    return false;
+    return (await userCollection.findOne(where.eq('name', name)) != null);
   }
 
   /// Checks if patient exists in the database
   static Future<bool> existPatient(String name) async {
-    if (await patientCollection.findOne(where.eq('name', name)) != null) {
-      return true;
-    }
-    return false;
+    return (await patientCollection.findOne(where.eq('name', name)) != null);
   }
 
   /// Finds and returns user in the database.
@@ -83,10 +77,11 @@ class MongoDB {
   }
 
   /// Currently not used
-  static updateUser(String name, String password, String salt) async {
+  static updateUser(String name, String password) async {
     var user = await findUser(name);
-    user['password'] = password;
-    user['salt'] = salt;
+    final salt = user['salt'];
+    final encryptedPassword = hashPassWithSalt(password, salt);
+    user['password'] = encryptedPassword;
     await userCollection.save(user);
   }
 
@@ -103,29 +98,30 @@ class MongoDB {
   }
 
   /// Adds a survey entry in the database.
-  static Future<String> addSurvey(
-      Map<String, dynamic> survey, String userId) async {
-    String surveyId = ObjectId().toString();
-    surveyId = surveyId.substring(10, surveyId.length - 2);
-    survey['_id'] = surveyId;
-    survey['userId'] = userId;
-    await surveyCollection.insertOne(survey);
+  static Future<ObjectId> addSurvey(
+      Map<String, dynamic> surveyData, ObjectId userId) async {
+    ObjectId surveyId = ObjectId();
+    //surveyId = surveyId.substring(10, surveyId.length - 2);
+    surveyData['_id'] = surveyId;
+    surveyData['userId'] = userId;
+    await surveyCollection.insertOne(surveyData);
     return surveyId;
   }
 
   /// Adds a raw survey entry in the database.
   static addRawSurvey(
-      Map<String, String> rawSurvey, String surveyId, String userId) async {
+      Map<String, String> rawSurvey, ObjectId surveyId, ObjectId userId) async {
     Map<String, dynamic> toAdd = {};
     toAdd['_id'] = surveyId;
-    toAdd['userId'] = userId;
     for (final entry in rawSurvey.entries) {
       toAdd.putIfAbsent(entry.key, () => entry.value);
     }
+    toAdd['userId'] = userId;
     await rawSurveyCollection.insertOne(toAdd);
   }
 
-  /// Creates a patient entry in the database.
+  /// Creates a patient entry in the database. NOT USED.
+  /*
   static createPatient(
       String name, String age, String dob, String userId) async {
     await patientCollection.insertOne({
@@ -148,6 +144,7 @@ class MongoDB {
       'zone': 0,
     });
   }
+  */
 
   /// Deletes a patient entry with the corresponding name.
   static deletePatient(String name) async {
@@ -162,14 +159,20 @@ class MongoDB {
   /// Testing only
   /*
   static dropTest() async {
-    await db.dropCollection('patients');
     await db.dropCollection('users');
-    patientCollection = db.collection('patients');
     userCollection = db.collection('users');
   }
   */
 
-  /// Test database functions
+  /*
+  static printStuff() async {
+    print(await userCollection.find().toList());
+    print(await surveyCollection.find().toList());
+    print(await rawSurveyCollection.find().toList());
+  }
+  */
+
+  /*
   static test() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
@@ -201,4 +204,5 @@ class MongoDB {
     //print('First document fetched: ${res['name']} - ${res['state']}');
     await cleanupDatabase();
   }
+  */
 }

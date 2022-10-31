@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/graph_survey.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
 
@@ -26,13 +27,13 @@ class CompletionPage extends StatefulWidget {
 /// Completion page state.
 class _CompletionPageState extends State<CompletionPage> {
   List<SurveyScores> ss = [];
+  DateTime dateNow = DateTime.now();
 
   /// Updates local and remote databases.
   Future<void> updateDatabase() async {
     int score = widget.scoreData["score"]!;
 
-    String time =
-        '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
+    String time = '${dateNow.year} ${dateNow.month} ${dateNow.day}';
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? dates = prefs.getStringList("dates");
@@ -58,11 +59,14 @@ class _CompletionPageState extends State<CompletionPage> {
 
     // UPDATE DATABASE HERE
     Map<String, dynamic> user = await MongoDB.findUser(widget.name);
-    dynamic userId = user['_id'];
-    widget.scoreData["date"] = '${DateTime.now()}';
+    mongo_dart.ObjectId userId = user['_id'];
+
+    widget.scoreData["date"] = '$dateNow';
     widget.scoreData["name"] = widget.name;
-    String surveyId = await MongoDB.addSurvey(widget.scoreData, userId);
-    widget.quizResult["date"] = '${DateTime.now()}';
+    mongo_dart.ObjectId surveyId =
+        await MongoDB.addSurvey(widget.scoreData, userId);
+
+    widget.quizResult["date"] = '$dateNow';
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
 
     //reschedule for the next day

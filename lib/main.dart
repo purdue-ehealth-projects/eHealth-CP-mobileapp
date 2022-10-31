@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.teal,
         colorScheme:
-        ColorScheme.fromSwatch().copyWith(secondary: Colors.tealAccent),
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.tealAccent),
       ),
       title: 'EMS Health',
       home: const HomePage(),
