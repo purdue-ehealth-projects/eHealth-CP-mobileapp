@@ -148,23 +148,25 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  onTap: () {
-                    loginUser(nameController.text, passwordController.text)
-                        .then((result) {
+                  onTap: () async {
+                    int result = await loginUser(
+                        nameController.text, passwordController.text);
+                    if (result != 0) {
+                      if (!mounted) return;
+                      loginFailedAlert(context, result);
+                    } else {
                       pushNameLocal(
                           nameController.text, passwordController.text);
-                      if (result) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SurveyWelcomePage(
-                                username: nameController.text),
-                          ),
-                        );
-                      } else {
-                        loginFailedAlert(context);
-                      }
-                    });
+
+                      if (!mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SurveyWelcomePage(username: nameController.text),
+                        ),
+                      );
+                    }
                   },
                 ),
                 const SizedBox(height: 20),

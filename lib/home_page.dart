@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage>
 }
 
 /// Login failed alert pop up
-loginFailedAlert(BuildContext context) {
+loginFailedAlert(BuildContext context, int errCode) {
   // set up the button
   Widget okButton = TextButton(
     child: const Text("OK"),
@@ -133,13 +133,24 @@ loginFailedAlert(BuildContext context) {
   );
 
   // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: const Text("Login Failed"),
-    content: const Text("Wrong username or password. Please try again."),
-    actions: [
-      okButton,
-    ],
-  );
+  AlertDialog alert = const AlertDialog();
+  if (errCode == 1) {
+    alert = AlertDialog(
+      title: const Text("Login Failed"),
+      content: const Text("Wrong Password. Please try again."),
+      actions: [
+        okButton,
+      ],
+    );
+  } else if (errCode == 2) {
+    alert = AlertDialog(
+      title: const Text("Login Failed"),
+      content: const Text("User doesn't exist. Please create a user account."),
+      actions: [
+        okButton,
+      ],
+    );
+  }
 
   // show the dialog
   showDialog(
@@ -151,7 +162,7 @@ loginFailedAlert(BuildContext context) {
 }
 
 /// Register failed alert pop up
-registerFailedAlert(BuildContext context, int errCode) {
+validateUserFailedAlert(BuildContext context, int errCode) {
   // set up the button
   Widget okButton = TextButton(
     child: const Text("OK"),
@@ -199,13 +210,11 @@ registerFailedAlert(BuildContext context, int errCode) {
 
 /// Bad password alert pop up
 badPasswordAlert(BuildContext context) {
-  // set up the button
   Widget okButton = TextButton(
     child: const Text("OK"),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
-  // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: const Text("Insecure Password"),
     content: const Text("Password is too weak."),
@@ -214,7 +223,6 @@ badPasswordAlert(BuildContext context) {
     ],
   );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -223,17 +231,21 @@ badPasswordAlert(BuildContext context) {
   );
 }
 
-/// Helper function log in user.
-Future<bool> loginUser(String name, String password) async {
+/// Helper function log in user. 0 for success log-in, error code otherwise.
+Future<int> loginUser(String name, String password) async {
   if (await MongoDB.existUser(name) == false) {
-    return false;
+    return 2;
   }
   var user = await MongoDB.findUser(name);
   String storedPassword = user['password'];
   String salt = user['salt'];
   final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
 
-  return (storedPassword == encryptedPassword);
+  if (storedPassword == encryptedPassword) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
 
 /// Ensure that a patient profile for user already exists. Returns an error

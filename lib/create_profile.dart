@@ -157,7 +157,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 int result = await validateUsername(nameController.text);
                 if (result != 0) {
                   if (!mounted) return;
-                  registerFailedAlert(context, result);
+                  validateUserFailedAlert(context, result);
                 }
                 if (result == 0 && _goodPassword == false) {
                   if (!mounted) return;
