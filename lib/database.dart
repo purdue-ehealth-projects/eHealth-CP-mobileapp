@@ -86,13 +86,16 @@ class MongoDB {
   }
 
   /// Creates a user entry in the database.
-  static createUser(String name, String password, String salt) async {
+  static createUser(String name, String password) async {
     var patient = await MongoDB.findPatient(name);
     dynamic userId = patient['_id'];
+    // Generates a salt with length 10
+    final salt = getSalt(10);
+    final encryptedPassword = hashPassWithSalt(password, salt);
     await userCollection.insertOne({
       '_id': userId,
       'name': name,
-      'password': password,
+      'password': encryptedPassword,
       'salt': salt,
     });
   }

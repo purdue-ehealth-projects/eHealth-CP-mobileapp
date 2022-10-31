@@ -272,10 +272,5 @@ void pushNameLocal(String name, String password) async {
 
 /// Register user and create user account in MongoDB.
 void pushUserMongoDB(String name, String password) async {
-  // Generates a salt with length 10
-  final salt = MongoDB.getSalt(10);
-  final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
-
-  await MongoDB.createUser(name, encryptedPassword, salt);
-  //await MongoDB.createPatient(name, age, dob, uesrId);
+  await MongoDB.createUser(name, password);
 }
