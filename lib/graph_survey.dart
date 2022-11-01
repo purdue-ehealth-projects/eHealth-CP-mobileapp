@@ -1,16 +1,39 @@
 import 'package:emshealth/completion_page.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'home_page.dart';
 
-class GraphSurvey extends StatelessWidget {
+TextButton profileButton(BuildContext context, String username) {
+  return TextButton(
+    onPressed: () => showProfile(context, username),
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.white,
+    ),
+    child: const Icon(Icons.account_circle),
+  );
+}
+
+class GraphSurvey extends StatefulWidget {
   final List<SurveyScores> gSS;
   final int scoreToday;
   final String name;
-
-  const GraphSurvey(this.gSS, this.scoreToday, this.name, {super.key});
+  const GraphSurvey(
+      {Key? key,
+      required this.gSS,
+      required this.scoreToday,
+      required this.name})
+      : super(key: key);
 
   @override
+  State<GraphSurvey> createState() => _GraphSurveyState();
+}
+
+class _GraphSurveyState extends State<GraphSurvey> {
+  @override
   Widget build(BuildContext context) {
+    final List<SurveyScores> gSS = widget.gSS;
+    final int scoreToday = widget.scoreToday;
+    final String name = widget.name;
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
@@ -21,6 +44,7 @@ class GraphSurvey extends StatelessWidget {
         ),
         backgroundColor: const Color(0xff0b3954),
         leading: null,
+        actions: <Widget>[profileButton(context, name)],
       ),
       body: Container(
         alignment: Alignment.center,

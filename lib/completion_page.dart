@@ -27,11 +27,11 @@ class CompletionPage extends StatefulWidget {
 /// Completion page state.
 class _CompletionPageState extends State<CompletionPage> {
   List<SurveyScores> ss = [];
-  DateTime dateNow = DateTime.now();
 
   /// Updates local and remote databases.
   Future<void> updateDatabase() async {
     int score = widget.scoreData["score"]!;
+    DateTime dateNow = DateTime.now();
 
     String time = '${dateNow.year} ${dateNow.month} ${dateNow.day}';
 
@@ -139,7 +139,8 @@ class _CompletionPageState extends State<CompletionPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => GraphSurvey(ss, score, widget.name),
+                            builder: (_) => GraphSurvey(
+                                gSS: ss, scoreToday: score, name: widget.name),
                           ));
                     },
                   ),
@@ -304,7 +305,8 @@ class _CompletionPageState extends State<CompletionPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GraphSurvey(ss, score, widget.name),
+                  builder: (_) => GraphSurvey(
+                      gSS: ss, scoreToday: score, name: widget.name),
                 ));
             return falsing();
           },

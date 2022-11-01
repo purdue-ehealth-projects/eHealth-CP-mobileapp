@@ -4,6 +4,8 @@ import 'package:emshealth/survey_data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import 'home_page.dart';
+
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
   return LinearPercentIndicator(
@@ -45,6 +47,16 @@ noSelectionAlert(BuildContext context) {
   );
 }
 
+TextButton profileButton(BuildContext context, String username) {
+  return TextButton(
+    onPressed: () => showProfile(context, username),
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.white,
+    ),
+    child: const Icon(Icons.account_circle),
+  );
+}
+
 /// Maps user answer to each question.
 Map<String, String> x = {};
 double _continueFontSize = 32;
@@ -70,7 +82,10 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
-        actions: <Widget>[getProgressBar(0, context)],
+        actions: <Widget>[
+          getProgressBar(0, context),
+          profileButton(context, username),
+        ],
       ),
       body: ListView(
         children: <Widget>[
@@ -167,7 +182,10 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
-        actions: <Widget>[getProgressBar(percent, context)],
+        actions: <Widget>[
+          getProgressBar(percent, context),
+          profileButton(context, username)
+        ],
       ),
       body: Container(
         color: const Color(0xff0b3954),
@@ -371,7 +389,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
-        actions: <Widget>[getProgressBar(percent, context)],
+        actions: <Widget>[
+          getProgressBar(percent, context),
+          profileButton(context, username)
+        ],
       ),
       body: Container(
         color: const Color(0xff0b3954),
@@ -598,7 +619,10 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
-        actions: <Widget>[getProgressBar(percent, context)],
+        actions: <Widget>[
+          getProgressBar(percent, context),
+          profileButton(context, username)
+        ],
       ),
       body: Container(
         color: const Color(0xff0b3954),

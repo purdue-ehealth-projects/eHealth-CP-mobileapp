@@ -26,6 +26,8 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
+    super.initState();
+    MongoDB.connect();
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         // This is just a basic example. For real apps, you must show some
@@ -40,7 +42,6 @@ class _HomePageState extends State<HomePage>
     );
     // cannot make initState async (need to create helper function)
     _scheduleNotif();
-    super.initState();
   }
 
   /// Schedules notification
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage>
   }
 
   bool goBack = false;
-  String? username = '';
+  String _username = '';
   bool signin = false;
   bool didSurvey = false;
   List<SurveyScores> graphSS = [];
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
-    MongoDB.cleanupDatabase();
+    //MongoDB.cleanupDatabase();
     super.dispose();
   }
 
@@ -68,12 +69,13 @@ class _HomePageState extends State<HomePage>
     return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
-        // didSurvey == false
-        return scoreToday == -1
+        // scoreToday == -1
+        return didSurvey == false
             ? (signin
-                ? SurveyWelcomePage(username: username.toString())
+                ? SurveyWelcomePage(username: _username.toString())
                 : const LoginPage())
-            : GraphSurvey(graphSS, scoreToday, username!);
+            : GraphSurvey(
+                gSS: graphSS, scoreToday: scoreToday, name: _username);
       },
     );
   }
@@ -87,22 +89,26 @@ class _HomePageState extends State<HomePage>
         ));
   }
 
-  /// Load local date from storage to app memory
+  /// Load local date from storage to app memory.
   Future<void> loadLocalData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String curDate =
         '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
 
-    username = prefs.getString("username");
+    String? username = prefs.getString("username");
     String? password = prefs.getString("password");
     String? date = prefs.getString("date");
 
-    if (username != null &&
-        username != "" &&
-        password != null &&
-        password != "") {
-      signin = true;
+    if (username == null || password == null) {
+      signin = false;
+    } else {
+      // false if ret is not 0
+      signin = (await loginUser(username, password) == 0);
+    }
+
+    if (signin) {
+      _username = username!;
       if (date == curDate) {
         didSurvey = true;
         scoreToday = prefs.getInt("scoreToday")!;
@@ -116,6 +122,8 @@ class _HomePageState extends State<HomePage>
           }
         }
       }
+    } else {
+      await prefs.clear();
     }
   }
 
@@ -231,7 +239,9 @@ badPasswordAlert(BuildContext context) {
   );
 }
 
-/// Helper function log in user. 0 for success log-in, error code otherwise.
+/// Helper function log in user. Returns an error code.
+///
+/// @Return: 0 - no error; 1 - wrong password; 2 - user doesn't exist.
 Future<int> loginUser(String name, String password) async {
   if (await MongoDB.existUser(name) == false) {
     return 2;
@@ -249,7 +259,10 @@ Future<int> loginUser(String name, String password) async {
 }
 
 /// Ensure that a patient profile for user already exists. Returns an error
-/// code (0 for no error).
+/// code.
+///
+/// @Return: 0 - no error; 1 - empty input; 2 - patient profile doesn't exist;
+/// 3 - user account already exists.
 Future<int> validateUsername(String name) async {
   if (name.isEmpty) {
     return 1;
@@ -273,4 +286,33 @@ void pushNameLocal(String name, String password) async {
 /// Register user and create user account in MongoDB.
 void pushUserMongoDB(String name, String password) async {
   await MongoDB.createUser(name, password);
+}
+
+Future<void> showProfile(BuildContext context, String name) async {
+  Map<String, dynamic> patient = await MongoDB.findPatient(name);
+  patient.removeWhere((key, value) => key == '_id');
+
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Patient Profile Page'),
+        content: SingleChildScrollView(
+            child: ListBody(
+                children: patient.entries.map((entry) {
+          var w = Text("${entry.key}: ${entry.value}");
+          return w;
+        }).toList())),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('DISMISS'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

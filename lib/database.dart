@@ -37,22 +37,30 @@ class MongoDB {
 
   /// Connect app to MongoDB database
   static connect() async {
-    final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
-    final String pass =
-        Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
-    final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
-    String connection = "$prePass$pass$postPass";
-    //print(connection);
-    db = await Db.create(connection);
-    await db.open();
-    userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
-    patientCollection = db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
-    surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
-    rawSurveyCollection =
-        db.collection(FlutterConfig.get('RAW_SURVEY_COLLECTION'));
+    if (db == null) {
+      final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
+      final String pass =
+          Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
+      final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
+      String connection = "$prePass$pass$postPass";
+      //print(connection);
+      try {
+        db = await Db.create(connection);
+        await db.open();
+      } catch (e) {
+        return;
+      }
 
-    if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
-      return;
+      userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
+      patientCollection =
+          db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
+      surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
+      rawSurveyCollection =
+          db.collection(FlutterConfig.get('RAW_SURVEY_COLLECTION'));
+
+      if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
+        return;
+      }
     }
   }
 
