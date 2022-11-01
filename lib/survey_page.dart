@@ -685,23 +685,19 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
   int score = 0;
   int breathing = 0;
   String breathingCompare = '';
-  int energyLevels = 0;
   int heart = 0;
   int sleep = 0;
   String sleepCompare = '';
   int weight = 0;
   String weightCompare = '';
-  // need
-  String needs = x[questions[9]].toString();
   // conditions
   List<String> condition = [];
+  int energyLevels = 0;
+  // need, last question
+  String needs = x[questions[9]].toString();
 
   for (String q in questions) {
-    if (q.compareTo(questions[9].toString()) == 0) {
-      break;
-    }
     String ans = x[q].toString();
-
     switch (q) {
       case "How is your breathing? \n(Choose one option)":
         switch (ans) {
@@ -781,32 +777,32 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
         switch (ans) {
           case "My weight went up 2 or more pounds since yesterday":
             score += 10;
-            sleep = 10;
+            weight = 10;
             break;
           case "My clothes and shoes feel tight":
             score += 5;
-            sleep = 5;
+            weight = 5;
             break;
           case "I can see swelling in my ankles":
             score += 5;
-            sleep = 5;
+            weight = 5;
             break;
           case "My weight is the same or less than yesterday":
             score += 0;
-            sleep = 0;
+            weight = 0;
             break;
         }
         break;
       case "And this is: \n(Compare your weight to yesterday)":
         switch (ans) {
-          case "Better than yesterday":
-            weightCompare = "better";
+          case "More than yesterday":
+            weightCompare = "more";
             break;
           case "Same as yesterday":
             weightCompare = "same";
             break;
-          case "Worse than yesterday":
-            weightCompare = "worse";
+          case "Less than yesterday":
+            weightCompare = "less";
             break;
         }
         break;
@@ -814,7 +810,7 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
         switch (ans) {
           case "Better than yesterday":
             score -= 5;
-            energyLevels = -5;
+            energyLevels = 5;
             break;
           case "Same as yesterday":
             score += 0;
@@ -822,7 +818,7 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
             break;
           case "Worse than yesterday":
             score += 5;
-            energyLevels = 5;
+            energyLevels = -5;
             break;
         }
         break;
@@ -836,13 +832,13 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
   scoreData['score'] = score;
   scoreData['breathing'] = breathing;
   scoreData['breathing_compare'] = breathingCompare;
-  scoreData['energy_levels'] = energyLevels;
   scoreData['heart'] = heart;
   scoreData['sleep'] = sleep;
   scoreData['sleep_compare'] = sleepCompare;
   scoreData['weight'] = weight;
   scoreData['weight_compare'] = weightCompare;
-  scoreData['needs'] = needs;
   scoreData['condition'] = condition;
+  scoreData['energy_levels'] = energyLevels;
+  scoreData['needs'] = needs;
   return scoreData;
 }
