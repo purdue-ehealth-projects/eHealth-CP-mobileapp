@@ -172,7 +172,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     context,
                     MaterialPageRoute(
                       builder: (_) =>
-                          SurveyWelcomePage(username: nameController.text),
+                          SurveyWelcomePage(name: nameController.text),
                     ),
                   );
                 }

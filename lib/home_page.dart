@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage>
             ? (didSurvey == true
                 ? GraphSurvey(
                     gSS: graphSS, scoreToday: scoreToday, name: _username)
-                : SurveyWelcomePage(username: _username.toString()))
+                : SurveyWelcomePage(name: _username.toString()))
             : const LoginPage();
       },
     );
@@ -152,7 +152,8 @@ loginFailedAlert(BuildContext context, int errCode) {
   } else if (errCode == 2) {
     alert = AlertDialog(
       title: const Text("Login Failed"),
-      content: const Text("User doesn't exist. Please create a user account."),
+      content: const Text(
+          "This user doesn't exist. Please create a new user account."),
       actions: [
         okButton,
       ],
@@ -181,7 +182,7 @@ validateUserFailedAlert(BuildContext context, int errCode) {
   if (errCode == 1) {
     alert = AlertDialog(
       title: const Text("Register Failed"),
-      content: const Text("Username cannot be empty."),
+      content: const Text("Name cannot be empty."),
       actions: [
         okButton,
       ],
@@ -190,7 +191,7 @@ validateUserFailedAlert(BuildContext context, int errCode) {
     alert = AlertDialog(
       title: const Text("Register Failed"),
       content: const Text(
-          "This user doesn't have a patient profile. Please check with your paramedic."),
+          "No patient profile found with given name. Please check with your paramedic."),
       actions: [
         okButton,
       ],
@@ -199,7 +200,7 @@ validateUserFailedAlert(BuildContext context, int errCode) {
     alert = AlertDialog(
       title: const Text("Register Failed"),
       content: const Text(
-          "User with username already exists. Please log in instead."),
+          "User with given name already exists. Please log in instead."),
       actions: [
         okButton,
       ],

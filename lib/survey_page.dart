@@ -64,8 +64,8 @@ double _itemHeight = 80;
 
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
-  final String username;
-  const SurveyWelcomePage({Key? key, required this.username}) : super(key: key);
+  final String name;
+  const SurveyWelcomePage({Key? key, required this.name}) : super(key: key);
 
   @override
   State<SurveyWelcomePage> createState() => _SurveyWelcomePageState();
@@ -75,7 +75,7 @@ class SurveyWelcomePage extends StatefulWidget {
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   @override
   Widget build(BuildContext context) {
-    final String username = widget.username;
+    final String name = widget.name;
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -84,7 +84,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(0, context),
-          profileButton(context, username),
+          profileButton(context, name),
         ],
       ),
       body: ListView(
@@ -94,7 +94,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
             child: SizedBox(
               height: size.height * 0.5,
               child: Text(
-                "Hello, ${widget.username}.\nWelcome to the survey!\n\nThis will only take 5 minutes.",
+                "Hello, ${widget.name}.\nWelcome to the survey!\n\nThis will only take 5 minutes.",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontFamily: 'OpenSans',
@@ -133,7 +133,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => SurveyQuestions(
-                        username: username,
+                        name: name,
                         choices: choicesData[0],
                         question: 0,
                         percent: 0.toInt()),
@@ -153,14 +153,14 @@ class SurveyQuestions extends StatefulWidget {
   final List<String> choices;
   final int question;
   final int percent;
-  final String username;
+  final String name;
 
   const SurveyQuestions(
       {Key? key,
       required this.choices,
       required this.question,
       required this.percent,
-      required this.username})
+      required this.name})
       : super(key: key);
 
   @override
@@ -173,7 +173,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
   @override
   Widget build(BuildContext context) {
-    final String username = widget.username;
+    final String name = widget.name;
     final int question = widget.question;
     final List<String> choices = widget.choices;
     final int percent = widget.percent;
@@ -184,7 +184,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, username)
+          profileButton(context, name)
         ],
       ),
       body: Container(
@@ -312,8 +312,8 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => LastSurveyPage(
-                            username: username, percent: percent + 10),
+                        builder: (_) =>
+                            LastSurveyPage(name: name, percent: percent + 10),
                       ),
                     );
                   } else if (question == 6) {
@@ -321,7 +321,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => SurveyQuestionsMulti(
-                            username: username,
+                            name: name,
                             choices: choicesData[question + 1],
                             question: question + 1,
                             percent: percent + 10),
@@ -332,7 +332,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => SurveyQuestions(
-                            username: username,
+                            name: name,
                             choices: choicesData[question + 1],
                             question: question + 1,
                             percent: percent + 10),
@@ -351,14 +351,14 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
 /// Survey page for multi option questions.
 class SurveyQuestionsMulti extends StatefulWidget {
-  final String username;
+  final String name;
   final List<String> choices;
   final int question;
   final int percent;
 
   const SurveyQuestionsMulti(
       {Key? key,
-      required this.username,
+      required this.name,
       required this.choices,
       required this.question,
       required this.percent})
@@ -375,7 +375,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
 
   @override
   Widget build(BuildContext context) {
-    final String username = widget.username;
+    final String name = widget.name;
     final List<String> choices = widget.choices;
     final int question = widget.question;
     final int percent = widget.percent;
@@ -391,7 +391,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, username)
+          profileButton(context, name)
         ],
       ),
       body: Container(
@@ -579,7 +579,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => SurveyQuestions(
-                          username: username,
+                          name: name,
                           choices: choicesData[question + 1],
                           question: question + 1,
                           percent: percent + 10),
@@ -597,11 +597,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
 
 /// Last survey page to ask for user to confirm
 class LastSurveyPage extends StatefulWidget {
-  final String username;
+  final String name;
   final int percent;
 
-  const LastSurveyPage(
-      {Key? key, required this.username, required this.percent})
+  const LastSurveyPage({Key? key, required this.name, required this.percent})
       : super(key: key);
 
   @override
@@ -612,7 +611,7 @@ class LastSurveyPage extends StatefulWidget {
 class _LastSurveyPageState extends State<LastSurveyPage> {
   @override
   Widget build(BuildContext context) {
-    final String username = widget.username;
+    final String name = widget.name;
     final int percent = widget.percent;
 
     Size size = MediaQuery.of(context).size;
@@ -621,7 +620,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, username)
+          profileButton(context, name)
         ],
       ),
       body: Container(
@@ -667,7 +666,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => CompletionPage(
-                        name: username, scoreData: scoreData, quizResult: x),
+                        name: name, scoreData: scoreData, quizResult: x),
                   ),
                 );
               },

@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              SurveyWelcomePage(username: nameController.text),
+                              SurveyWelcomePage(name: nameController.text),
                         ),
                       );
                     }
