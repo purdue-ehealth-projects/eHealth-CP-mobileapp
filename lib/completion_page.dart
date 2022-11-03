@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:emshealth/notification_api.dart';
 import 'package:emshealth/graph_survey.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
@@ -33,7 +32,7 @@ class _CompletionPageState extends State<CompletionPage> {
     int score = widget.scoreData["score"]!;
     DateTime dateNow = DateTime.now();
 
-    String time = '${dateNow.year} ${dateNow.month} ${dateNow.day}';
+    String dateToAdd = '${dateNow.month}/${dateNow.day}/${dateNow.year}';
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? dates = prefs.getStringList("dates");
@@ -45,7 +44,7 @@ class _CompletionPageState extends State<CompletionPage> {
       dates = [];
       scores = [];
     }
-    dates.add(time);
+    dates.add(dateToAdd);
     scores.add(score.toString());
 
     for (int i = 0; i < dates.length; i++) {
@@ -69,9 +68,8 @@ class _CompletionPageState extends State<CompletionPage> {
     widget.quizResult["date"] = '$dateNow';
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
 
-    //reschedule for the next day
-    await AwesomeNotifications().cancelAll();
-    schedule24HoursAheadAN();
+    // schedule notifications
+    await schedule24HoursAheadAN();
   }
 
   @override
@@ -245,7 +243,7 @@ class _CompletionPageState extends State<CompletionPage> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.all(5),
                     child: Text(
                       "Your past 5 records: ",
                       style: TextStyle(

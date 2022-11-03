@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage>
 
   /// Schedules notification
   void _scheduleNotif() async {
-    await timezoneInit();
     await schedule24HoursAheadAN();
   }
 
@@ -94,7 +93,7 @@ class _HomePageState extends State<HomePage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String curDate =
-        '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
+        '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
     String? username = prefs.getString("username");
     String? password = prefs.getString("password");

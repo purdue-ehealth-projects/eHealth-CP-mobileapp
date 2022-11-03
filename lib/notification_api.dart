@@ -11,54 +11,74 @@ Future<void> timezoneInit() async {
 }
 
 Future<void> schedule24HoursAheadAN() async {
+  await timezoneInit();
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  String? date = sharedPreferences.getString("date");
-  String curDate =
-      '${DateTime.now().year} ${DateTime.now().month} ${DateTime.now().day}';
+  final String? lastSurveyDate = sharedPreferences.getString("date");
+  final String curDate =
+      '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
-  if (date == null || date == "" || date != curDate) {
-    /// survey not complete; schedule for next hours until 8am next day
-    var tzDateTime = tz.TZDateTime(tz.local, now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
-    int id = 0;
-    if (now.hour == 8) {  // to handle special case where it is 8am now when it is first installed
-      for (int i = 0; i < 24; i++) {
-        tzDateTime = tzDateTime.add(const Duration(hours: 1));
-        await scheduleHourlyAN(id++, tzDateTime);
+  // survey not complete; schedule for next hours until 8am next day
+  if (lastSurveyDate == null ||
+      lastSurveyDate == "" ||
+      lastSurveyDate != curDate) {
+    var scheduledNotifs =
+        await AwesomeNotifications().listScheduledNotifications();
+    // do nothing if notifications are already scheduled
+    if (scheduledNotifs.isNotEmpty) {
+      return;
+    }
+
+    tz.TZDateTime scheduleDateTime;
+    int scheduleHour = -1;
+    if (now.hour > 9) {
+      if (now.hour % 2 == 0) {
+        scheduleHour = now.hour + 1;
+      } else {
+        scheduleHour = now.hour;
       }
     } else {
-      for (int i = now.hour; i != 8; i = (i + 1) % 24) {
-        tzDateTime = tzDateTime.add(const Duration(hours: 1));
-        await scheduleHourlyAN(id++, tzDateTime);
-      }
+      scheduleHour = 9;
+    }
+    scheduleDateTime = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
+
+    // schedule every 2 hours between 9 and 23
+    for (int i = 0;
+        i < 8 && 9 <= scheduleDateTime.hour && scheduleDateTime.hour <= 23;
+        i++) {
+      await scheduleHourlyAN(i, scheduleDateTime);
+      scheduleDateTime = scheduleDateTime.add(const Duration(hours: 2));
     }
   } else {
-    /// survey completed; schedule for tomorrow
-    var tzDateTime = tz.TZDateTime(tz.local, now.year, now.month, now.day + 1, 7, 0, 0, 0, 0);
-    for (int i = 0; i <= 23; i++) {
-      tzDateTime = tzDateTime.add(const Duration(hours: 1));
-      await scheduleHourlyAN(i, tzDateTime);
+    // survey completed; clear all notifs; schedule for tomorrow starting at 9
+    await AwesomeNotifications().cancelAll();
+    var scheduleDateTime = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day + 1, 9, 0, 0, 0, 0);
+    for (int i = 0; i < 8; i++) {
+      await scheduleHourlyAN(i, scheduleDateTime);
+      scheduleDateTime = scheduleDateTime.add(const Duration(hours: 2));
     }
   }
-
 }
 
 Future<void> scheduleHourlyAN(int id, DateTime dt) async {
-  String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+  String localTimeZone =
+      await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
   await AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: id,
-          channelKey: 'basic_channel',
-          title: 'Survey Reminder',
-          body:'Please complete your survey today.',
-          notificationLayout: NotificationLayout.BigPicture,
-          largeIcon: 'asset://assets/ems_health_icon3_small.png',
-          fullScreenIntent: true,
-          wakeUpScreen: true,
+        id: id,
+        channelKey: 'basic_channel',
+        title: 'Survey Reminder',
+        body: 'Please complete your survey today.',
+        notificationLayout: NotificationLayout.BigPicture,
+        largeIcon: 'asset://assets/ems_health_icon3_small.png',
+        fullScreenIntent: true,
+        wakeUpScreen: true,
+        category: NotificationCategory.Reminder,
       ),
-
       schedule: NotificationCalendar(
         year: dt.year,
         month: dt.month,
@@ -66,7 +86,8 @@ Future<void> scheduleHourlyAN(int id, DateTime dt) async {
         hour: dt.hour,
         minute: dt.minute,
         allowWhileIdle: true,
-        preciseAlarm: true,
+        // battery conscious
+        preciseAlarm: false,
         timeZone: localTimeZone,
       ));
 }
