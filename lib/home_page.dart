@@ -69,12 +69,12 @@ class _HomePageState extends State<HomePage>
       future: loadLocalData(),
       builder: (context, snapshot) {
         // scoreToday == -1
-        return didSurvey == false
-            ? (signin
-                ? SurveyWelcomePage(username: _username.toString())
-                : const LoginPage())
-            : GraphSurvey(
-                gSS: graphSS, scoreToday: scoreToday, name: _username);
+        return signin == true
+            ? (didSurvey == true
+                ? GraphSurvey(
+                    gSS: graphSS, scoreToday: scoreToday, name: _username)
+                : SurveyWelcomePage(username: _username.toString()))
+            : const LoginPage();
       },
     );
   }
@@ -278,8 +278,8 @@ Future<int> validateUsername(String name) async {
 /// Push name and password to storage
 void pushNameLocal(String name, String password) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('username', name);
-  prefs.setString('password', password);
+  await prefs.setString('username', name);
+  await prefs.setString('password', password);
 }
 
 /// Register user and create user account in MongoDB.
@@ -287,6 +287,7 @@ void pushUserMongoDB(String name, String password) async {
   await MongoDB.createUser(name, password);
 }
 
+/// Returns a patient profile page for the user.
 Future<void> showProfile(BuildContext context, String name) async {
   Map<String, dynamic> patient = await MongoDB.findPatient(name);
   patient.removeWhere((key, value) => key == '_id');
@@ -300,18 +301,90 @@ Future<void> showProfile(BuildContext context, String name) async {
         content: SingleChildScrollView(
             child: ListBody(
                 children: patient.entries.map((entry) {
-          var w = Text("${entry.key}: ${entry.value}");
-          return w;
+          var e = const Text("");
+          if (entry.key == 'name') {
+            e = Text(
+              "${entry.key}: ${entry.value}",
+              style: const TextStyle(fontSize: 18),
+            );
+          } else {
+            e = Text("${entry.key}: ${entry.value}");
+          }
+          return e;
         }).toList())),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: <Widget>[
           TextButton(
-            child: const Text('DISMISS'),
+            child: const Text(
+              'LOG OUT',
+              style: TextStyle(fontSize: 18, color: Colors.redAccent),
+            ),
+            onPressed: () async {
+              await confirmLogout(context);
+            },
+          ),
+          TextButton(
+            child: const Text(
+              'DISMISS',
+              style: TextStyle(fontSize: 18),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
         ],
       );
+    },
+  );
+}
+
+/// Dialog to confirm log out
+confirmLogout(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  Widget okButton = TextButton(
+    child: const Text(
+      "LOG OUT",
+      style: TextStyle(fontSize: 18, color: Colors.redAccent),
+    ),
+    onPressed: () async {
+      await prefs.clear();
+      // user action won't be fast enough to cause problems
+      // (user needs to input text)
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          // direct to login and not home so prefs.clear() won't get
+          // called again
+          builder: (_) => const LoginPage(),
+        ),
+      );
+    },
+  );
+  Widget noButton = TextButton(
+    child: const Text(
+      "CANCEL",
+      style: TextStyle(fontSize: 18),
+    ),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: const Text("Confirm Logout"),
+    content: const Text("Are you sure you want to log out?\n\n"
+        "All your local data will be cleared, and you will need to log back in again.\n\n"
+        "Your paramedic will still have all your past data."),
+    actionsAlignment: MainAxisAlignment.spaceBetween,
+    actions: [
+      okButton,
+      noButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
     },
   );
 }

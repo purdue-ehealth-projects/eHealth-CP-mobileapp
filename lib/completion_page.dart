@@ -51,10 +51,10 @@ class _CompletionPageState extends State<CompletionPage> {
       ss.add(SurveyScores(dates[i], int.parse(scores[i])));
     }
 
-    prefs.setInt("scoreToday", score);
-    prefs.setString('date', time);
-    prefs.setStringList("dates", dates);
-    prefs.setStringList("scores", scores);
+    await prefs.setInt("scoreToday", score);
+    await prefs.setString('date', dateToAdd);
+    await prefs.setStringList("dates", dates);
+    await prefs.setStringList("scores", scores);
 
     // UPDATE DATABASE HERE
     Map<String, dynamic> user = await MongoDB.findUser(widget.name);
