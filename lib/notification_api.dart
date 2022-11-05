@@ -32,33 +32,33 @@ Future<void> schedule24HoursAheadAN() async {
 
     tz.TZDateTime scheduleDateTime;
     int scheduleHour = -1;
-    if (now.hour > 9) {
-      if (now.hour % 2 == 0) {
-        scheduleHour = now.hour + 1;
-      } else {
-        scheduleHour = now.hour;
-      }
+    if (now.hour > 8) {
+      scheduleHour = now.hour;
     } else {
-      scheduleHour = 9;
+      scheduleHour = 8;
     }
     scheduleDateTime = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
 
-    // schedule every 2 hours between 9 and 23
+    // schedule every 15 minutes between 8 and 23
     for (int i = 0;
-        i < 8 && 9 <= scheduleDateTime.hour && scheduleDateTime.hour <= 23;
+        i < 16 && 8 <= scheduleDateTime.hour && scheduleDateTime.hour <= 23;
         i++) {
-      await scheduleHourlyAN(i, scheduleDateTime);
-      scheduleDateTime = scheduleDateTime.add(const Duration(hours: 2));
+      for (int j = 0; j < 4; j++) {
+        await scheduleHourlyAN(i, scheduleDateTime);
+        scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
+      }
     }
   } else {
     // survey completed; clear all notifs; schedule for tomorrow starting at 9
     await AwesomeNotifications().cancelAll();
     var scheduleDateTime = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day + 1, 9, 0, 0, 0, 0);
-    for (int i = 0; i < 8; i++) {
-      await scheduleHourlyAN(i, scheduleDateTime);
-      scheduleDateTime = scheduleDateTime.add(const Duration(hours: 2));
+        tz.local, now.year, now.month, now.day + 1, 8, 0, 0, 0, 0);
+    for (int i = 0; i < 16; i++) {
+      for (int j = 0; j < 4; j++) {
+        await scheduleHourlyAN(i, scheduleDateTime);
+        scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
+      }
     }
   }
 }
