@@ -24,10 +24,26 @@ class HomePage extends StatefulWidget {
 /// Homepage state
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  /// Schedules notification
+  _scheduleNotif() async {
+    await schedule24HoursAheadAN();
+  }
+
+  _connectMongo() async {
+    await MongoDB.connect();
+  }
+
+  /*
+  _disposeMongo() async {
+    await MongoDB.cleanupDatabase();
+  }
+  */
+
   @override
   void initState() {
     super.initState();
-    MongoDB.connect();
+    _connectMongo();
+
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         // This is just a basic example. For real apps, you must show some
@@ -36,17 +52,11 @@ class _HomePageState extends State<HomePage>
         AwesomeNotifications().requestPermissionToSendNotifications();
       }
     });
-
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: receiveMethod,
     );
     // cannot make initState async (need to create helper function)
     _scheduleNotif();
-  }
-
-  /// Schedules notification
-  void _scheduleNotif() async {
-    await schedule24HoursAheadAN();
   }
 
   bool goBack = false;
@@ -55,29 +65,6 @@ class _HomePageState extends State<HomePage>
   bool didSurvey = false;
   List<SurveyScores> graphSS = [];
   int scoreToday = -1;
-
-  @override
-  void dispose() {
-    //MongoDB.cleanupDatabase();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return FutureBuilder(
-      future: loadLocalData(),
-      builder: (context, snapshot) {
-        // scoreToday == -1
-        return signin == true
-            ? (didSurvey == true
-                ? GraphSurvey(
-                    gSS: graphSS, scoreToday: scoreToday, name: _username)
-                : SurveyWelcomePage(name: _username.toString()))
-            : const LoginPage();
-      },
-    );
-  }
 
   /// Page push after user clicks on notification
   static Future<void> receiveMethod(ReceivedAction ra) async {
@@ -124,6 +111,23 @@ class _HomePageState extends State<HomePage>
     } else {
       await prefs.clear();
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return FutureBuilder(
+      future: loadLocalData(),
+      builder: (context, snapshot) {
+        // scoreToday == -1
+        return signin == true
+            ? (didSurvey == true
+                ? GraphSurvey(
+                    gSS: graphSS, scoreToday: scoreToday, name: _username)
+                : SurveyWelcomePage(name: _username.toString()))
+            : const LoginPage();
+      },
+    );
   }
 
   @override

@@ -36,7 +36,7 @@ class MongoDB {
   }
 
   /// Connect app to MongoDB database
-  static connect() async {
+  static Future connect() async {
     if (db == null) {
       final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
       final String pass =
@@ -85,7 +85,7 @@ class MongoDB {
   }
 
   /// Currently not used
-  static updateUser(String name, String password) async {
+  static Future updateUser(String name, String password) async {
     var user = await findUser(name);
     final salt = user['salt'];
     final encryptedPassword = hashPassWithSalt(password, salt);
@@ -94,7 +94,7 @@ class MongoDB {
   }
 
   /// Creates a user entry in the database.
-  static createUser(String name, String password) async {
+  static Future createUser(String name, String password) async {
     var patient = await MongoDB.findPatient(name);
     dynamic userId = patient['_id'];
     // Generates a salt with length 10
@@ -120,7 +120,7 @@ class MongoDB {
   }
 
   /// Adds a raw survey entry in the database.
-  static addRawSurvey(
+  static Future addRawSurvey(
       Map<String, String> rawSurvey, ObjectId surveyId, ObjectId userId) async {
     Map<String, dynamic> toAdd = {};
     toAdd['_id'] = surveyId;
@@ -158,12 +158,12 @@ class MongoDB {
   */
 
   /// Deletes a patient entry with the corresponding name.
-  static deletePatient(String name) async {
+  static Future deletePatient(String name) async {
     await patientCollection.deleteOne({'name': name});
   }
 
   /// Deletes a user entry with the corresponding name.
-  static deleteUser(String name) async {
+  static Future deleteUser(String name) async {
     await userCollection.deleteOne({'name': name});
   }
 
