@@ -69,7 +69,7 @@ class _CompletionPageState extends State<CompletionPage> {
     await MongoDB.addRawSurvey(widget.quizResult, surveyId, userId);
 
     // schedule notifications
-    await schedule24HoursAheadAN();
+    await scheduleNotifications();
   }
 
   @override

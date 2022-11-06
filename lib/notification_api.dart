@@ -10,7 +10,7 @@ Future<void> timezoneInit() async {
   tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
 
-Future<void> schedule24HoursAheadAN() async {
+Future<void> scheduleNotifications() async {
   await timezoneInit();
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
   final sharedPreferences = await SharedPreferences.getInstance();
@@ -30,6 +30,7 @@ Future<void> schedule24HoursAheadAN() async {
       return;
     }
 
+    // schedule every 15 minutes between 8 and 23
     tz.TZDateTime scheduleDateTime;
     int scheduleHour = -1;
     if (now.hour > 8) {
@@ -37,15 +38,16 @@ Future<void> schedule24HoursAheadAN() async {
     } else {
       scheduleHour = 8;
     }
+
     scheduleDateTime = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
-
-    // schedule every 15 minutes between 8 and 23
+    int id = 1;
     for (int i = 0;
         i < 16 && 8 <= scheduleDateTime.hour && scheduleDateTime.hour <= 23;
         i++) {
       for (int j = 0; j < 4; j++) {
-        await scheduleHourlyAN(i, scheduleDateTime);
+        await _createNotif(id, scheduleDateTime);
+        id++;
         scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
       }
     }
@@ -54,16 +56,18 @@ Future<void> schedule24HoursAheadAN() async {
     await AwesomeNotifications().cancelAll();
     var scheduleDateTime = tz.TZDateTime(
         tz.local, now.year, now.month, now.day + 1, 8, 0, 0, 0, 0);
+    int id = 1;
     for (int i = 0; i < 16; i++) {
       for (int j = 0; j < 4; j++) {
-        await scheduleHourlyAN(i, scheduleDateTime);
+        await _createNotif(id, scheduleDateTime);
+        id++;
         scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
       }
     }
   }
 }
 
-Future<void> scheduleHourlyAN(int id, DateTime dt) async {
+Future<void> _createNotif(int id, DateTime dt) async {
   String localTimeZone =
       await AwesomeNotifications().getLocalTimeZoneIdentifier();
 

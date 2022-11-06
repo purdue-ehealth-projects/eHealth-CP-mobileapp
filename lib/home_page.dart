@@ -25,8 +25,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   /// Schedules notification
-  _scheduleNotif() async {
-    await schedule24HoursAheadAN();
+  _scheduleNotifs() async {
+    await scheduleNotifications();
   }
 
   _connectMongo() async {
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage>
       onActionReceivedMethod: receiveMethod,
     );
     // cannot make initState async (need to create helper function)
-    _scheduleNotif();
+    _scheduleNotifs();
   }
 
   bool goBack = false;
