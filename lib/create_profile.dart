@@ -1,9 +1,8 @@
-import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 import 'home_page.dart';
-
-import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'survey_page.dart';
 
 /// Create profile page that is pushed from the login page to create a new
 /// profile.

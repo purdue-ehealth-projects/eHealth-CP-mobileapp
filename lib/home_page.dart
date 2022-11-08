@@ -1,13 +1,14 @@
-import 'package:emshealth/completion_page.dart';
-import 'package:emshealth/database.dart';
-import 'package:emshealth/survey_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_fgbg/flutter_fgbg.dart';
+
+import 'notification_api.dart';
+import 'completion_page.dart';
+import 'database.dart';
+import 'survey_page.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:emshealth/notification_api.dart';
 
 /// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {

@@ -1,6 +1,7 @@
-import 'package:emshealth/completion_page.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+import 'completion_page.dart';
 import 'home_page.dart';
 
 TextButton profileButton(BuildContext context, String username) {

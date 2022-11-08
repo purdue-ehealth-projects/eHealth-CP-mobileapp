@@ -1,10 +1,10 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:emshealth/completion_page.dart';
-import 'package:emshealth/survey_data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'home_page.dart';
+import 'completion_page.dart';
+import 'survey_data.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
