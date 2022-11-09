@@ -52,7 +52,7 @@ Future<void> scheduleNotifications() async {
       }
     }
   } else {
-    // survey completed; clear all notifs; schedule for tomorrow starting at 9
+    // survey completed; clear all notifs; schedule for tomorrow starting at 8
     await AwesomeNotifications().cancelAll();
     var scheduleDateTime = tz.TZDateTime(
         tz.local, now.year, now.month, now.day + 1, 8, 0, 0, 0, 0);

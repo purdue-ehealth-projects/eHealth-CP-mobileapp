@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter_fgbg/flutter_fgbg.dart';
 
 import 'notification_api.dart';
-import 'completion_page.dart';
-import 'database.dart';
 import 'survey_page.dart';
+import 'database.dart';
 import 'graph_survey.dart';
 import 'login_page.dart';
 
@@ -25,13 +23,12 @@ class HomePage extends StatefulWidget {
 /// Homepage state
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  /// Schedules notification
-  _scheduleNotifs() async {
-    await scheduleNotifications();
-  }
-
   _connectMongo() async {
     await MongoDB.connect();
+  }
+
+  _scheduleNotifs() async {
+    await scheduleNotifications();
   }
 
   /*
@@ -43,6 +40,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    // cannot make initState async (need to create helper function)
     _connectMongo();
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -56,16 +54,15 @@ class _HomePageState extends State<HomePage>
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: receiveMethod,
     );
-    // cannot make initState async (need to create helper function)
     _scheduleNotifs();
   }
 
-  bool goBack = false;
   String _username = '';
-  bool signin = false;
-  bool didSurvey = false;
-  List<SurveyScores> graphSS = [];
-  int scoreToday = -1;
+  bool _signin = false;
+  bool _didSurvey = false;
+  final List<SurveyScores> _graphSS = [];
+  String _needs = '';
+  int _scoreToday = -1;
 
   /// Page push after user clicks on notification
   static Future<void> receiveMethod(ReceivedAction ra) async {
@@ -88,28 +85,30 @@ class _HomePageState extends State<HomePage>
     String? date = prefs.getString("date");
 
     if (username == null || password == null) {
-      signin = false;
+      _signin = false;
     } else {
       // false if ret is not 0
-      signin = (await loginUser(username, password) == 0);
+      _signin = (await loginUser(username, password) == 0);
     }
 
-    if (signin) {
+    if (_signin) {
       _username = username!;
       if (date == curDate) {
-        didSurvey = true;
-        scoreToday = prefs.getInt("scoreToday")!;
+        _didSurvey = true;
+        _scoreToday = prefs.getInt("scoreToday")!;
+        _needs = prefs.getString("needs")!;
 
         List<String>? scores = prefs.getStringList("scores");
         List<String>? dates = prefs.getStringList("dates");
 
         if (scores != null && dates != null) {
           for (int i = 0; i < scores.length; i++) {
-            graphSS.add(SurveyScores(dates[i], int.parse(scores[i])));
+            _graphSS.add(SurveyScores(dates[i], int.parse(scores[i])));
           }
         }
       }
     } else {
+      // clear all local storage
       await prefs.clear();
     }
   }
@@ -121,10 +120,14 @@ class _HomePageState extends State<HomePage>
       future: loadLocalData(),
       builder: (context, snapshot) {
         // scoreToday == -1
-        return signin == true
-            ? (didSurvey == true
+        return _signin == true
+            ? (_didSurvey == true
                 ? GraphSurvey(
-                    gSS: graphSS, scoreToday: scoreToday, name: _username)
+                    gSS: _graphSS,
+                    scoreToday: _scoreToday,
+                    name: _username,
+                    needs: _needs,
+                  )
                 : SurveyWelcomePage(name: _username.toString()))
             : const LoginPage();
       },
@@ -361,7 +364,7 @@ confirmLogout(BuildContext context) async {
         context,
         MaterialPageRoute(
           // direct to login and not home so prefs.clear() won't get
-          // called again
+          // called twice
           builder: (_) => const LoginPage(),
         ),
       );

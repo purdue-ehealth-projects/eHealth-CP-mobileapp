@@ -1,10 +1,14 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:emshealth/graph_survey.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 
 import 'home_page.dart';
-import 'completion_page.dart';
 import 'survey_data.dart';
+import 'database.dart';
+import 'notification_api.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
@@ -58,7 +62,7 @@ TextButton profileButton(BuildContext context, String username) {
 }
 
 /// Maps user answer to each question.
-Map<String, String> x = {};
+Map<String, String> quizResult = {};
 double _continueFontSize = 32;
 double _itemHeight = 80;
 
@@ -300,11 +304,11 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     noSelectionAlert(context);
                     return;
                   }
-                  if (x.containsKey(questions[question])) {
-                    x.update(
+                  if (quizResult.containsKey(questions[question])) {
+                    quizResult.update(
                         questions[question], (value) => selectedVal as String);
                   } else {
-                    x.putIfAbsent(
+                    quizResult.putIfAbsent(
                         questions[question], () => selectedVal as String);
                   }
 
@@ -570,10 +574,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                       }
                     }
                   }
-                  if (x.containsKey(questions[question])) {
-                    x.update(questions[question], (value) => temp);
+                  if (quizResult.containsKey(questions[question])) {
+                    quizResult.update(questions[question], (value) => temp);
                   } else {
-                    x.putIfAbsent(questions[question], () => temp);
+                    quizResult.putIfAbsent(questions[question], () => temp);
                   }
                   Navigator.push(
                     context,
@@ -660,15 +664,23 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                   ),
                 ),
               ),
-              onTap: () {
-                Map<String, dynamic> scoreData = collectScore(x);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CompletionPage(
-                        name: name, scoreData: scoreData, quizResult: x),
-                  ),
-                );
+              onTap: () async {
+                final Map<String, dynamic> scoreData = collectScore(quizResult);
+                final List<SurveyScores> ss =
+                    await updateDatabase(scoreData, name, quizResult);
+                final int scoreToday = scoreData['score'];
+                final String needs = scoreData['needs'];
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GraphSurvey(
+                          gSS: ss,
+                          scoreToday: scoreToday,
+                          name: name,
+                          needs: needs),
+                    ),
+                    (_) => false);
               },
             ),
           ],
@@ -678,8 +690,52 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
   }
 }
 
+Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
+    String name, Map<String, String> quizResult) async {
+  List<SurveyScores> ss = [];
+  int score = scoreData['score']!;
+  DateTime dateNow = DateTime.now();
+  String dateToAdd = '${dateNow.month}/${dateNow.day}/${dateNow.year}';
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String>? dates = prefs.getStringList("dates");
+  List<String>? scores = prefs.getStringList("scores");
+  if (dates == null || dates.isEmpty || scores == null || scores.isEmpty) {
+    dates = [];
+    scores = [];
+  }
+  dates.add(dateToAdd);
+  scores.add(score.toString());
+
+  for (int i = 0; i < dates.length; i++) {
+    ss.add(SurveyScores(dates[i], int.parse(scores[i])));
+  }
+
+  await prefs.setInt("scoreToday", score);
+  await prefs.setString('date', dateToAdd);
+  await prefs.setStringList("dates", dates);
+  await prefs.setStringList("scores", scores);
+  await prefs.setString('needs', scoreData['needs']);
+
+  // UPDATE DATABASE HERE
+  Map<String, dynamic> user = await MongoDB.findUser(name);
+  mongo_dart.ObjectId userId = user['_id'];
+
+  scoreData["date"] = '$dateNow';
+  scoreData["name"] = name;
+  mongo_dart.ObjectId surveyId = await MongoDB.addSurvey(scoreData, userId);
+
+  quizResult["date"] = '$dateNow';
+  await MongoDB.addRawSurvey(quizResult, surveyId, userId);
+
+  // schedule notifications
+  await scheduleNotifications();
+
+  return ss;
+}
+
 /// Collect different metrics from the survey in a hashmap and return it.
-Map<String, dynamic> collectScore(Map<String, String> x) {
+Map<String, dynamic> collectScore(Map<String, String> quizResult) {
   Map<String, dynamic> scoreData = {};
   int score = 0;
   int breathing = 0;
@@ -693,10 +749,10 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
   List<String> condition = [];
   int energyLevels = 0;
   // need, last question
-  String needs = x[questions[9]].toString();
+  String needs = quizResult[questions[9]].toString();
 
   for (String q in questions) {
-    String ans = x[q].toString();
+    String ans = quizResult[q].toString();
     switch (q) {
       case "How is your breathing? \n(Choose one option)":
         switch (ans) {
@@ -840,4 +896,11 @@ Map<String, dynamic> collectScore(Map<String, String> x) {
   scoreData['energy_levels'] = energyLevels;
   scoreData['needs'] = needs;
   return scoreData;
+}
+
+/// Survey score model.
+class SurveyScores {
+  SurveyScores(this.date, this.score);
+  final String date;
+  final int score;
 }
