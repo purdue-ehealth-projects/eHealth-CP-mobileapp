@@ -31,13 +31,22 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 noSelectionAlert(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
-    child: const Text("OK"),
+    child: const Text(
+      "OK",
+      style: TextStyle(fontSize: 18),
+    ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: const Text("No Option Selected"),
-    content: const Text("Please select an option."),
+    title: const Text(
+      "No Option Selected",
+      style: TextStyle(fontSize: 20),
+    ),
+    content: const Text(
+      "Please select an option.",
+      style: TextStyle(fontSize: 18),
+    ),
     actions: [
       okButton,
     ],
@@ -665,7 +674,9 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                 ),
               ),
               onTap: () async {
+                // collect score data from raw survey data (quizResult)
                 final Map<String, dynamic> scoreData = collectScore(quizResult);
+                // update database with score data and raw data
                 final List<SurveyScores> ss =
                     await updateDatabase(scoreData, name, quizResult);
                 final int scoreToday = scoreData['score'];
@@ -719,14 +730,16 @@ Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
 
   // UPDATE DATABASE HERE
   Map<String, dynamic> user = await MongoDB.findUser(name);
-  mongo_dart.ObjectId userId = user['_id'];
 
+  mongo_dart.ObjectId userId = user['_id'];
   scoreData["date"] = '$dateNow';
   scoreData["name"] = name;
   mongo_dart.ObjectId surveyId = await MongoDB.addSurvey(scoreData, userId);
 
   quizResult["date"] = '$dateNow';
   await MongoDB.addRawSurvey(quizResult, surveyId, userId);
+
+  await MongoDB.updatePatientPrio(name, score);
 
   // schedule notifications
   await scheduleNotifications();

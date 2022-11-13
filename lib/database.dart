@@ -13,6 +13,7 @@ class MongoDB {
       surveyCollection,
       rawSurveyCollection;
 
+  /// Close database.
   static Future cleanupDatabase() async {
     await db.close();
   }
@@ -35,7 +36,7 @@ class MongoDB {
     return secure.toString();
   }
 
-  /// Connect app to MongoDB database
+  /// Connect app to database
   static Future connect() async {
     if (db == null) {
       final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
@@ -84,18 +85,23 @@ class MongoDB {
     return await patientCollection.findOne(where.eq('name', name));
   }
 
-  /// Currently not used
-  static Future updateUser(String name, String password) async {
-    var user = await findUser(name);
-    final salt = user['salt'];
-    final encryptedPassword = hashPassWithSalt(password, salt);
-    user['password'] = encryptedPassword;
-    await userCollection.save(user);
+  /// Updates patient priority based on their score
+  static Future updatePatientPrio(String name, int score) async {
+    int priority = 0;
+    if (score >= 0 && score <= 20) {
+      priority = 3;
+    } else if (score >= 25 && score <= 35) {
+      priority = 2;
+    } else {
+      priority = 1;
+    }
+    await patientCollection.updateOne(
+        where.eq('name', name), modify.set('priority', priority));
   }
 
   /// Creates a user entry in the database.
   static Future createUser(String name, String password) async {
-    var patient = await MongoDB.findPatient(name);
+    var patient = await findPatient(name);
     dynamic userId = patient['_id'];
     // Generates a salt with length 10
     final salt = getSalt(10);

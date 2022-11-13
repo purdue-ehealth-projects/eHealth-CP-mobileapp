@@ -101,7 +101,10 @@ class _HomePageState extends State<HomePage>
         List<String>? scores = prefs.getStringList("scores");
         List<String>? dates = prefs.getStringList("dates");
 
-        if (scores != null && dates != null) {
+        if (scores != null &&
+            scores.isNotEmpty &&
+            dates != null &&
+            dates.isNotEmpty) {
           for (int i = 0; i < scores.length; i++) {
             _graphSS.add(SurveyScores(dates[i], int.parse(scores[i])));
           }
@@ -143,7 +146,10 @@ class _HomePageState extends State<HomePage>
 loginFailedAlert(BuildContext context, int errCode) {
   // set up the button
   Widget okButton = TextButton(
-    child: const Text("OK"),
+    child: const Text(
+      "OK",
+      style: TextStyle(fontSize: 18),
+    ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
@@ -151,17 +157,28 @@ loginFailedAlert(BuildContext context, int errCode) {
   AlertDialog alert = const AlertDialog();
   if (errCode == 1) {
     alert = AlertDialog(
-      title: const Text("Login Failed"),
-      content: const Text("Wrong Password. Please try again."),
+      title: const Text(
+        "Login Failed",
+        style: TextStyle(fontSize: 20),
+      ),
+      content: const Text(
+        "Wrong Password. Please try again.",
+        style: TextStyle(fontSize: 18),
+      ),
       actions: [
         okButton,
       ],
     );
   } else if (errCode == 2) {
     alert = AlertDialog(
-      title: const Text("Login Failed"),
+      title: const Text(
+        "Login Failed",
+        style: TextStyle(fontSize: 20),
+      ),
       content: const Text(
-          "This user doesn't exist. Please create a new user account."),
+        "This user doesn't exist. Please create a new user account.",
+        style: TextStyle(fontSize: 18),
+      ),
       actions: [
         okButton,
       ],
@@ -181,7 +198,10 @@ loginFailedAlert(BuildContext context, int errCode) {
 validateUserFailedAlert(BuildContext context, int errCode) {
   // set up the button
   Widget okButton = TextButton(
-    child: const Text("OK"),
+    child: const Text(
+      "OK",
+      style: TextStyle(fontSize: 18),
+    ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
@@ -189,26 +209,42 @@ validateUserFailedAlert(BuildContext context, int errCode) {
   AlertDialog alert = const AlertDialog();
   if (errCode == 1) {
     alert = AlertDialog(
-      title: const Text("Register Failed"),
-      content: const Text("Name cannot be empty."),
+      title: const Text(
+        "Register Failed",
+        style: TextStyle(fontSize: 20),
+      ),
+      content: const Text(
+        "Name cannot be empty.",
+        style: TextStyle(fontSize: 18),
+      ),
       actions: [
         okButton,
       ],
     );
   } else if (errCode == 2) {
     alert = AlertDialog(
-      title: const Text("Register Failed"),
+      title: const Text(
+        "Register Failed",
+        style: TextStyle(fontSize: 20),
+      ),
       content: const Text(
-          "No patient profile found with given name. Please check with your paramedic."),
+        "No patient profile found with given name. Please check with your paramedic.",
+        style: TextStyle(fontSize: 18),
+      ),
       actions: [
         okButton,
       ],
     );
   } else if (errCode == 3) {
     alert = AlertDialog(
-      title: const Text("Register Failed"),
+      title: const Text(
+        "Register Failed",
+        style: TextStyle(fontSize: 20),
+      ),
       content: const Text(
-          "User with given name already exists. Please log in instead."),
+        "User with given name already exists. Please log in instead.",
+        style: TextStyle(fontSize: 18),
+      ),
       actions: [
         okButton,
       ],
@@ -227,13 +263,22 @@ validateUserFailedAlert(BuildContext context, int errCode) {
 /// Bad password alert pop up
 badPasswordAlert(BuildContext context) {
   Widget okButton = TextButton(
-    child: const Text("OK"),
+    child: const Text(
+      "OK",
+      style: TextStyle(fontSize: 18),
+    ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
   AlertDialog alert = AlertDialog(
-    title: const Text("Insecure Password"),
-    content: const Text("Password is too weak."),
+    title: const Text(
+      "Insecure Password",
+      style: TextStyle(fontSize: 20),
+    ),
+    content: const Text(
+      "Password is too weak.",
+      style: TextStyle(fontSize: 18),
+    ),
     actions: [
       okButton,
     ],
