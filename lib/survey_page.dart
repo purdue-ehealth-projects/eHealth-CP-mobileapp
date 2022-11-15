@@ -718,7 +718,7 @@ Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
   dates.add(dateToAdd);
   scores.add(score.toString());
 
-  for (int i = 0; i < dates.length; i++) {
+  for (int i = dates.length < 5 ? 0 : dates.length - 5; i < dates.length; i++) {
     ss.add(SurveyScores(dates[i], int.parse(scores[i])));
   }
 

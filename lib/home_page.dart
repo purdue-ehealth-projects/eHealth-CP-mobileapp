@@ -105,7 +105,9 @@ class _HomePageState extends State<HomePage>
             scores.isNotEmpty &&
             dates != null &&
             dates.isNotEmpty) {
-          for (int i = 0; i < scores.length; i++) {
+          for (int i = dates.length < 5 ? 0 : dates.length - 5;
+              i < dates.length;
+              i++) {
             _graphSS.add(SurveyScores(dates[i], int.parse(scores[i])));
           }
         }
