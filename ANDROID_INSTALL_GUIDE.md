@@ -1,8 +1,4 @@
-## Empress Daily Survey Open Testing User Manual - Android Install Guide
-
-**Please follow the steps listed below exactly to successfully participate in the open testing.**
-
-## Install Instruction Steps:
+## Empress Daily Survey Open Testing - Android Install Guide
 
 1. Open “Play Store” on your Android device.  
 <img src="https://user-images.githubusercontent.com/17057659/198920765-ab236287-f5e5-4532-b355-664fdb062f90.jpeg" width="100">
@@ -11,13 +7,12 @@
 3. Tap on the “Empress Daily Survey” app (should be the first result).
 <img src="https://user-images.githubusercontent.com/17057659/198921181-dba422c8-90b3-4b6e-b6e2-fc3618b95c1a.jpeg" width="250">
 
-4. Complete step 5 only if you see an “Uninstall” button.
-5. If you already have an existing version of the app, you should see a button titled “Uninstall”.
+4. Complete step 5 only if you see an “Uninstall” button. Skip to step 6 otherwise.
+5. (Part 1) If you already have an existing version of the app, you should see a button titled “Uninstall”.
 <img src="https://user-images.githubusercontent.com/17057659/198921530-10f5e95f-c8af-4ac4-bf3e-4fe725688387.jpeg" width="250">
 
-&emsp;a. Please click “Uninstall”. When asked to confirm whether you want to uninstall this app, click “Uninstall” again.  
-&emsp;&emsp;You will know that the uninstall process has finished if you see an “Install” button.\
-\
+5. (Part 2) Please click “Uninstall”. When asked to confirm whether you want to uninstall this app, click “Uninstall” again.  
+You will know that the uninstall process has finished if you see a green “Install” button appear under the app icon.
 <img src="https://user-images.githubusercontent.com/17057659/198921575-0605d293-26f2-4a98-bb9d-05afb1aba75a.jpeg" width="250">
 
 6. On the app page, find the “About this app” section and click on the arrow.
