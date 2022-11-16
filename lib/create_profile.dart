@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 import 'home_page.dart';
+import 'alerts.dart';
 import 'survey_page.dart';
 
 /// Create profile page that is pushed from the login page to create a new
@@ -70,11 +71,13 @@ class _CreateProfileState extends State<CreateProfile> {
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
                   style: const TextStyle(
-                      color: Colors.white, fontFamily: 'OpenSans'),
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontFamily: 'OpenSans'),
                 ),
               ),
             ),
@@ -98,11 +101,13 @@ class _CreateProfileState extends State<CreateProfile> {
                     labelStyle: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
                   style: const TextStyle(
-                      color: Colors.white, fontFamily: 'OpenSans'),
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontFamily: 'OpenSans'),
                 ),
               ),
             ),

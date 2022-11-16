@@ -10,8 +10,6 @@ import 'database.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
-  await MongoDB.connect();
-
   AwesomeNotifications().initialize(
       null, //icon is null right now
       [
@@ -32,6 +30,8 @@ Future<void> main() async {
             channelGroupName: 'Basic test group')
       ],
       debug: true);
+  // we need to connect in main as homepage won't initalize again on app restart
+  await MongoDB.connect();
   runApp(const MyApp());
 }
 

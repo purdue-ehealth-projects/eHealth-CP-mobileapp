@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'survey_page.dart';
 import 'create_profile.dart';
 import 'home_page.dart';
+import 'alerts.dart';
 
 /// Login page that is shown when the user is not logged in.
 class LoginPage extends StatefulWidget {

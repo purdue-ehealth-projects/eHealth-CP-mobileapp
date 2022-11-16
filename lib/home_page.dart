@@ -23,26 +23,9 @@ class HomePage extends StatefulWidget {
 /// Homepage state
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
-  _connectMongo() async {
-    await MongoDB.connect();
-  }
-
-  _scheduleNotifs() async {
-    await scheduleNotifications();
-  }
-
-  /*
-  _disposeMongo() async {
-    await MongoDB.cleanupDatabase();
-  }
-  */
-
   @override
   void initState() {
     super.initState();
-    // cannot make initState async (need to create helper function)
-    _connectMongo();
-
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         // This is just a basic example. For real apps, you must show some
@@ -54,7 +37,6 @@ class _HomePageState extends State<HomePage>
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: receiveMethod,
     );
-    _scheduleNotifs();
   }
 
   String _username = '';
@@ -75,14 +57,12 @@ class _HomePageState extends State<HomePage>
 
   /// Load local date from storage to app memory.
   Future<void> loadLocalData() async {
+    // Schedule notifications
+    await scheduleNotifications();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String curDate =
-        '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
-
     String? username = prefs.getString("username");
     String? password = prefs.getString("password");
-    String? date = prefs.getString("date");
 
     if (username == null || password == null) {
       _signin = false;
@@ -93,6 +73,11 @@ class _HomePageState extends State<HomePage>
 
     if (_signin) {
       _username = username!;
+
+      String? date = prefs.getString("date");
+      String curDate =
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
+
       if (date == curDate) {
         _didSurvey = true;
         _scoreToday = prefs.getInt("scoreToday")!;
@@ -121,7 +106,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FutureBuilder(
+    FutureBuilder fb = FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
         // scoreToday == -1
@@ -137,6 +122,7 @@ class _HomePageState extends State<HomePage>
             : const LoginPage();
       },
     );
+    return fb;
   }
 
   @override
@@ -144,160 +130,13 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 }
 
-/// Login failed alert pop up
-loginFailedAlert(BuildContext context, int errCode) {
-  // set up the button
-  Widget okButton = TextButton(
-    child: const Text(
-      "OK",
-      style: TextStyle(fontSize: 18),
-    ),
-    onPressed: () => Navigator.pop(context, 'Cancel'),
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = const AlertDialog();
-  if (errCode == 1) {
-    alert = AlertDialog(
-      title: const Text(
-        "Login Failed",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: const Text(
-        "Wrong Password. Please try again.",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 2) {
-    alert = AlertDialog(
-      title: const Text(
-        "Login Failed",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: const Text(
-        "This user doesn't exist. Please create a new user account.",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  }
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-/// Register failed alert pop up
-validateUserFailedAlert(BuildContext context, int errCode) {
-  // set up the button
-  Widget okButton = TextButton(
-    child: const Text(
-      "OK",
-      style: TextStyle(fontSize: 18),
-    ),
-    onPressed: () => Navigator.pop(context, 'Cancel'),
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = const AlertDialog();
-  if (errCode == 1) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: const Text(
-        "Name cannot be empty.",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 2) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: const Text(
-        "No patient profile found with given name. Please check with your paramedic.",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 3) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: const Text(
-        "User with given name already exists. Please log in instead.",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  }
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-/// Bad password alert pop up
-badPasswordAlert(BuildContext context) {
-  Widget okButton = TextButton(
-    child: const Text(
-      "OK",
-      style: TextStyle(fontSize: 18),
-    ),
-    onPressed: () => Navigator.pop(context, 'Cancel'),
-  );
-
-  AlertDialog alert = AlertDialog(
-    title: const Text(
-      "Insecure Password",
-      style: TextStyle(fontSize: 20),
-    ),
-    content: const Text(
-      "Password is too weak.",
-      style: TextStyle(fontSize: 18),
-    ),
-    actions: [
-      okButton,
-    ],
-  );
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
 /// Helper function log in user. Returns an error code.
 ///
-/// @Return: 0 - no error; 1 - wrong password; 2 - user doesn't exist.
+/// @Return: 0 - success; 1 - wrong password; 2 - user doesn't exist.
 Future<int> loginUser(String name, String password) async {
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
+  }
   if (await MongoDB.existUser(name) == false) {
     return 2;
   }
@@ -316,11 +155,14 @@ Future<int> loginUser(String name, String password) async {
 /// Ensure that a patient profile for user already exists. Returns an error
 /// code.
 ///
-/// @Return: 0 - no error; 1 - empty input; 2 - patient profile doesn't exist;
+/// @Return: 0 - success; 1 - empty input; 2 - patient profile doesn't exist;
 /// 3 - user account already exists.
 Future<int> validateUsername(String name) async {
   if (name.isEmpty) {
     return 1;
+  }
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
   }
   if (await MongoDB.existPatient(name) == false) {
     return 2;
@@ -345,6 +187,9 @@ Future<void> pushUserMongoDB(String name, String password) async {
 
 /// Returns a patient profile page for the user.
 Future<void> showProfile(BuildContext context, String name) async {
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
+  }
   Map<String, dynamic> patient = await MongoDB.findPatient(name);
   patient.removeWhere((key, value) => key == '_id');
 
@@ -376,7 +221,7 @@ Future<void> showProfile(BuildContext context, String name) async {
               style: TextStyle(fontSize: 18, color: Colors.redAccent),
             ),
             onPressed: () async {
-              await confirmLogout(context);
+              await _confirmLogout(context);
             },
           ),
           TextButton(
@@ -395,7 +240,7 @@ Future<void> showProfile(BuildContext context, String name) async {
 }
 
 /// Dialog to confirm log out
-confirmLogout(BuildContext context) async {
+_confirmLogout(BuildContext context) async {
   final navigator = Navigator.of(context);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   Widget okButton = TextButton(

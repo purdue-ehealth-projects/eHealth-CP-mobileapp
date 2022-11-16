@@ -10,6 +10,7 @@ import 'survey_data.dart';
 import 'graph_survey.dart';
 import 'database.dart';
 import 'notification_api.dart';
+import 'alerts.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
@@ -25,39 +26,6 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
     progressColor: const Color(0xff0b3954).withOpacity(0.5),
     animation: true,
     animationDuration: 500,
-  );
-}
-
-/// Alert pop up when no option is seleted.
-noSelectionAlert(BuildContext context) {
-  // set up the button
-  Widget okButton = TextButton(
-    child: const Text(
-      "OK",
-      style: TextStyle(fontSize: 18),
-    ),
-    onPressed: () => Navigator.pop(context, 'Cancel'),
-  );
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: const Text(
-      "No Option Selected",
-      style: TextStyle(fontSize: 20),
-    ),
-    content: const Text(
-      "Please select an option.",
-      style: TextStyle(fontSize: 18),
-    ),
-    actions: [
-      okButton,
-    ],
-  );
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
   );
 }
 
@@ -92,7 +60,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
     final String name = widget.name;
     Size size = MediaQuery.of(context).size;
 
-    return Scaffold(
+    Scaffold scaffold = Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
@@ -159,6 +127,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
         ],
       ),
     );
+    return scaffold;
   }
 }
 
@@ -624,6 +593,7 @@ class LastSurveyPage extends StatefulWidget {
 /// Last survey page state.
 class _LastSurveyPageState extends State<LastSurveyPage> {
   bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     final String name = widget.name;
@@ -685,7 +655,6 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                 setState(() {
                   loading = true;
                 });
-
                 // collect score data from raw survey data (quizResult)
                 final Map<String, dynamic> scoreData = collectScore(quizResult);
                 // update database with score data and raw data
@@ -715,6 +684,10 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
 
 Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
     String name, Map<String, String> quizResult) async {
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
+  }
+
   List<SurveyScores> ss = [];
   int score = scoreData['score']!;
   DateTime dateNow = DateTime.now();

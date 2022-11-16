@@ -14,7 +14,7 @@ class MongoDB {
       rawSurveyCollection;
 
   /// Close database.
-  static Future<void> cleanupDatabase() async {
+  static Future<void> close() async {
     await db.close();
   }
 
@@ -36,33 +36,38 @@ class MongoDB {
     return secure.toString();
   }
 
-  /// Connect app to database
+  /// Connect app to database and define all global collections.
   static Future<void> connect() async {
-    if (db == null) {
-      final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
-      final String pass =
-          Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
-      final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
-      String connection = "$prePass$pass$postPass";
-      //print(connection);
-      try {
-        db = await Db.create(connection);
-        await db.open();
-      } catch (e) {
-        return;
-      }
-
-      userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
-      patientCollection =
-          db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
-      surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
-      rawSurveyCollection =
-          db.collection(FlutterConfig.get('RAW_SURVEY_COLLECTION'));
-
-      if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
-        return;
-      }
+    final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
+    final String pass =
+        Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
+    final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
+    String connection = "$prePass$pass$postPass";
+    try {
+      db = await Db.create(connection);
+      await db.open();
+    } catch (e) {
+      return;
     }
+    if (!db.masterConnection.serverCapabilities.supportsOpMsg) {
+      return;
+    }
+    userCollection = db.collection(FlutterConfig.get('USER_COLLECTION'));
+    patientCollection = db.collection(FlutterConfig.get('PATIENT_COLLECTION'));
+    surveyCollection = db.collection(FlutterConfig.get('SURVEY_COLLECTION'));
+    rawSurveyCollection =
+        db.collection(FlutterConfig.get('RAW_SURVEY_COLLECTION'));
+  }
+
+  /// Checks if app is connected to database.
+  static Future<bool> testDBConnection() async {
+    try {
+      // will not throw an error as long as there's connection
+      await existUser("");
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   /// Checks if user exists in the database
@@ -137,8 +142,18 @@ class MongoDB {
     await rawSurveyCollection.insertOne(toAdd);
   }
 
-  /// Creates a patient entry in the database. NOT USED.
+  /// Deletes a patient entry with the corresponding name.
+  static Future<void> deletePatient(String name) async {
+    await patientCollection.deleteOne({'name': name});
+  }
+
+  /// Deletes a user entry with the corresponding name.
+  static Future<void> deleteUser(String name) async {
+    await userCollection.deleteOne({'name': name});
+  }
+
   /*
+  /// Creates a patient entry in the database. NOT USED.
   static createPatient(
       String name, String age, String dob, String userId) async {
     await patientCollection.insertOne({
@@ -163,33 +178,19 @@ class MongoDB {
   }
   */
 
-  /// Deletes a patient entry with the corresponding name.
-  static Future<void> deletePatient(String name) async {
-    await patientCollection.deleteOne({'name': name});
-  }
-
-  /// Deletes a user entry with the corresponding name.
-  static Future<void> deleteUser(String name) async {
-    await userCollection.deleteOne({'name': name});
-  }
-
-  /// Testing only
+  /* Testing only */
   /*
   static dropTest() async {
     await db.dropCollection('users');
     userCollection = db.collection('users');
   }
-  */
-
-  /*
+  
   static printStuff() async {
     print(await userCollection.find().toList());
     print(await surveyCollection.find().toList());
     print(await rawSurveyCollection.find().toList());
   }
-  */
-
-  /*
+  
   static test() async {
     await db.dropCollection('patients');
     await db.dropCollection('users');
@@ -219,7 +220,7 @@ class MongoDB {
     //    .findOne(where.eq('name', 'Liz').gt('rating', 7));
 
     //print('First document fetched: ${res['name']} - ${res['state']}');
-    await cleanupDatabase();
+    await close();
   }
   */
 }
