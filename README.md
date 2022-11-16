@@ -1,6 +1,9 @@
 # Empress Daily Survey
 
-## Android Install Guide - Open Testing
+## User Manual
+[User Manual / Registration](USER_MANUAL.md)
+
+## Install Guides
 [Android Install Guide](ANDROID_INSTALL_GUIDE.md)
 
 ## Contact
