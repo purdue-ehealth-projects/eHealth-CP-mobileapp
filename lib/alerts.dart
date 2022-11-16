@@ -88,7 +88,7 @@ validateUserFailedAlert(BuildContext context, int errCode) {
         style: TextStyle(fontSize: 20),
       ),
       content: const Text(
-        "No patient profile found with given name. Please check with your paramedic.",
+        "No patient profile found with the given name. Please check with your paramedic.",
         style: TextStyle(fontSize: 18),
       ),
       actions: [

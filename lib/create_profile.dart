@@ -30,7 +30,7 @@ class _CreateProfileState extends State<CreateProfile> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "EMS Health",
+            "Create User Account",
             style: TextStyle(fontFamily: "OpenSans"),
           ),
           backgroundColor: const Color(0xff0b3954),
@@ -39,16 +39,17 @@ class _CreateProfileState extends State<CreateProfile> {
           children: <Widget>[
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                 child: Container(
                   alignment: Alignment.center,
                   child: const Text(
-                    "You need to create a profile.",
+                    "Create a user account with the same name in your patient profile.",
                     style: TextStyle(
                         fontFamily: "OpenSans",
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                         fontSize: 18),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
