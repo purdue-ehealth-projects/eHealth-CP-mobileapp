@@ -163,8 +163,10 @@ class _CreateProfileState extends State<CreateProfile> {
                   badPasswordAlert(context);
                 }
                 if (result == 0 && _goodPassword == true) {
-                  pushNameLocal(nameController.text, passwordController.text);
-                  pushUserMongoDB(nameController.text, passwordController.text);
+                  await pushNameLocal(
+                      nameController.text, passwordController.text);
+                  await pushUserMongoDB(
+                      nameController.text, passwordController.text);
 
                   if (!mounted) return;
                   Navigator.push(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'home_page.dart';
 import 'survey_data.dart';
@@ -622,6 +623,7 @@ class LastSurveyPage extends StatefulWidget {
 
 /// Last survey page state.
 class _LastSurveyPageState extends State<LastSurveyPage> {
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     final String name = widget.name;
@@ -663,17 +665,27 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                   border: Border.all(color: Colors.white, width: 2),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                    fontFamily: 'OpenSans',
-                    color: Colors.white,
-                    fontSize: _continueFontSize,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                child: !loading
+                    ? Text(
+                        "Submit",
+                        style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.white,
+                          fontSize: _continueFontSize,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    : const LoadingIndicator(
+                        indicatorType: Indicator.ballPulseSync,
+                        colors: [Colors.white],
+                        backgroundColor: Colors.transparent,
+                        pathBackgroundColor: Colors.transparent),
               ),
               onTap: () async {
+                setState(() {
+                  loading = true;
+                });
+
                 // collect score data from raw survey data (quizResult)
                 final Map<String, dynamic> scoreData = collectScore(quizResult);
                 // update database with score data and raw data

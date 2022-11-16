@@ -14,7 +14,7 @@ class MongoDB {
       rawSurveyCollection;
 
   /// Close database.
-  static Future cleanupDatabase() async {
+  static Future<void> cleanupDatabase() async {
     await db.close();
   }
 
@@ -37,7 +37,7 @@ class MongoDB {
   }
 
   /// Connect app to database
-  static Future connect() async {
+  static Future<void> connect() async {
     if (db == null) {
       final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
       final String pass =
@@ -86,7 +86,7 @@ class MongoDB {
   }
 
   /// Updates patient priority based on their score
-  static Future updatePatientPrio(String name, int score) async {
+  static Future<void> updatePatientPrio(String name, int score) async {
     int priority = 0;
     if (score >= 0 && score <= 20) {
       priority = 3;
@@ -100,7 +100,7 @@ class MongoDB {
   }
 
   /// Creates a user entry in the database.
-  static Future createUser(String name, String password) async {
+  static Future<void> createUser(String name, String password) async {
     var patient = await findPatient(name);
     dynamic userId = patient['_id'];
     // Generates a salt with length 10
@@ -126,7 +126,7 @@ class MongoDB {
   }
 
   /// Adds a raw survey entry in the database.
-  static Future addRawSurvey(
+  static Future<void> addRawSurvey(
       Map<String, String> rawSurvey, ObjectId surveyId, ObjectId userId) async {
     Map<String, dynamic> toAdd = {};
     toAdd['_id'] = surveyId;
@@ -164,12 +164,12 @@ class MongoDB {
   */
 
   /// Deletes a patient entry with the corresponding name.
-  static Future deletePatient(String name) async {
+  static Future<void> deletePatient(String name) async {
     await patientCollection.deleteOne({'name': name});
   }
 
   /// Deletes a user entry with the corresponding name.
-  static Future deleteUser(String name) async {
+  static Future<void> deleteUser(String name) async {
     await userCollection.deleteOne({'name': name});
   }
 

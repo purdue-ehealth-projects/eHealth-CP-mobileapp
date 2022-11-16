@@ -332,14 +332,14 @@ Future<int> validateUsername(String name) async {
 }
 
 /// Push name and password to storage
-void pushNameLocal(String name, String password) async {
+Future<void> pushNameLocal(String name, String password) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('username', name);
   await prefs.setString('password', password);
 }
 
 /// Register user and create user account in MongoDB.
-void pushUserMongoDB(String name, String password) async {
+Future<void> pushUserMongoDB(String name, String password) async {
   await MongoDB.createUser(name, password);
 }
 
@@ -396,6 +396,7 @@ Future<void> showProfile(BuildContext context, String name) async {
 
 /// Dialog to confirm log out
 confirmLogout(BuildContext context) async {
+  final navigator = Navigator.of(context);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   Widget okButton = TextButton(
     child: const Text(
@@ -404,11 +405,7 @@ confirmLogout(BuildContext context) async {
     ),
     onPressed: () async {
       await prefs.clear();
-      // user action won't be fast enough to cause problems
-      // (user needs to input text)
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
+      navigator.push(
         MaterialPageRoute(
           // direct to login and not home so prefs.clear() won't get
           // called twice

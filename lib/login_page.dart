@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (!mounted) return;
                       loginFailedAlert(context, result);
                     } else {
-                      pushNameLocal(
+                      await pushNameLocal(
                           nameController.text, passwordController.text);
 
                       if (!mounted) return;
