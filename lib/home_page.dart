@@ -124,6 +124,13 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+/// Survey score model.
+class SurveyScores {
+  SurveyScores(this.date, this.score);
+  final String date;
+  final int score;
+}
+
 /// Helper function log in user. Returns an error code.
 ///
 /// @Return: 0 - success; 1 - wrong password; 2 - user doesn't exist.
@@ -182,6 +189,7 @@ Future<void> pushUserMongoDB(String name, String password) async {
 /// Button widget for profile page.
 TextButton profileButton(BuildContext context, String username) {
   return TextButton(
+    // should be async?
     onPressed: () => showProfile(context, username),
     style: TextButton.styleFrom(
       foregroundColor: Colors.white,

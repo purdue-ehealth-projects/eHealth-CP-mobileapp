@@ -889,10 +889,3 @@ Map<String, dynamic> collectScore(Map<String, String> quizResult) {
   scoreData['needs'] = needs;
   return scoreData;
 }
-
-/// Survey score model.
-class SurveyScores {
-  SurveyScores(this.date, this.score);
-  final String date;
-  final int score;
-}
