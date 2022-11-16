@@ -8,12 +8,11 @@
 <img src="https://user-images.githubusercontent.com/17057659/198921181-dba422c8-90b3-4b6e-b6e2-fc3618b95c1a.jpeg" width="250">
 
 4. Complete step 5 only if you see an “Uninstall” button. Skip to step 6 otherwise.
-5. (Part 1) If you already have an existing version of the app, you should see a button titled “Uninstall”.
-<img src="https://user-images.githubusercontent.com/17057659/198921530-10f5e95f-c8af-4ac4-bf3e-4fe725688387.jpeg" width="250">
-
-5. (Part 2) Please click “Uninstall”. When asked to confirm whether you want to uninstall this app, click “Uninstall” again.  
-You will know that the uninstall process has finished if you see a green “Install” button appear under the app icon.
-<img src="https://user-images.githubusercontent.com/17057659/198921575-0605d293-26f2-4a98-bb9d-05afb1aba75a.jpeg" width="250">
+5. Please click “Uninstall”. When asked to confirm whether you want to uninstall this app, click “Uninstall” again. The uninstall process has finished if you see a green “Install” button appear under the app icon (see step 6).
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/17057659/198921530-10f5e95f-c8af-4ac4-bf3e-4fe725688387.jpeg" width="250">
+  <img src="https://user-images.githubusercontent.com/17057659/198921575-0605d293-26f2-4a98-bb9d-05afb1aba75a.jpeg" width="250">
+</p>
 
 6. On the app page, find the “About this app” section and click on the arrow.
 <img src="https://user-images.githubusercontent.com/17057659/198921742-d126df81-2c7a-4c0a-9480-b48ed07802aa.jpeg" width="250">
