@@ -6,16 +6,6 @@ import 'package:restart_app/restart_app.dart';
 import 'survey_page.dart';
 import 'home_page.dart';
 
-TextButton profileButton(BuildContext context, String username) {
-  return TextButton(
-    onPressed: () => showProfile(context, username),
-    style: TextButton.styleFrom(
-      foregroundColor: Colors.white,
-    ),
-    child: const Icon(Icons.account_circle),
-  );
-}
-
 class GraphSurvey extends StatefulWidget {
   final List<SurveyScores> gSS;
   final int scoreToday;

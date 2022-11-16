@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:restart_app/restart_app.dart';
 
 import 'home_page.dart';
 import 'alerts.dart';
@@ -158,6 +159,9 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
               onTap: () async {
+                if (!mounted) {
+                  Restart.restartApp();
+                }
                 int result = await validateUsername(nameController.text);
                 if (result != 0) {
                   if (!mounted) return;

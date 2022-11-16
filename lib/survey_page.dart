@@ -4,6 +4,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:restart_app/restart_app.dart';
 
 import 'home_page.dart';
 import 'survey_data.dart';
@@ -26,16 +27,6 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
     progressColor: const Color(0xff0b3954).withOpacity(0.5),
     animation: true,
     animationDuration: 500,
-  );
-}
-
-TextButton profileButton(BuildContext context, String username) {
-  return TextButton(
-    onPressed: () => showProfile(context, username),
-    style: TextButton.styleFrom(
-      foregroundColor: Colors.white,
-    ),
-    child: const Icon(Icons.account_circle),
   );
 }
 
@@ -652,6 +643,9 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                         pathBackgroundColor: Colors.transparent),
               ),
               onTap: () async {
+                if (!mounted) {
+                  Restart.restartApp();
+                }
                 setState(() {
                   loading = true;
                 });

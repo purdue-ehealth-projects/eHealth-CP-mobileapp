@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:restart_app/restart_app.dart';
 
 import 'survey_page.dart';
 import 'create_profile.dart';
@@ -149,6 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onTap: () async {
+                    if (!mounted) {
+                      Restart.restartApp();
+                    }
                     int result = await loginUser(
                         nameController.text, passwordController.text);
                     if (result != 0) {

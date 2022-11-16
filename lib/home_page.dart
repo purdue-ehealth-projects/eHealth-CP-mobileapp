@@ -21,8 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 /// Homepage state
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -105,7 +104,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     FutureBuilder fb = FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
@@ -124,10 +122,6 @@ class _HomePageState extends State<HomePage>
     );
     return fb;
   }
-
-  @override
-  // implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 /// Helper function log in user. Returns an error code.
@@ -185,7 +179,18 @@ Future<void> pushUserMongoDB(String name, String password) async {
   await MongoDB.createUser(name, password);
 }
 
-/// Returns a patient profile page for the user.
+/// Button widget for profile page.
+TextButton profileButton(BuildContext context, String username) {
+  return TextButton(
+    onPressed: () => showProfile(context, username),
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.white,
+    ),
+    child: const Icon(Icons.account_circle),
+  );
+}
+
+/// Returns a patient profile page pop-up for the user.
 Future<void> showProfile(BuildContext context, String name) async {
   if (await MongoDB.testDBConnection() == false) {
     await MongoDB.connect();
