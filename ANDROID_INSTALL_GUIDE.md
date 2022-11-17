@@ -1,5 +1,7 @@
 ## Empress Daily Survey Open Testing - Android Install Guide
 
+### _Current Latest Version - 3.2_
+
 1. Open “Play Store” on your Android device.  
 <img src="https://user-images.githubusercontent.com/17057659/198920765-ab236287-f5e5-4532-b355-664fdb062f90.jpeg" width="100">
 
@@ -18,7 +20,7 @@
 <img src="https://user-images.githubusercontent.com/17057659/198921742-d126df81-2c7a-4c0a-9480-b48ed07802aa.jpeg" width="250">
 
 7. Scroll down until you find the version number info. Confirm that the version is correct 
-(you should have this information from the app developer). Go back to the previous page.  
+(check version information at the top of this page). Go back to the previous page.  
 <img src="https://user-images.githubusercontent.com/17057659/198921858-1ef5e42d-8194-41e8-95a0-e66cf198550c.jpg" width="250">
 
 8. Click on the “Install” button.
