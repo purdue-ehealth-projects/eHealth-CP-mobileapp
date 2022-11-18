@@ -4,7 +4,7 @@ import 'package:restart_app/restart_app.dart';
 
 import 'survey_page.dart';
 import 'create_profile.dart';
-import 'home_page.dart';
+import 'database.dart';
 import 'alerts.dart';
 
 /// Login page that is shown when the user is not logged in.
@@ -150,27 +150,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onTap: () async {
-                    if (!mounted) {
-                      Restart.restartApp();
-                    }
-                    int result = await loginUser(
+                    await loginOntap(
                         nameController.text, passwordController.text);
-                    if (result != 0) {
-                      if (!mounted) return;
-                      loginFailedAlert(context, result);
-                    } else {
-                      await pushNameLocal(
-                          nameController.text, passwordController.text);
-
-                      if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              SurveyWelcomePage(name: nameController.text),
-                        ),
-                      );
-                    }
                   },
                 ),
                 const SizedBox(height: 20),
@@ -233,5 +214,27 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  Future<void> loginOntap(String name, String password) async {
+    if (!mounted) {
+      Restart.restartApp();
+    }
+    String parsedName = parseName(nameController.text);
+    int result = await loginUser(parsedName, passwordController.text);
+    if (result != 0) {
+      if (!mounted) return;
+      loginFailedAlert(context, result);
+    } else {
+      await pushUserLocal(parsedName, passwordController.text);
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SurveyWelcomePage(name: parsedName),
+        ),
+      );
+    }
   }
 }

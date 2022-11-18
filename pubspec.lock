@@ -14,14 +14,14 @@ packages:
       name: awesome_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.4+1"
   basic_utils:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: basic_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.9.4"
+    version: "5.4.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -35,7 +35,7 @@ packages:
       name: bson
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "3.0.0"
   buffer:
     dependency: transitive
     description:
@@ -70,7 +70,7 @@ packages:
       name: convert
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.1"
   crypt:
     dependency: "direct main"
     description:
@@ -92,13 +92,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  decimal:
+    dependency: transitive
+    description:
+      name: decimal
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
   dropdown_button2:
     dependency: "direct main"
     description:
       name: dropdown_button2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.5"
+    version: "1.8.9"
   fake_async:
     dependency: transitive
     description:
@@ -190,7 +197,7 @@ packages:
       name: http_parser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   intl:
     dependency: transitive
     description:
@@ -211,14 +218,14 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.6.0"
+    version: "4.7.0"
   lints:
     dependency: transitive
     description:
       name: lints
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   loading_indicator:
     dependency: "direct main"
     description:
@@ -232,7 +239,7 @@ packages:
       name: logging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.0"
   matcher:
     dependency: transitive
     description:
@@ -260,14 +267,14 @@ packages:
       name: mongo_dart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.4+1"
+    version: "0.8.0"
   mongo_dart_query:
     dependency: transitive
     description:
       name: mongo_dart_query
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "3.0.0"
   nested:
     dependency: transitive
     description:
@@ -275,6 +282,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  packages_extensions:
+    dependency: transitive
+    description:
+      name: packages_extensions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   path:
     dependency: transitive
     description:
@@ -295,7 +309,7 @@ packages:
       name: path_provider_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   path_provider_windows:
     dependency: transitive
     description:
@@ -345,6 +359,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
+  power_extensions:
+    dependency: transitive
+    description:
+      name: power_extensions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   process:
     dependency: transitive
     description:
@@ -358,14 +379,14 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.3"
+    version: "6.0.4"
   rational:
     dependency: transitive
     description:
       name: rational
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "2.2.0"
   restart_app:
     dependency: "direct main"
     description:
@@ -400,7 +421,7 @@ packages:
       name: shared_preferences_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.13"
+    version: "2.0.14"
   shared_preferences_ios:
     dependency: transitive
     description:
@@ -482,14 +503,14 @@ packages:
       name: syncfusion_flutter_charts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "20.2.50"
+    version: "20.3.57"
   syncfusion_flutter_core:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "20.2.50"
+    version: "20.3.57"
   term_glyph:
     dependency: transitive
     description:
@@ -531,14 +552,14 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.5"
+    version: "6.1.6"
   url_launcher_android:
     dependency: transitive
     description:
       name: url_launcher_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.19"
+    version: "6.0.21"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -566,7 +587,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   url_launcher_web:
     dependency: transitive
     description:
@@ -587,7 +608,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.6"
+    version: "3.0.7"
   vector_math:
     dependency: transitive
     description:
@@ -601,14 +622,14 @@ packages:
       name: vy_string_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4"
+    version: "0.4.5"
   win32:
     dependency: transitive
     description:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -617,5 +638,5 @@ packages:
     source: hosted
     version: "0.2.0+2"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=3.0.0"

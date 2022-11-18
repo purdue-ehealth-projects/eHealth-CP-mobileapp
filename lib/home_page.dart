@@ -131,61 +131,6 @@ class SurveyScores {
   final int score;
 }
 
-/// Helper function log in user. Returns an error code.
-///
-/// @Return: 0 - success; 1 - wrong password; 2 - user doesn't exist.
-Future<int> loginUser(String name, String password) async {
-  if (await MongoDB.testDBConnection() == false) {
-    await MongoDB.connect();
-  }
-  if (await MongoDB.existUser(name) == false) {
-    return 2;
-  }
-  var user = await MongoDB.findUser(name);
-  String storedPassword = user['password'];
-  String salt = user['salt'];
-  final encryptedPassword = MongoDB.hashPassWithSalt(password, salt);
-
-  if (storedPassword == encryptedPassword) {
-    return 0;
-  } else {
-    return 1;
-  }
-}
-
-/// Ensure that a patient profile for user already exists. Returns an error
-/// code.
-///
-/// @Return: 0 - success; 1 - empty input; 2 - patient profile doesn't exist;
-/// 3 - user account already exists.
-Future<int> validateUsername(String name) async {
-  if (name.isEmpty) {
-    return 1;
-  }
-  if (await MongoDB.testDBConnection() == false) {
-    await MongoDB.connect();
-  }
-  if (await MongoDB.existPatient(name) == false) {
-    return 2;
-  }
-  if (await MongoDB.existUser(name) == true) {
-    return 3;
-  }
-  return 0;
-}
-
-/// Push name and password to storage
-Future<void> pushNameLocal(String name, String password) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('username', name);
-  await prefs.setString('password', password);
-}
-
-/// Register user and create user account in MongoDB.
-Future<void> pushUserMongoDB(String name, String password) async {
-  await MongoDB.createUser(name, password);
-}
-
 /// Button widget for profile page.
 TextButton profileButton(BuildContext context, String username) {
   return TextButton(

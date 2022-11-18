@@ -1,8 +1,87 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:crypt/crypt.dart';
+import 'package:basic_utils/basic_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'dart:convert';
+
+/// @Parameters: integer for the length of the random string.
+///
+/// @Return: a random string (salt).
+String getSalt(int len) {
+  var random = Random.secure();
+  var values = List<int>.generate(len, (i) => random.nextInt(255));
+  return base64UrlEncode(values);
+}
+
+/// @Parameters: string for password, string for salt.
+///
+/// @Return: a hashed and salted password.
+/// Each user's password should have its unique salt.
+String hashPassWithSalt(String password, String salt) {
+  final secure = Crypt.sha256(password, salt: salt, rounds: 1000);
+  return secure.toString();
+}
+
+String parseName(String original) {
+  return StringUtils.capitalize(original.trim(), allWords: true);
+}
+
+/// Helper function log in user. Returns an error code.
+///
+/// @Return: 0 - success; 1 - wrong password; 2 - user doesn't exist.
+Future<int> loginUser(String name, String password) async {
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
+  }
+  if (await MongoDB.existUser(name) == false) {
+    return 2;
+  }
+  var user = await MongoDB.findUser(name);
+  String storedPassword = user['password'];
+  String salt = user['salt'];
+  final encryptedPassword = hashPassWithSalt(password, salt);
+
+  if (storedPassword == encryptedPassword) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+/// Ensure that a patient profile for user already exists. Returns an error
+/// code.
+///
+/// @Return: 0 - success; 1 - empty input; 2 - patient profile doesn't exist;
+/// 3 - user account already exists.
+Future<int> validateUsername(String name) async {
+  if (name.isEmpty) {
+    return 1;
+  }
+  if (await MongoDB.testDBConnection() == false) {
+    await MongoDB.connect();
+  }
+  if (await MongoDB.existPatient(name) == false) {
+    return 2;
+  }
+  if (await MongoDB.existUser(name) == true) {
+    return 3;
+  }
+  return 0;
+}
+
+/// Push name and password to storage
+Future<void> pushUserLocal(String name, String password) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('username', name);
+  await prefs.setString('password', password);
+}
+
+/// Register user and create user account in MongoDB.
+Future<void> pushUserMongoDB(String name, String password) async {
+  await MongoDB.createUser(name, password);
+}
 
 /// This class handles database operations.
 class MongoDB {
@@ -16,24 +95,6 @@ class MongoDB {
   /// Close database.
   static Future<void> close() async {
     await db.close();
-  }
-
-  /// @Parameters: integer for the length of the random string.
-  ///
-  /// @Return: a random string (salt).
-  static String getSalt(int len) {
-    var random = Random.secure();
-    var values = List<int>.generate(len, (i) => random.nextInt(255));
-    return base64UrlEncode(values);
-  }
-
-  /// @Parameters: string for password, string for salt.
-  ///
-  /// @Return: a hashed and salted password.
-  /// Each user's password should have its unique salt.
-  static String hashPassWithSalt(String password, String salt) {
-    final secure = Crypt.sha256(password, salt: salt, rounds: 1000);
-    return secure.toString();
   }
 
   /// Connect app to database and define all global collections.
@@ -151,32 +212,6 @@ class MongoDB {
   static Future<void> deleteUser(String name) async {
     await userCollection.deleteOne({'name': name});
   }
-
-  /*
-  /// Creates a patient entry in the database. NOT USED.
-  static createPatient(
-      String name, String age, String dob, String userId) async {
-    await patientCollection.insertOne({
-      '_id': userId,
-      'name': name,
-      'address': '',
-      'age': age,
-      'appointment_day': '',
-      'contact_1': '',
-      'contact_2': '',
-      'diagnosis_one': '',
-      'diagnosis_two': '',
-      'gender_id': '',
-      'medic': '',
-      'priority': '',
-      'program': '',
-      'race': '',
-      'start_date': '',
-      'userId': userId,
-      'zone': 0,
-    });
-  }
-  */
 
   /* Testing only */
   /*

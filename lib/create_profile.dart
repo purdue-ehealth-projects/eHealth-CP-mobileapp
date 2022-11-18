@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:restart_app/restart_app.dart';
 
-import 'home_page.dart';
+import 'database.dart';
 import 'alerts.dart';
 import 'survey_page.dart';
 
@@ -160,36 +160,39 @@ class _CreateProfileState extends State<CreateProfile> {
                 ),
               ),
               onTap: () async {
-                if (!mounted) {
-                  Restart.restartApp();
-                }
-                int result = await validateUsername(nameController.text);
-                if (result != 0) {
-                  if (!mounted) return;
-                  validateUserFailedAlert(context, result);
-                }
-                if (result == 0 && _goodPassword == false) {
-                  if (!mounted) return;
-                  badPasswordAlert(context);
-                }
-                if (result == 0 && _goodPassword == true) {
-                  await pushNameLocal(
-                      nameController.text, passwordController.text);
-                  await pushUserMongoDB(
-                      nameController.text, passwordController.text);
-
-                  if (!mounted) return;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          SurveyWelcomePage(name: nameController.text),
-                    ),
-                  );
-                }
+                await registerOntap(
+                    nameController.text, passwordController.text);
               },
             )),
           ],
         ));
+  }
+
+  Future<void> registerOntap(String name, String password) async {
+    if (!mounted) {
+      Restart.restartApp();
+    }
+    String parsedName = parseName(nameController.text);
+    int result = await validateUsername(parsedName);
+    if (result != 0) {
+      if (!mounted) return;
+      validateUserFailedAlert(context, result);
+    }
+    if (result == 0 && _goodPassword == false) {
+      if (!mounted) return;
+      badPasswordAlert(context);
+    }
+    if (result == 0 && _goodPassword == true) {
+      await pushUserLocal(parsedName, passwordController.text);
+      await pushUserMongoDB(parsedName, passwordController.text);
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SurveyWelcomePage(name: parsedName),
+        ),
+      );
+    }
   }
 }
