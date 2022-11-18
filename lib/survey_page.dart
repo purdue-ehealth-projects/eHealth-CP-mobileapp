@@ -638,7 +638,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                       )
                     : const LoadingIndicator(
                         indicatorType: Indicator.ballPulseSync,
-                        colors: [Colors.white],
+                        colors: Colors.primaries,
                         backgroundColor: Colors.transparent,
                         pathBackgroundColor: Colors.transparent),
               ),

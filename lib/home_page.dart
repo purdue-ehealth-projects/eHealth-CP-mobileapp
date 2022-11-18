@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'notification_api.dart';
 import 'survey_page.dart';
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  bool _loading = true;
   String _username = '';
   bool _signin = false;
   bool _didSurvey = false;
@@ -100,27 +102,43 @@ class _HomePageState extends State<HomePage> {
       // clear all local storage
       await prefs.clear();
     }
+    _loading = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    FutureBuilder fb = FutureBuilder(
+    Size size = MediaQuery.of(context).size;
+    Scaffold scaffold = Scaffold(
+      backgroundColor: const Color(0xff0b3954),
+      body: Padding(
+        padding:
+            EdgeInsets.symmetric(vertical: size.height / 3, horizontal: 125),
+        child: const LoadingIndicator(
+            indicatorType: Indicator.circleStrokeSpin,
+            colors: [Colors.greenAccent],
+            backgroundColor: Colors.transparent,
+            pathBackgroundColor: Colors.transparent),
+      ),
+    );
+
+    return FutureBuilder(
       future: loadLocalData(),
       builder: (context, snapshot) {
         // scoreToday == -1
-        return _signin == true
-            ? (_didSurvey == true
-                ? GraphSurvey(
-                    gSS: _graphSS,
-                    scoreToday: _scoreToday,
-                    name: _username,
-                    needs: _needs,
-                  )
-                : SurveyWelcomePage(name: _username.toString()))
-            : const LoginPage();
+        return _loading == true
+            ? scaffold
+            : (_signin == true
+                ? (_didSurvey == true
+                    ? GraphSurvey(
+                        gSS: _graphSS,
+                        scoreToday: _scoreToday,
+                        name: _username,
+                        needs: _needs,
+                      )
+                    : SurveyWelcomePage(name: _username.toString()))
+                : const LoginPage());
       },
     );
-    return fb;
   }
 }
 
