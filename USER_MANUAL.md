@@ -3,11 +3,11 @@
 ### Please follow the instructions carefully to successfully participate in the program.
 First, make sure you have "Empress Daily Survey" installed on your mobile device.\
 Not sure how? Follow the guides below based on your device.
-### Android: (_Latest Version - 3.4_)
+### Android: (_Latest Version - 3.5_)
 [Android Install Guide](ANDROID_INSTALL_GUIDE.md)
 
 ## Register Steps:
-1. Confirm with your paramedic that a patient profile has been created under your name.
+1. Confirm with your paramedic that a patient profile has been created under your name and that every word in your patient name is capitalized.
 2. Open "Empress Daily Survey" app.
 3. Tap on "Create User Account". 
 <img src="https://user-images.githubusercontent.com/17057659/202155490-645dc3a3-f635-4d7b-a930-df4c9f9b39ed.png" width="200">
