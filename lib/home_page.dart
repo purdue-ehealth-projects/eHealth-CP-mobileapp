@@ -127,16 +127,16 @@ class _HomePageState extends State<HomePage> {
         // scoreToday == -1
         return _loading == true
             ? scaffold
-            : (_signin == true
-                ? (_didSurvey == true
-                    ? GraphSurvey(
+            : (_signin == false
+                ? const LoginPage()
+                : (_didSurvey == false
+                    ? SurveyWelcomePage(name: _username.toString())
+                    : GraphSurvey(
                         gSS: _graphSS,
                         scoreToday: _scoreToday,
                         name: _username,
                         needs: _needs,
-                      )
-                    : SurveyWelcomePage(name: _username.toString()))
-                : const LoginPage());
+                      )));
       },
     );
   }
@@ -217,6 +217,7 @@ Future<void> showProfile(BuildContext context, String name) async {
 
 /// Dialog to confirm log out
 _confirmLogout(BuildContext context) async {
+  // Define navigator before any async calls
   final navigator = Navigator.of(context);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   Widget okButton = TextButton(
@@ -226,13 +227,13 @@ _confirmLogout(BuildContext context) async {
     ),
     onPressed: () async {
       await prefs.clear();
-      navigator.push(
-        MaterialPageRoute(
-          // direct to login and not home so prefs.clear() won't get
-          // called twice
-          builder: (_) => const LoginPage(),
-        ),
-      );
+      navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            // direct to login and not home so prefs.clear() won't get
+            // called twice
+            builder: (_) => const LoginPage(),
+          ),
+          (_) => false);
     },
   );
   Widget noButton = TextButton(
