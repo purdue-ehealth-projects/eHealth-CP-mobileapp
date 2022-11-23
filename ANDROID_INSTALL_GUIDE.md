@@ -20,7 +20,7 @@
 <img src="https://user-images.githubusercontent.com/17057659/198921742-d126df81-2c7a-4c0a-9480-b48ed07802aa.jpeg" width="250">
 
 7. Scroll down until you find the version number info. Confirm that the version is correct 
-(check version information at the top of this page). Go back to the previous page.  
+(check version information at the top of the Android Install Guide). Go back to the previous page.  
 <img src="https://user-images.githubusercontent.com/17057659/198921858-1ef5e42d-8194-41e8-95a0-e66cf198550c.jpg" width="250">
 
 8. Click on the “Install” button.
