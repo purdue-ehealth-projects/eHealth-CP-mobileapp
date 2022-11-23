@@ -78,6 +78,7 @@ Future<void> _createNotif(int id, DateTime dt) async {
         title: 'Survey Reminder',
         body: 'Please complete your survey today.',
         notificationLayout: NotificationLayout.BigPicture,
+        bigPicture: 'asset://assets/ems_health_icon3_small.png',
         largeIcon: 'asset://assets/ems_health_icon3_small.png',
         fullScreenIntent: true,
         wakeUpScreen: true,
