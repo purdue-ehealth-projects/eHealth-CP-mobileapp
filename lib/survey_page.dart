@@ -11,7 +11,7 @@ import 'survey_data.dart';
 import 'graph_survey.dart';
 import 'database.dart';
 import 'notification_api.dart';
-import 'alerts.dart';
+import 'widgets.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
@@ -31,8 +31,8 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 }
 
 /// Maps user answer to each question.
-Map<String, String> quizResult = {};
-double _continueFontSize = 32;
+Map<String, String> _quizResult = {};
+double _nextFontSize = 32;
 double _itemHeight = 80;
 
 /// Welcome page.
@@ -95,7 +95,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
                     style: TextStyle(
                       fontFamily: 'OpenSans',
                       color: Colors.white,
-                      fontSize: _continueFontSize,
+                      fontSize: _nextFontSize,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -181,7 +181,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(10.0),
               child: SizedBox(
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
@@ -258,13 +258,13 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                         ? TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.grey,
-                            fontSize: _continueFontSize,
+                            fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           )
                         : TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.white,
-                            fontSize: _continueFontSize,
+                            fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           ),
                   ),
@@ -274,11 +274,11 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                     noSelectionAlert(context);
                     return;
                   }
-                  if (quizResult.containsKey(questions[question])) {
-                    quizResult.update(
+                  if (_quizResult.containsKey(questions[question])) {
+                    _quizResult.update(
                         questions[question], (value) => selectedVal as String);
                   } else {
-                    quizResult.putIfAbsent(
+                    _quizResult.putIfAbsent(
                         questions[question], () => selectedVal as String);
                   }
 
@@ -386,7 +386,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: SizedBox(
               child: DropdownButtonHideUnderline(
                   child: DropdownButton2(
@@ -464,7 +464,9 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                   //color: Color(0xff0b3954),
                 ),
                 iconEnabledColor: Colors.white,
+                // box item height
                 itemHeight: 120,
+                // drop down items heights
                 customItemsHeights: itemHeights,
                 dropdownMaxHeight: 700,
                 buttonPadding: const EdgeInsets.only(left: 10, right: 0),
@@ -521,13 +523,13 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                         ? TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.grey,
-                            fontSize: _continueFontSize,
+                            fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           )
                         : TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.white,
-                            fontSize: _continueFontSize,
+                            fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           ),
                   ),
@@ -544,10 +546,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                       }
                     }
                   }
-                  if (quizResult.containsKey(questions[question])) {
-                    quizResult.update(questions[question], (value) => temp);
+                  if (_quizResult.containsKey(questions[question])) {
+                    _quizResult.update(questions[question], (value) => temp);
                   } else {
-                    quizResult.putIfAbsent(questions[question], () => temp);
+                    _quizResult.putIfAbsent(questions[question], () => temp);
                   }
                   Navigator.push(
                     context,
@@ -632,7 +634,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                         style: TextStyle(
                           fontFamily: 'OpenSans',
                           color: Colors.white,
-                          fontSize: _continueFontSize,
+                          fontSize: _nextFontSize,
                           fontWeight: FontWeight.w500,
                         ),
                       )
@@ -650,10 +652,11 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                   loading = true;
                 });
                 // collect score data from raw survey data (quizResult)
-                final Map<String, dynamic> scoreData = collectScore(quizResult);
+                final Map<String, dynamic> scoreData =
+                    collectScore(_quizResult);
                 // update database with score data and raw data
                 final List<SurveyScores> ss =
-                    await updateDatabase(scoreData, name, quizResult);
+                    await updateDatabase(scoreData, name, _quizResult);
                 final int scoreToday = scoreData['score'];
                 final String needs = scoreData['needs'];
                 if (!mounted) return;

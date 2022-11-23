@@ -30,8 +30,12 @@ String parseName(String original) {
 
 /// Helper function log in user. Returns an error code.
 ///
-/// @Return: 0 - success; 1 - wrong password; 2 - user doesn't exist.
+/// @Return: 0 - success; 1 - name is empty; 2 - user doesn't exist
+///  3 - wrong password.
 Future<int> loginUser(String name, String password) async {
+  if (name.isEmpty) {
+    return 1;
+  }
   if (await MongoDB.testDBConnection() == false) {
     await MongoDB.connect();
   }
@@ -46,7 +50,7 @@ Future<int> loginUser(String name, String password) async {
   if (storedPassword == encryptedPassword) {
     return 0;
   } else {
-    return 1;
+    return 3;
   }
 }
 

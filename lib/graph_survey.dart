@@ -3,6 +3,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_fgbg/flutter_fgbg.dart';
 import 'package:restart_app/restart_app.dart';
 
+import 'widgets.dart';
 import 'home_page.dart';
 
 class GraphSurvey extends StatefulWidget {

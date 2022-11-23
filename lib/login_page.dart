@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'survey_page.dart';
 import 'create_profile.dart';
 import 'database.dart';
-import 'alerts.dart';
+import 'widgets.dart';
 
 /// Login page that is shown when the user is not logged in.
 class LoginPage extends StatefulWidget {
@@ -32,34 +31,16 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(fontFamily: "OpenSans"),
         ),
         backgroundColor: const Color(0xff0b3954),
-        leading: Container(),
+        leading: privacyPolicyBtn(context),
+        actions: [userManBtn(context)],
       ),
       body: ListView(
         children: <Widget>[
           const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text(
-              "EMS",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: "OpenSans",
-                fontWeight: FontWeight.w700,
-                fontSize: 80,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: Text(
-              "Health",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: "OpenSans",
-                fontWeight: FontWeight.w700,
-                fontSize: 52,
-                color: Colors.white,
-              ),
+            padding: EdgeInsets.only(top: 30, bottom: 20),
+            child: Image(
+              image: AssetImage("assets/icon3_home.png"),
+              height: 150,
             ),
           ),
           Center(
@@ -144,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontFamily: 'OpenSans',
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 26,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -169,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontFamily: 'OpenSans',
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 26,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -182,31 +163,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                ),
-                const SizedBox(height: 40),
-                GestureDetector(
-                  child: Container(
-                    width: size.width * 0.8,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Privacy Policy",
-                      style: TextStyle(
-                        fontFamily: 'OpenSans',
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  onTap: () => launchUrl(
-                      Uri.parse(
-                          'https://gist.github.com/carl2x/3b79730cdd9ae5f8d746c817d2772a2a'),
-                      mode: LaunchMode.platformDefault),
                 ),
               ],
             ),
