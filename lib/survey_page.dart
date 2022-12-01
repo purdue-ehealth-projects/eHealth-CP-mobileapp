@@ -11,7 +11,8 @@ import 'survey_data.dart';
 import 'graph_survey.dart';
 import 'database.dart';
 import 'notification_api.dart';
-import 'widgets.dart';
+import 'alerts.dart';
+import 'buttons.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {

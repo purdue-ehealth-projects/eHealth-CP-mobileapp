@@ -4,7 +4,8 @@ import 'package:restart_app/restart_app.dart';
 import 'survey_page.dart';
 import 'create_profile.dart';
 import 'database.dart';
-import 'widgets.dart';
+import 'alerts.dart';
+import 'buttons.dart';
 
 /// Login page that is shown when the user is not logged in.
 class LoginPage extends StatefulWidget {
@@ -31,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(fontFamily: "OpenSans"),
         ),
         backgroundColor: const Color(0xff0b3954),
-        leading: privacyPolicyBtn(context),
-        actions: [userManBtn(context)],
+        leading: privacyPolicyButton(context),
+        actions: [userManButton(context)],
       ),
       body: ListView(
         children: <Widget>[

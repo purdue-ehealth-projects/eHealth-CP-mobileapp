@@ -3,7 +3,7 @@ import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'database.dart';
-import 'widgets.dart';
+import 'alerts.dart';
 import 'survey_page.dart';
 
 /// Create profile page that is pushed from the login page to create a new
