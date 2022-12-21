@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  bool _loading = true;
   String _username = '';
+  bool _loading = true;
   bool _signin = false;
   bool _didSurvey = false;
   final List<SurveyScores> _graphSS = [];
@@ -102,7 +102,9 @@ class _HomePageState extends State<HomePage> {
       // clear all local storage
       await prefs.clear();
     }
-    _loading = false;
+    setState(() {
+      _loading = false;
+    });
   }
 
   @override
