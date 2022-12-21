@@ -3,7 +3,7 @@
 ### Please follow the instructions carefully to successfully participate in the program.
 First, make sure you have "Empress Daily Survey" installed on your mobile device.\
 Not sure how? Follow the guides below based on your device.
-### Android: (_Latest Version - 3.6_)
+### Android: (_Latest Version - 3.7_)
 [Android Install Guide](ANDROID_INSTALL_GUIDE.md)
 
 ## Register Steps:
