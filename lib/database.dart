@@ -9,9 +9,9 @@ import 'dart:convert';
 /// @Parameters: integer for the length of the random string.
 ///
 /// @Return: a random string (salt).
-String getSalt(int len) {
-  var random = Random.secure();
-  var values = List<int>.generate(len, (i) => random.nextInt(255));
+String getSalt(final int len) {
+  final random = Random.secure();
+  final values = List<int>.generate(len, (i) => random.nextInt(255));
   return base64UrlEncode(values);
 }
 
@@ -19,7 +19,7 @@ String getSalt(int len) {
 ///
 /// @Return: a hashed and salted password.
 /// Each user's password should have its unique salt.
-String hashPassWithSalt(String password, String salt) {
+String hashPassWithSalt(final String password, final String salt) {
   final secure = Crypt.sha256(password, salt: salt, rounds: 1000);
   return secure.toString();
 }
@@ -32,7 +32,7 @@ String parseName(String original) {
 ///
 /// @Return: 0 - success; 1 - name is empty; 2 - user doesn't exist
 ///  3 - wrong password.
-Future<int> loginUser(String name, String password) async {
+Future<int> loginUser(final String name, final String password) async {
   if (name.isEmpty) {
     return 1;
   }
@@ -42,9 +42,9 @@ Future<int> loginUser(String name, String password) async {
   if (await MongoDB.existUser(name) == false) {
     return 2;
   }
-  var user = await MongoDB.findUser(name);
-  String storedPassword = user['password'];
-  String salt = user['salt'];
+  final user = await MongoDB.findUser(name);
+  final String storedPassword = user['password'];
+  final String salt = user['salt'];
   final encryptedPassword = hashPassWithSalt(password, salt);
 
   if (storedPassword == encryptedPassword) {
@@ -59,7 +59,7 @@ Future<int> loginUser(String name, String password) async {
 ///
 /// @Return: 0 - success; 1 - empty input; 2 - patient profile doesn't exist;
 /// 3 - user account already exists.
-Future<int> validateUsername(String name) async {
+Future<int> validateUsername(final String name) async {
   if (name.isEmpty) {
     return 1;
   }
@@ -76,14 +76,14 @@ Future<int> validateUsername(String name) async {
 }
 
 /// Push name and password to storage
-Future<void> pushUserLocal(String name, String password) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+Future<void> pushUserLocal(final String name, final String password) async {
+  final prefs = await SharedPreferences.getInstance();
   await prefs.setString('username', name);
   await prefs.setString('password', password);
 }
 
 /// Register user and create user account in MongoDB.
-Future<void> pushUserMongoDB(String name, String password) async {
+Future<void> pushUserMongoDB(final String name, final String password) async {
   await MongoDB.createUser(name, password);
 }
 
@@ -107,7 +107,7 @@ class MongoDB {
     final String pass =
         Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
     final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
-    String connection = "$prePass$pass$postPass";
+    final String connection = "$prePass$pass$postPass";
     try {
       db = await Db.create(connection);
       await db.open();
@@ -136,27 +136,28 @@ class MongoDB {
   }
 
   /// Checks if user exists in the database
-  static Future<bool> existUser(String name) async {
+  static Future<bool> existUser(final String name) async {
     return (await userCollection.findOne(where.eq('name', name)) != null);
   }
 
   /// Checks if patient exists in the database
-  static Future<bool> existPatient(String name) async {
+  static Future<bool> existPatient(final String name) async {
     return (await patientCollection.findOne(where.eq('name', name)) != null);
   }
 
   /// Finds and returns user in the database.
-  static Future<Map<String, dynamic>> findUser(String name) async {
+  static Future<Map<String, dynamic>> findUser(final String name) async {
     return await userCollection.findOne(where.eq('name', name));
   }
 
   /// Finds and returns patient in the database.
-  static Future<Map<String, dynamic>> findPatient(String name) async {
+  static Future<Map<String, dynamic>> findPatient(final String name) async {
     return await patientCollection.findOne(where.eq('name', name));
   }
 
   /// Updates patient priority based on their score
-  static Future<void> updatePatientPrio(String name, int score) async {
+  static Future<void> updatePatientPrio(
+      final String name, final int score) async {
     int priority = 0;
     if (score >= 0 && score <= 20) {
       priority = 3;
@@ -170,7 +171,8 @@ class MongoDB {
   }
 
   /// Creates a user entry in the database.
-  static Future<void> createUser(String name, String password) async {
+  static Future<void> createUser(
+      final String name, final String password) async {
     var patient = await findPatient(name);
     dynamic userId = patient['_id'];
     // Generates a salt with length 10
@@ -186,8 +188,8 @@ class MongoDB {
 
   /// Adds a survey entry in the database.
   static Future<ObjectId> addSurvey(
-      Map<String, dynamic> surveyData, ObjectId userId) async {
-    ObjectId surveyId = ObjectId();
+      final Map<String, dynamic> surveyData, final ObjectId userId) async {
+    final ObjectId surveyId = ObjectId();
     //surveyId = surveyId.substring(10, surveyId.length - 2);
     surveyData['_id'] = surveyId;
     surveyData['userId'] = userId;
@@ -196,9 +198,9 @@ class MongoDB {
   }
 
   /// Adds a raw survey entry in the database.
-  static Future<void> addRawSurvey(
-      Map<String, String> rawSurvey, ObjectId surveyId, ObjectId userId) async {
-    Map<String, dynamic> toAdd = {};
+  static Future<void> addRawSurvey(final Map<String, String> rawSurvey,
+      final ObjectId surveyId, final ObjectId userId) async {
+    final Map<String, dynamic> toAdd = {};
     toAdd['_id'] = surveyId;
     for (final entry in rawSurvey.entries) {
       toAdd.putIfAbsent(entry.key, () => entry.value);
@@ -208,12 +210,12 @@ class MongoDB {
   }
 
   /// Deletes a patient entry with the corresponding name.
-  static Future<void> deletePatient(String name) async {
+  static Future<void> deletePatient(final String name) async {
     await patientCollection.deleteOne({'name': name});
   }
 
   /// Deletes a user entry with the corresponding name.
-  static Future<void> deleteUser(String name) async {
+  static Future<void> deleteUser(final String name) async {
     await userCollection.deleteOne({'name': name});
   }
 

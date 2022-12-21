@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(

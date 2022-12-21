@@ -6,9 +6,9 @@ const double _alertMsgSize = 18;
 const double _actionFontSize = 18;
 
 /// Login failed alert pop up
-loginFailedAlert(BuildContext context, int errCode) {
+loginFailedAlert(BuildContext context, final int errCode) {
   // set up the button
-  Widget okButton = TextButton(
+  final Widget okButton = TextButton(
     child: const Text(
       "OK",
       style: TextStyle(fontSize: _actionFontSize),
@@ -72,9 +72,9 @@ loginFailedAlert(BuildContext context, int errCode) {
 }
 
 /// Register failed alert pop up
-validateUserFailedAlert(BuildContext context, int errCode) {
+validateUserFailedAlert(BuildContext context, final int errCode) {
   // set up the button
-  Widget okButton = TextButton(
+  final Widget okButton = TextButton(
     child: const Text(
       "OK",
       style: TextStyle(fontSize: _actionFontSize),
@@ -139,7 +139,7 @@ validateUserFailedAlert(BuildContext context, int errCode) {
 
 /// Bad password alert pop up
 badPasswordAlert(BuildContext context) {
-  Widget okButton = TextButton(
+  final Widget okButton = TextButton(
     child: const Text(
       "OK",
       style: TextStyle(fontSize: _actionFontSize),
@@ -172,7 +172,7 @@ badPasswordAlert(BuildContext context) {
 /// Alert pop up when no option is seleted.
 noSelectionAlert(BuildContext context) {
   // set up the button
-  Widget okButton = TextButton(
+  final Widget okButton = TextButton(
     child: const Text(
       "OK",
       style: TextStyle(fontSize: _actionFontSize),

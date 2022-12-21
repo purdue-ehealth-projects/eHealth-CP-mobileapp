@@ -32,9 +32,9 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 }
 
 /// Maps user answer to each question.
-Map<String, String> _quizResult = {};
-double _nextFontSize = 32;
-double _itemHeight = 80;
+final Map<String, String> _quizResult = {};
+const double _nextFontSize = 32;
+const double _itemHeight = 80;
 
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
@@ -50,7 +50,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   @override
   Widget build(BuildContext context) {
     final String name = widget.name;
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
     Scaffold scaffold = Scaffold(
       backgroundColor: const Color(0xff0b3954),
@@ -91,7 +91,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     "Next",
                     style: TextStyle(
                       fontFamily: 'OpenSans',
@@ -153,7 +153,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
     final List<String> choices = widget.choices;
     final int percent = widget.percent;
 
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
@@ -256,13 +256,13 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                   child: Text(
                     "Next",
                     style: selectedVal == null
-                        ? TextStyle(
+                        ? const TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.grey,
                             fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           )
-                        : TextStyle(
+                        : const TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.white,
                             fontSize: _nextFontSize,
@@ -355,7 +355,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     final int question = widget.question;
     final int percent = widget.percent;
 
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     List<double> itemHeights = <double>[];
     for (int i = 0; i < choices.length; i++) {
       itemHeights.add(_itemHeight);
@@ -521,13 +521,13 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                   child: Text(
                     "Next",
                     style: greyNext == true
-                        ? TextStyle(
+                        ? const TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.grey,
                             fontSize: _nextFontSize,
                             fontWeight: FontWeight.w500,
                           )
-                        : TextStyle(
+                        : const TextStyle(
                             fontFamily: 'OpenSans',
                             color: Colors.white,
                             fontSize: _nextFontSize,
@@ -593,7 +593,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
     final String name = widget.name;
     final int percent = widget.percent;
 
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
@@ -630,7 +630,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
                 ),
                 alignment: Alignment.center,
                 child: !loading
-                    ? Text(
+                    ? const Text(
                         "Submit",
                         style: TextStyle(
                           fontFamily: 'OpenSans',
@@ -691,9 +691,10 @@ Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
   DateTime dateNow = DateTime.now();
   String dateToAdd = '${dateNow.month}/${dateNow.day}/${dateNow.year}';
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
   List<String>? dates = prefs.getStringList("dates");
   List<String>? scores = prefs.getStringList("scores");
+
   if (dates == null || dates.isEmpty || scores == null || scores.isEmpty) {
     dates = [];
     scores = [];

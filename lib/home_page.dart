@@ -61,9 +61,9 @@ class _HomePageState extends State<HomePage> {
     // Schedule notifications
     await scheduleNotifications();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? username = prefs.getString("username");
-    String? password = prefs.getString("password");
+    final prefs = await SharedPreferences.getInstance();
+    final String? username = prefs.getString("username");
+    final String? password = prefs.getString("password");
 
     if (username == null || password == null) {
       _signin = false;
@@ -75,8 +75,8 @@ class _HomePageState extends State<HomePage> {
     if (_signin) {
       _username = username!;
 
-      String? date = prefs.getString("date");
-      String curDate =
+      final String? date = prefs.getString("date");
+      final String curDate =
           '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
       if (date == curDate) {
@@ -84,8 +84,8 @@ class _HomePageState extends State<HomePage> {
         _scoreToday = prefs.getInt("scoreToday")!;
         _needs = prefs.getString("needs")!;
 
-        List<String>? scores = prefs.getStringList("scores");
-        List<String>? dates = prefs.getStringList("dates");
+        final List<String>? scores = prefs.getStringList("scores");
+        final List<String>? dates = prefs.getStringList("dates");
 
         if (scores != null &&
             scores.isNotEmpty &&
@@ -107,8 +107,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    Scaffold scaffold = Scaffold(
+    final Size size = MediaQuery.of(context).size;
+    final Scaffold scaffold = Scaffold(
       backgroundColor: const Color(0xff0b3954),
       body: Padding(
         padding:

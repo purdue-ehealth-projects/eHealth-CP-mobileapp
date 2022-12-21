@@ -13,9 +13,11 @@ Future<void> timezoneInit() async {
 Future<void> scheduleNotifications() async {
   await timezoneInit();
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  final sharedPreferences = await SharedPreferences.getInstance();
-
-  final String? lastSurveyDate = sharedPreferences.getString("date");
+  final prefs = await SharedPreferences.getInstance();
+  // need to reload here because background runs in a different isolate
+  await prefs.reload();
+  final String? lastSurveyDate = prefs.getString("date");
+  final bool? scheduledTMR = prefs.getBool("scheduledTMR");
   final String curDate =
       '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
@@ -23,9 +25,10 @@ Future<void> scheduleNotifications() async {
   if (lastSurveyDate == null ||
       lastSurveyDate == "" ||
       lastSurveyDate != curDate) {
+    await prefs.setBool("scheduledTMR", false);
+
     var scheduledNotifs =
         await AwesomeNotifications().listScheduledNotifications();
-    // do nothing if notifications are already scheduled
     if (scheduledNotifs.isNotEmpty) {
       return;
     }
@@ -51,8 +54,11 @@ Future<void> scheduleNotifications() async {
         scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
       }
     }
-  } else {
+  } else if (lastSurveyDate == curDate &&
+      scheduledTMR != null &&
+      scheduledTMR == false) {
     // survey completed; clear all notifs; schedule for tomorrow starting at 8
+    await prefs.setBool("scheduledTMR", true);
     await AwesomeNotifications().cancelAll();
     var scheduleDateTime = tz.TZDateTime(
         tz.local, now.year, now.month, now.day + 1, 8, 0, 0, 0, 0);
@@ -68,7 +74,7 @@ Future<void> scheduleNotifications() async {
 }
 
 Future<void> _createNotif(int id, DateTime dt) async {
-  String localTimeZone =
+  final String localTimeZone =
       await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
   await AwesomeNotifications().createNotification(

@@ -35,7 +35,7 @@ TextButton userManButton(BuildContext context) {
 }
 
 /// Button widget for profile page.
-TextButton profileButton(BuildContext context, String username) {
+TextButton profileButton(BuildContext context, final String username) {
   return TextButton(
     // should be async?
     onPressed: () => _showProfile(context, username),
@@ -47,11 +47,11 @@ TextButton profileButton(BuildContext context, String username) {
 }
 
 /// Returns a patient profile page pop-up for the user.
-Future<void> _showProfile(BuildContext context, String name) async {
+Future<void> _showProfile(BuildContext context, final String name) async {
   if (await MongoDB.testDBConnection() == false) {
     await MongoDB.connect();
   }
-  Map<String, dynamic> patient = await MongoDB.findPatient(name);
+  final Map<String, dynamic> patient = await MongoDB.findPatient(name);
   patient.removeWhere((key, value) => key == '_id');
 
   return showDialog<void>(
@@ -105,8 +105,8 @@ Future<void> _showProfile(BuildContext context, String name) async {
 _confirmLogout(BuildContext context) async {
   // Define navigator before any async calls
   final navigator = Navigator.of(context);
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  Widget okButton = TextButton(
+  final prefs = await SharedPreferences.getInstance();
+  final Widget okButton = TextButton(
     child: const Text(
       "LOG OUT",
       style: TextStyle(fontSize: _actionFontSize, color: Colors.redAccent),
@@ -122,7 +122,7 @@ _confirmLogout(BuildContext context) async {
           (_) => false);
     },
   );
-  Widget noButton = TextButton(
+  final Widget noButton = TextButton(
     child: const Text(
       "CANCEL",
       style: TextStyle(fontSize: _actionFontSize),
@@ -130,7 +130,7 @@ _confirmLogout(BuildContext context) async {
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
-  AlertDialog alert = AlertDialog(
+  final AlertDialog alert = AlertDialog(
     title: const Text("Confirm Logout"),
     content: const Text("Are you sure you want to log out?\n\n"
         "All your local data will be cleared, and you will need to log back in again.\n\n"
