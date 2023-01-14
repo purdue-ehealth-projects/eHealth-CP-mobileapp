@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'notification_api.dart';
 import 'database.dart';
-import 'login_page.dart';
-import 'survey_page.dart';
 import 'graph_survey.dart';
+import 'login_page.dart';
+import 'notification_api.dart';
+import 'survey_page.dart';
 
 /// Main Homepage that gets called in main.
 class HomePage extends StatefulWidget {
@@ -23,9 +23,13 @@ class HomePage extends StatefulWidget {
 
 /// Homepage state
 class _HomePageState extends State<HomePage> {
+  /// Original Future reference to prevent infinite looping.
+  late Future data;
+
   @override
   void initState() {
     super.initState();
+    data = loadLocalData();
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         // This is just a basic example. For real apps, you must show some
@@ -58,9 +62,6 @@ class _HomePageState extends State<HomePage> {
 
   /// Load local date from storage to app memory.
   Future<void> loadLocalData() async {
-    // Schedule notifications
-    await scheduleNotifications();
-
     final prefs = await SharedPreferences.getInstance();
     final String? username = prefs.getString("username");
     final String? password = prefs.getString("password");
@@ -75,11 +76,11 @@ class _HomePageState extends State<HomePage> {
     if (_signin) {
       _username = username!;
 
-      final String? date = prefs.getString("date");
+      final String? lastSurveyDate = prefs.getString("lastSurveyDate");
       final String curDate =
           '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
-      if (date == curDate) {
+      if (lastSurveyDate == curDate) {
         _didSurvey = true;
         _scoreToday = prefs.getInt("scoreToday")!;
         _needs = prefs.getString("needs")!;
@@ -102,6 +103,9 @@ class _HomePageState extends State<HomePage> {
       // clear all local storage
       await prefs.clear();
     }
+    // Schedule notifications
+    await scheduleNotifications();
+    // Set state here to redraw app
     setState(() {
       _loading = false;
     });
@@ -110,7 +114,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final Scaffold scaffold = Scaffold(
+    final Scaffold loadingScaffold = Scaffold(
       backgroundColor: const Color(0xff0b3954),
       body: Padding(
         padding:
@@ -124,11 +128,11 @@ class _HomePageState extends State<HomePage> {
     );
 
     return FutureBuilder(
-      future: loadLocalData(),
+      future: data,
       builder: (context, snapshot) {
         // scoreToday == -1
         return _loading == true
-            ? scaffold
+            ? loadingScaffold
             : (_signin == false
                 ? const LoginPage()
                 : (_didSurvey == false

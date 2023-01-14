@@ -37,27 +37,31 @@ dependencies:
   #flutter_launcher_icons: ^0.9.1
   #font_awesome_flutter: ^9.1.0
   #survey_kit: ^0.1.1
+  #encrypt: ^5.0.1
+  #provider: ^6.0.2
+  #fl_chart: ^0.50.1
+
+  # Core
   awesome_notifications: ^0.7.3
   shared_preferences: ^2.0.13
-  #fl_chart: ^0.50.1
-  syncfusion_flutter_charts: ^20.1.47+1
-  #encrypt: ^5.0.1
-  provider: ^6.0.2
-  percent_indicator: ^4.0.0
-  
-  url_launcher: ^6.1.5
   flutter_config: ^2.0.0
   mongo_dart: ^0.8.0
-  crypt: ^4.2.1
+
+  # UI
+  syncfusion_flutter_charts: ^20.1.47+1
+  percent_indicator: ^4.0.0
+  loading_indicator: ^3.1.0
   dropdown_button2: ^1.8.5
+
+  # Utils
+  crypt: ^4.2.1
+  url_launcher: ^6.1.5
   flutter_pw_validator: ^1.4.2
   flutter_native_timezone: ^2.0.0
   timezone: ^0.9.0
   flutter_fgbg: ^0.2.1
   restart_app: ^1.1.0+1
-  loading_indicator: ^3.1.0
   basic_utils: ^5.4.2
-  flutter_background_service: ^2.4.6
 
 dev_dependencies:
   flutter_test:

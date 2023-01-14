@@ -707,10 +707,10 @@ Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
   }
 
   await prefs.setInt("scoreToday", score);
-  await prefs.setString('date', dateToAdd);
+  await prefs.setString('lastSurveyDate', dateToAdd);
+  await prefs.setString('needs', scoreData['needs']);
   await prefs.setStringList("dates", dates);
   await prefs.setStringList("scores", scores);
-  await prefs.setString('needs', scoreData['needs']);
 
   // UPDATE DATABASE HERE
   Map<String, dynamic> user = await MongoDB.findUser(name);

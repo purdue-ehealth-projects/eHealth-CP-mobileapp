@@ -177,8 +177,8 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) {
       Restart.restartApp();
     }
-    String parsedName = parseName(nameController.text);
-    int result = await loginUser(parsedName, passwordController.text);
+    String parsedName = parseName(name);
+    int result = await loginUser(parsedName, password);
     if (result != 0) {
       if (!mounted) return;
       loginFailedAlert(context, result);

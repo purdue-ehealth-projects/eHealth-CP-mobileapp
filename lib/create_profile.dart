@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:restart_app/restart_app.dart';
 
-import 'database.dart';
 import 'alerts.dart';
+import 'database.dart';
 import 'survey_page.dart';
 
 /// Create profile page that is pushed from the login page to create a new
@@ -172,7 +172,7 @@ class _CreateProfileState extends State<CreateProfile> {
     if (!mounted) {
       Restart.restartApp();
     }
-    String parsedName = parseName(nameController.text);
+    String parsedName = parseName(name);
     int result = await validateUsername(parsedName);
     if (result != 0) {
       if (!mounted) return;
@@ -183,8 +183,8 @@ class _CreateProfileState extends State<CreateProfile> {
       badPasswordAlert(context);
     }
     if (result == 0 && _goodPassword == true) {
-      await pushUserLocal(parsedName, passwordController.text);
-      await pushUserMongoDB(parsedName, passwordController.text);
+      await pushUserLocal(parsedName, password);
+      await pushUserMongoDB(parsedName, password);
 
       if (!mounted) return;
       Navigator.push(

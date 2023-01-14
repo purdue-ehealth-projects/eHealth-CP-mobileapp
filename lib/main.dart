@@ -1,22 +1,15 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'dart:ui';
-import 'dart:async';
 
 import 'home_page.dart';
 import 'database.dart';
-import 'notification_api.dart';
 
 /// Main imports environmental variables, connect to MongoDB, set up
 /// Notifications, and runs MyApp.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
-  await initializeBackgroundSerive();
   AwesomeNotifications().initialize(
       null, //icon is null right now
       [
@@ -40,55 +33,6 @@ Future<void> main() async {
   // we need to connect in main as homepage won't initalize again on app restart
   await MongoDB.connect();
   runApp(const MyApp());
-}
-
-Future<void> initializeBackgroundSerive() async {
-  final service = FlutterBackgroundService();
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      autoStart: true,
-      isForegroundMode: false,
-    ),
-    iosConfiguration: IosConfiguration(
-      autoStart: true,
-      onBackground: onIosBackground,
-    ),
-  );
-  service.startService();
-}
-
-/// To ensure this is executed
-/// run app from xcode, then from xcode menu, select Simulate Background Fetch
-///
-/// Runs every 15 minutes (by iOS) in the background for 15-30 seconds
-@pragma('vm:entry-point')
-Future<bool> onIosBackground(ServiceInstance service) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  DartPluginRegistrant.ensureInitialized();
-
-  await scheduleNotifications();
-  return true;
-}
-
-@pragma('vm:entry-point')
-Future<void> onStart(ServiceInstance service) async {
-  DartPluginRegistrant.ensureInitialized();
-  if (service is AndroidServiceInstance) {
-    service.on('setAsForeground').listen((event) {
-      service.setAsForegroundService();
-    });
-    service.on('setAsBackground').listen((event) {
-      service.setAsBackgroundService();
-    });
-  }
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-  });
-  // Try to schedule notifications every 2 hours in the background
-  Timer.periodic(const Duration(hours: 2), (timer) async {
-    await scheduleNotifications();
-  });
 }
 
 /// Main app screen that is called first by default. Redirects to homepage.

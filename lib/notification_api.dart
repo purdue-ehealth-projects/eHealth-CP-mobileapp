@@ -12,64 +12,75 @@ Future<void> timezoneInit() async {
 
 Future<void> scheduleNotifications() async {
   await timezoneInit();
-  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
   final prefs = await SharedPreferences.getInstance();
-  // need to reload here because background runs in a different isolate
+  final String? lastSurveyDate = prefs.getString("lastSurveyDate");
+  // reload here is necessary to get the updated scheduledDate value
   await prefs.reload();
-  final String? lastSurveyDate = prefs.getString("date");
-  final bool? scheduledTMR = prefs.getBool("scheduledTMR");
+  final String? scheduledDate = prefs.getString("scheduledDate");
   final String curDate =
       '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
-  // survey not complete; schedule for next hours until 8am next day
-  if (lastSurveyDate == null ||
-      lastSurveyDate == "" ||
-      lastSurveyDate != curDate) {
-    await prefs.setBool("scheduledTMR", false);
+  // survey not complete; schedule for today
+  if (scheduledDate == null || scheduledDate != curDate) {
+    await prefs.setString("scheduledDate", curDate);
+    await _scheduleToday();
+    await _scheduleNext7days();
+  }
 
-    var scheduledNotifs =
-        await AwesomeNotifications().listScheduledNotifications();
-    if (scheduledNotifs.isNotEmpty) {
-      return;
-    }
+  if (lastSurveyDate == curDate) {
+    await _cancelToday();
+  }
+}
 
-    // schedule every 15 minutes between 8 and 23
-    tz.TZDateTime scheduleDateTime;
-    int scheduleHour = -1;
-    if (now.hour > 8) {
-      scheduleHour = now.hour;
-    } else {
-      scheduleHour = 8;
-    }
+Future<void> _cancelToday() async {
+  for (int id = 1; id < 61; id++) {
+    await AwesomeNotifications().cancel(id);
+  }
+}
 
-    scheduleDateTime = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
-    int id = 1;
-    for (int i = 0;
-        i < 16 && 8 <= scheduleDateTime.hour && scheduleDateTime.hour <= 23;
-        i++) {
-      for (int j = 0; j < 4; j++) {
-        await _createNotif(id, scheduleDateTime);
-        id++;
-        scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
-      }
+Future<void> _scheduleToday() async {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  // schedule every 15 minutes between 8 and 23
+  tz.TZDateTime scheduleDateTime;
+  int scheduleHour = -1;
+  if (now.hour > 8) {
+    scheduleHour = now.hour;
+  } else {
+    scheduleHour = 8;
+  }
+
+  scheduleDateTime = tz.TZDateTime(
+      tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
+  int id = 1;
+  // At most 60 notifs
+  for (int hour = 0;
+      hour < 15 && 8 <= scheduleDateTime.hour && scheduleDateTime.hour <= 22;
+      hour++) {
+    for (int quarter = 0; quarter < 4; quarter++) {
+      await _createNotif(id, scheduleDateTime);
+      id++;
+      scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
     }
-  } else if (lastSurveyDate == curDate &&
-      scheduledTMR != null &&
-      scheduledTMR == false) {
-    // survey completed; clear all notifs; schedule for tomorrow starting at 8
-    await prefs.setBool("scheduledTMR", true);
-    await AwesomeNotifications().cancelAll();
+  }
+}
+
+Future<void> _scheduleNext7days() async {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  int scheduleDay = now.day + 1;
+  // Each day has at most 15 * 4 = 60 notifs, so notifs the next day starts at
+  // 61
+  int id = 61;
+  for (int day = 0; day < 7; day++) {
     var scheduleDateTime = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day + 1, 8, 0, 0, 0, 0);
-    int id = 1;
-    for (int i = 0; i < 16; i++) {
-      for (int j = 0; j < 4; j++) {
+        tz.local, now.year, now.month, scheduleDay, 8, 0, 0, 0, 0);
+    for (int hour = 0; hour < 15; hour++) {
+      for (int quarter = 0; quarter < 4; quarter++) {
         await _createNotif(id, scheduleDateTime);
         id++;
         scheduleDateTime = scheduleDateTime.add(const Duration(minutes: 15));
       }
     }
+    scheduleDay++;
   }
 }
 
