@@ -9,7 +9,7 @@
 3. Tap on the “EMS Daily Survey” app (should be the first result).
 <img src="https://user-images.githubusercontent.com/17057659/212502562-1a4f9945-f5a5-42a9-ae6a-fc7529370001.jpg" width="250">
 
-4. Complete **step 5 ** only if you see an “Update” button. Skip to **step 6** otherwise.
+4. Complete **Step 5** only if you see an “Update” button. Skip to **Step 6** otherwise.
 5. Please click “Update" to update the app to the latest version.
 
 6. On the app page, find the “About this app” section and click on the arrow.
