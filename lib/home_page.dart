@@ -103,12 +103,14 @@ class _HomePageState extends State<HomePage> {
       // clear all local storage
       await prefs.clear();
     }
-    // Schedule notifications
-    await scheduleNotifications();
     // Set state here to redraw app
     setState(() {
       _loading = false;
     });
+    // Schedule notifications
+    // This can be done in background and doesn't need to be completed during
+    // loading screen.
+    await scheduleNotifications();
   }
 
   @override
