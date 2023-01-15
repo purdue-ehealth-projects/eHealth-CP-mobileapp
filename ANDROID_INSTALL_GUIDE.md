@@ -1,6 +1,6 @@
 ## EMS Daily Survey Open Testing - Android Install Guide
 
-### _Current Latest Version - 3.8_
+### _Current Latest Version - 3.9_
 
 1. Open “Play Store” on your Android device.  
 <img src="https://user-images.githubusercontent.com/17057659/198920765-ab236287-f5e5-4532-b355-664fdb062f90.jpeg" width="100">
