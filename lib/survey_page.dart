@@ -34,7 +34,7 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 /// Maps user answer to each question.
 final Map<String, String> _quizResult = {};
 const double _nextFontSize = 32;
-const double _itemHeight = 80;
+const double _itemHeight = 90;
 
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
@@ -78,45 +78,42 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 7.5),
-                child: Container(
-                  width: size.width * 0.8,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    "Next",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 35, right: 35, bottom: 50.0),
+        child: GestureDetector(
+          child: Container(
+            width: size.width * 0.8,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+            alignment: Alignment.center,
+            child: const Text(
+              "Start",
+              style: TextStyle(
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+                fontSize: _nextFontSize,
+                fontWeight: FontWeight.w500,
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SurveyQuestions(
-                        name: name,
-                        choices: choicesData[0],
-                        question: 0,
-                        percent: 0.toInt()),
-                  ),
-                );
-              },
             ),
           ),
-        ],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SurveyQuestions(
+                    name: name,
+                    choices: choicesData[0],
+                    question: 0,
+                    percent: 0.toInt()),
+              ),
+            );
+          },
+        ),
       ),
     );
     return scaffold;
@@ -155,6 +152,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
@@ -162,162 +160,157 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
           profileButton(context, name)
         ],
       ),
-      body: Container(
-        color: const Color(0xff0b3954),
-        alignment: Alignment.center,
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SizedBox(
-                child: Text(
-                  questions[question],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                  textAlign: TextAlign.center,
+      body: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              child: Text(
+                questions[question],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SizedBox(
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                    hint: SizedBox(
-                      width: size.width * 0.8,
-                      child: const Text(
-                        "Tap to choose an option.",
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    items: choices
-                        .map((item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: SizedBox(
-                                width: size.width * 0.8,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    dropdownDecoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 17, 87, 127),
-                      //color: Color(0xff0b3954),
-                    ),
-                    iconEnabledColor: Colors.white,
-                    value: selectedVal,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedVal = value as String;
-                      });
-                    },
-                    itemHeight: _itemHeight,
-                    buttonPadding: const EdgeInsets.only(left: 10, right: 0),
-                    buttonDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2(
+                  hint: SizedBox(
+                    width: size.width * 0.8,
+                    child: const Text(
+                      "Tap to choose an option.",
+                      style: TextStyle(
+                        fontSize: 24,
                         color: Colors.white,
                       ),
-                      color: selectedVal != null
-                          ? const Color.fromARGB(255, 17, 87, 127)
-                          : const Color(0xff0b3954),
                     ),
-                    buttonElevation: 2,
                   ),
+                  items: choices
+                      .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: SizedBox(
+                              width: size.width * 0.8,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  dropdownDecoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 17, 87, 127),
+                    //color: Color(0xff0b3954),
+                  ),
+                  iconEnabledColor: Colors.white,
+                  value: selectedVal,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedVal = value as String;
+                    });
+                  },
+                  itemHeight: _itemHeight,
+                  buttonWidth: size.width,
+                  buttonPadding: const EdgeInsets.only(left: 10, right: 0),
+                  buttonDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                    color: selectedVal != null
+                        ? const Color.fromARGB(255, 17, 87, 127)
+                        : const Color(0xff0b3954),
+                  ),
+                  buttonElevation: 2,
                 ),
               ),
             ),
-            SizedBox(height: size.height / 2.5),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: SizedBox(
-                  child: GestureDetector(
-                child: Container(
-                  width: 50,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    border: selectedVal == null
-                        ? Border.all(color: Colors.grey, width: 2)
-                        : Border.all(color: Colors.white, width: 2),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Next",
-                    style: selectedVal == null
-                        ? const TextStyle(
-                            fontFamily: 'OpenSans',
-                            color: Colors.grey,
-                            fontSize: _nextFontSize,
-                            fontWeight: FontWeight.w500,
-                          )
-                        : const TextStyle(
-                            fontFamily: 'OpenSans',
-                            color: Colors.white,
-                            fontSize: _nextFontSize,
-                            fontWeight: FontWeight.w500,
-                          ),
-                  ),
-                ),
-                onTap: () {
-                  if (selectedVal == null) {
-                    noSelectionAlert(context);
-                    return;
-                  }
-                  if (_quizResult.containsKey(questions[question])) {
-                    _quizResult.update(
-                        questions[question], (value) => selectedVal as String);
-                  } else {
-                    _quizResult.putIfAbsent(
-                        questions[question], () => selectedVal as String);
-                  }
-
-                  if (question == 9) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            LastSurveyPage(name: name, percent: percent + 10),
-                      ),
-                    );
-                  } else if (question == 6) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SurveyQuestionsMulti(
-                            name: name,
-                            choices: choicesData[question + 1],
-                            question: question + 1,
-                            percent: percent + 10),
-                      ),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SurveyQuestions(
-                            name: name,
-                            choices: choicesData[question + 1],
-                            question: question + 1,
-                            percent: percent + 10),
-                      ),
-                    );
-                  }
-                },
-              )),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: GestureDetector(
+          child: Container(
+            width: 50,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              border: selectedVal == null
+                  ? Border.all(color: Colors.grey, width: 2)
+                  : Border.all(color: Colors.white, width: 2),
             ),
-          ],
+            alignment: Alignment.center,
+            child: Text(
+              "Next",
+              style: selectedVal == null
+                  ? const TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.grey,
+                      fontSize: _nextFontSize,
+                      fontWeight: FontWeight.w500,
+                    )
+                  : const TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: _nextFontSize,
+                      fontWeight: FontWeight.w500,
+                    ),
+            ),
+          ),
+          onTap: () {
+            if (selectedVal == null) {
+              noSelectionAlert(context);
+              return;
+            }
+            if (_quizResult.containsKey(questions[question])) {
+              _quizResult.update(
+                  questions[question], (value) => selectedVal as String);
+            } else {
+              _quizResult.putIfAbsent(
+                  questions[question], () => selectedVal as String);
+            }
+
+            if (question == 9) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      LastSurveyPage(name: name, percent: percent + 10),
+                ),
+              );
+            } else if (question == 6) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SurveyQuestionsMulti(
+                      name: name,
+                      choices: choicesData[question + 1],
+                      question: question + 1,
+                      percent: percent + 10),
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SurveyQuestions(
+                      name: name,
+                      choices: choicesData[question + 1],
+                      question: question + 1,
+                      percent: percent + 10),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -362,6 +355,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
@@ -369,10 +363,9 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
           profileButton(context, name)
         ],
       ),
-      body: Container(
-        color: const Color(0xff0b3954),
-        alignment: Alignment.center,
-        child: ListView(scrollDirection: Axis.vertical, children: <Widget>[
+      body: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SizedBox(
@@ -470,6 +463,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 // drop down items heights
                 customItemsHeights: itemHeights,
                 dropdownMaxHeight: 700,
+                buttonWidth: size.width,
                 buttonPadding: const EdgeInsets.only(left: 10, right: 0),
                 buttonDecoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
@@ -485,7 +479,6 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                     (item) {
                       return Container(
                         alignment: AlignmentDirectional.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         width: size.width * 0.8,
                         child: Text(
                           selectedItems.join(', '),
@@ -503,70 +496,67 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
               )),
             ),
           ),
-          SizedBox(height: size.height / 2.5),
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: SizedBox(
-              child: GestureDetector(
-                child: Container(
-                  width: 50,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    border: greyNext == true
-                        ? Border.all(color: Colors.grey, width: 2)
-                        : Border.all(color: Colors.white, width: 2),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Next",
-                    style: greyNext == true
-                        ? const TextStyle(
-                            fontFamily: 'OpenSans',
-                            color: Colors.grey,
-                            fontSize: _nextFontSize,
-                            fontWeight: FontWeight.w500,
-                          )
-                        : const TextStyle(
-                            fontFamily: 'OpenSans',
-                            color: Colors.white,
-                            fontSize: _nextFontSize,
-                            fontWeight: FontWeight.w500,
-                          ),
-                  ),
-                ),
-                onTap: () {
-                  String temp = '';
-                  if (selectedItems.isEmpty) {
-                    temp = "None";
-                  } else {
-                    for (int i = 0; i < selectedItems.length; i++) {
-                      temp += selectedItems[i];
-                      if (i < selectedItems.length - 1) {
-                        temp += "+";
-                      }
-                    }
-                  }
-                  if (_quizResult.containsKey(questions[question])) {
-                    _quizResult.update(questions[question], (value) => temp);
-                  } else {
-                    _quizResult.putIfAbsent(questions[question], () => temp);
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SurveyQuestions(
-                          name: name,
-                          choices: choicesData[question + 1],
-                          question: question + 1,
-                          percent: percent + 10),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: GestureDetector(
+          child: Container(
+            width: 50,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              border: greyNext == true
+                  ? Border.all(color: Colors.grey, width: 2)
+                  : Border.all(color: Colors.white, width: 2),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              "Next",
+              style: greyNext == true
+                  ? const TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.grey,
+                      fontSize: _nextFontSize,
+                      fontWeight: FontWeight.w500,
+                    )
+                  : const TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: _nextFontSize,
+                      fontWeight: FontWeight.w500,
                     ),
-                  );
-                },
-              ),
             ),
           ),
-        ]),
+          onTap: () {
+            String temp = '';
+            if (selectedItems.isEmpty) {
+              temp = "None";
+            } else {
+              for (int i = 0; i < selectedItems.length; i++) {
+                temp += selectedItems[i];
+                if (i < selectedItems.length - 1) {
+                  temp += "+";
+                }
+              }
+            }
+            if (_quizResult.containsKey(questions[question])) {
+              _quizResult.update(questions[question], (value) => temp);
+            } else {
+              _quizResult.putIfAbsent(questions[question], () => temp);
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SurveyQuestions(
+                    name: name,
+                    choices: choicesData[question + 1],
+                    question: question + 1,
+                    percent: percent + 10),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -595,6 +585,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
 
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
@@ -603,77 +594,76 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
         ],
       ),
       body: Container(
-        color: const Color(0xff0b3954),
-        alignment: Alignment.center,
-        child: Column(
-          children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-              child: Text(
-                "Are you ready to submit?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white),
-              ),
+        alignment: Alignment.topCenter,
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+          child: Text(
+            "Are you ready to submit?",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 30,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 35, right: 35, bottom: 50),
+        child: GestureDetector(
+          child: Container(
+            width: size.width * 0.8,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              border: Border.all(color: Colors.white, width: 2),
             ),
-            const SizedBox(height: 300),
-            GestureDetector(
-              child: Container(
-                width: size.width * 0.8,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                alignment: Alignment.center,
-                child: !loading
-                    ? const Text(
-                        "Submit",
-                        style: TextStyle(
-                          fontFamily: 'OpenSans',
-                          color: Colors.white,
-                          fontSize: _nextFontSize,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )
-                    : const LoadingIndicator(
-                        indicatorType: Indicator.ballPulseSync,
-                        colors: Colors.primaries,
-                        backgroundColor: Colors.transparent,
-                        pathBackgroundColor: Colors.transparent),
-              ),
-              onTap: () async {
-                if (!mounted) {
-                  Restart.restartApp();
-                }
-                setState(() {
-                  loading = true;
-                });
-                // collect score data from raw survey data (quizResult)
-                final Map<String, dynamic> scoreData =
-                    collectScore(_quizResult);
-                // update database with score data and raw data
-                final List<SurveyScores> ss =
-                    await updateDatabase(scoreData, name, _quizResult);
-                final int scoreToday = scoreData['score'];
-                final String needs = scoreData['needs'];
-                if (!mounted) return;
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => GraphSurvey(
-                          gSS: ss,
-                          scoreToday: scoreToday,
-                          name: name,
-                          needs: needs),
+            alignment: Alignment.center,
+            child: !loading
+                ? const Text(
+                    "Submit",
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      color: Colors.white,
+                      fontSize: _nextFontSize,
+                      fontWeight: FontWeight.w500,
                     ),
-                    (_) => false);
-              },
-            ),
-          ],
+                  )
+                : const LoadingIndicator(
+                    indicatorType: Indicator.ballPulseSync,
+                    colors: Colors.primaries,
+                    backgroundColor: Colors.transparent,
+                    pathBackgroundColor: Colors.transparent),
+          ),
+          onTap: () async {
+            if (!mounted) {
+              Restart.restartApp();
+            }
+            setState(() {
+              loading = true;
+            });
+            // collect score data from raw survey data (quizResult)
+            final Map<String, dynamic> scoreData = collectScore(_quizResult);
+            // update database with score data and raw data
+            final List<SurveyScores> ss =
+                await updateDatabase(scoreData, name, _quizResult);
+            // schedule notifications
+            await scheduleNotifications();
+
+            final int scoreToday = scoreData['score'];
+            final String needs = scoreData['needs'];
+            if (!mounted) return;
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => GraphSurvey(
+                      gSS: ss,
+                      scoreToday: scoreToday,
+                      name: name,
+                      needs: needs),
+                ),
+                (_) => false);
+          },
         ),
       ),
     );
@@ -722,11 +712,7 @@ Future<List<SurveyScores>> updateDatabase(Map<String, dynamic> scoreData,
 
   quizResult["date"] = '$dateNow';
   await MongoDB.addRawSurvey(quizResult, surveyId, userId);
-
   await MongoDB.updatePatientPrio(name, score);
-
-  // schedule notifications
-  await scheduleNotifications();
 
   return ss;
 }

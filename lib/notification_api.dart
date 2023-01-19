@@ -4,12 +4,14 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
+/// Initiate timezone in tz
 Future<void> timezoneInit() async {
   tz.initializeTimeZones();
   final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
   tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
 
+/// Schedule notificaitons accordingly.
 Future<void> scheduleNotifications() async {
   await timezoneInit();
   final prefs = await SharedPreferences.getInstance();
@@ -20,9 +22,9 @@ Future<void> scheduleNotifications() async {
   final String curDate =
       '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
 
-  // survey not complete; schedule for today
   if (scheduledDate == null || scheduledDate != curDate) {
     await prefs.setString("scheduledDate", curDate);
+    await AwesomeNotifications().cancelAll();
     await _scheduleToday();
     await _scheduleNext7days();
   }
@@ -38,9 +40,10 @@ Future<void> _cancelToday() async {
   }
 }
 
+/// Schedule notifications today every 15 minutes between 8 and 23.
+/// Each day contains at most 60 notifications.
 Future<void> _scheduleToday() async {
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  // schedule every 15 minutes between 8 and 23
   tz.TZDateTime scheduleDateTime;
   int scheduleHour = -1;
   if (now.hour > 8) {
@@ -52,7 +55,6 @@ Future<void> _scheduleToday() async {
   scheduleDateTime = tz.TZDateTime(
       tz.local, now.year, now.month, now.day, scheduleHour, 0, 0, 0, 0);
   int id = 1;
-  // At most 60 notifs
   for (int hour = 0;
       hour < 15 && 8 <= scheduleDateTime.hour && scheduleDateTime.hour <= 22;
       hour++) {
@@ -64,6 +66,8 @@ Future<void> _scheduleToday() async {
   }
 }
 
+/// Schedule notification for the next 7 days - every 15 minutes between 8 and
+/// 23 every day.
 Future<void> _scheduleNext7days() async {
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
   int scheduleDay = now.day + 1;
