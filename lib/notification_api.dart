@@ -24,7 +24,7 @@ Future<void> scheduleNotifications() async {
 
   if (scheduledDate == null || scheduledDate != curDate) {
     await prefs.setString("scheduledDate", curDate);
-    await AwesomeNotifications().cancelAll();
+    //await AwesomeNotifications().cancelAll();
     await _scheduleToday();
     await _scheduleNext7days();
   }
