@@ -53,7 +53,7 @@ SPEC CHECKSUMS:
   flutter_native_timezone: 5f05b2de06c9776b4cc70e1839f03de178394d22
   IosAwnCore: 6494e0e174d49f04f513e8a002187be226889a37
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
-  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  url_launcher_ios: ae1517e5e344f5544fb090b079e11f399dfbe4d2
 
 PODFILE CHECKSUM: f10c0438b63bc24e6bbc207956dc27d16c4408f2
 
