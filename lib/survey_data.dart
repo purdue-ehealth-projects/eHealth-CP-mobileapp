@@ -30,7 +30,7 @@ const List<List<String>> choicesData = [
   ],
   ["Better than yesterday", "Same as yesterday", "Worse than yesterday"],
   [
-    'My weight went up 2 or more pounds since yesterday',
+    'Gained 2 or more pounds since yesterday',
     'My clothes and shoes feel tight',
     'I can see swelling in my ankles',
     'My weight is the same or less than yesterday'

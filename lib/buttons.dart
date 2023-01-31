@@ -54,57 +54,57 @@ Future<void> _showProfile(BuildContext context, final String name) async {
   final Map<String, dynamic> patient = await MongoDB.findPatient(name);
   patient.removeWhere((key, value) => key == '_id');
 
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Patient Profile Page'),
-        content: SingleChildScrollView(
-            child: ListBody(
-                children: patient.entries.map((entry) {
-          var e = const Text("");
-          if (entry.key == 'name') {
-            e = Text(
-              "${entry.key}: ${entry.value}",
-              style: const TextStyle(fontSize: 18),
-            );
-          } else {
-            e = Text("${entry.key}: ${entry.value}");
-          }
-          return e;
-        }).toList())),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        actions: <Widget>[
-          TextButton(
-            child: const Text(
-              'LOG OUT',
-              style:
-                  TextStyle(fontSize: _actionFontSize, color: Colors.redAccent),
+  if (context.mounted) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Patient Profile Page'),
+          content: SingleChildScrollView(
+              child: ListBody(
+                  children: patient.entries.map((entry) {
+            var e = const Text("");
+            if (entry.key == 'name') {
+              e = Text(
+                "${entry.key}: ${entry.value}",
+                style: const TextStyle(fontSize: 18),
+              );
+            } else {
+              e = Text("${entry.key}: ${entry.value}");
+            }
+            return e;
+          }).toList())),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'LOG OUT',
+                style: TextStyle(
+                    fontSize: _actionFontSize, color: Colors.redAccent),
+              ),
+              onPressed: () async {
+                await _confirmLogout(context);
+              },
             ),
-            onPressed: () async {
-              await _confirmLogout(context);
-            },
-          ),
-          TextButton(
-            child: const Text(
-              'DISMISS',
-              style: TextStyle(fontSize: _actionFontSize),
+            TextButton(
+              child: const Text(
+                'DISMISS',
+                style: TextStyle(fontSize: _actionFontSize),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
+          ],
+        );
+      },
+    );
+  }
 }
 
 /// Dialog to confirm log out
 _confirmLogout(BuildContext context) async {
-  // Define navigator before any async calls
-  final navigator = Navigator.of(context);
   final prefs = await SharedPreferences.getInstance();
   final Widget okButton = TextButton(
     child: const Text(
@@ -113,13 +113,15 @@ _confirmLogout(BuildContext context) async {
     ),
     onPressed: () async {
       await prefs.clear();
-      navigator.pushAndRemoveUntil(
-          MaterialPageRoute(
-            // direct to login and not home so prefs.clear() won't get
-            // called twice
-            builder: (_) => const LoginPage(),
-          ),
-          (_) => false);
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              // direct to login and not home so prefs.clear() won't get
+              // called twice
+              builder: (_) => const LoginPage(),
+            ),
+            (_) => false);
+      }
     },
   );
   final Widget noButton = TextButton(
@@ -142,10 +144,12 @@ _confirmLogout(BuildContext context) async {
     ],
   );
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
+  if (context.mounted) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }

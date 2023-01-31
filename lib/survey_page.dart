@@ -34,7 +34,6 @@ LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
 /// Maps user answer to each question.
 final Map<String, String> _quizResult = {};
 const double _nextFontSize = 32;
-const double _itemHeight = 90;
 
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
@@ -142,6 +141,7 @@ class SurveyQuestions extends StatefulWidget {
 /// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
+  double itemHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +151,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
     final int percent = widget.percent;
 
     final Size size = MediaQuery.of(context).size;
+    itemHeight = size.height / 10;
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
@@ -217,7 +218,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                       selectedVal = value as String;
                     });
                   },
-                  itemHeight: _itemHeight,
+                  itemHeight: itemHeight,
                   buttonWidth: size.width,
                   buttonPadding: const EdgeInsets.only(left: 10, right: 0),
                   buttonDecoration: BoxDecoration(
@@ -340,6 +341,7 @@ class SurveyQuestionsMulti extends StatefulWidget {
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   List<String> selectedItems = [];
   bool greyNext = false;
+  double multiItemHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -349,9 +351,10 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     final int percent = widget.percent;
 
     final Size size = MediaQuery.of(context).size;
+    multiItemHeight = size.height / 10;
     List<double> itemHeights = <double>[];
     for (int i = 0; i < choices.length; i++) {
-      itemHeights.add(_itemHeight);
+      itemHeights.add(multiItemHeight);
     }
 
     return Scaffold(
@@ -462,7 +465,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
                 itemHeight: 120,
                 // drop down items heights
                 customItemsHeights: itemHeights,
-                dropdownMaxHeight: 700,
+                dropdownMaxHeight: size.height / 2.3,
                 buttonWidth: size.width,
                 buttonPadding: const EdgeInsets.only(left: 10, right: 0),
                 buttonDecoration: BoxDecoration(
@@ -813,7 +816,7 @@ Map<String, dynamic> collectScore(Map<String, String> quizResult) {
         break;
       case "How do you weigh today? \n(Choose one option)":
         switch (ans) {
-          case "My weight went up 2 or more pounds since yesterday":
+          case "Gained 2 or more pounds since yesterday":
             score += 10;
             weight = 10;
             break;
