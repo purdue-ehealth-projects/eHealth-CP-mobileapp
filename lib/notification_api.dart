@@ -95,12 +95,12 @@ Future<void> _createNotif(int id, DateTime dt) async {
   await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: id,
-        channelKey: 'basic_channel',
+        channelKey: 'reminders',
         title: 'Survey Reminder',
         body: 'Please complete your survey today.',
-        notificationLayout: NotificationLayout.BigPicture,
-        bigPicture: 'asset://assets/ems_health_icon3_small.png',
-        largeIcon: 'asset://assets/ems_health_icon3_small.png',
+        badge: 1,
+        notificationLayout: NotificationLayout.Default,
+        largeIcon: 'asset://assets/ems_health_icon3.png', // for android
         fullScreenIntent: true,
         wakeUpScreen: true,
         category: NotificationCategory.Reminder,

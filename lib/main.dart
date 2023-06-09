@@ -14,20 +14,15 @@ Future<void> main() async {
       null, //icon is null right now
       [
         NotificationChannel(
-          channelGroupKey: 'basic_tests',
-          channelKey: 'basic_channel',
-          channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
+          channelGroupKey: 'notificatinos',
+          channelKey: 'reminders',
+          channelName: 'Survey Reminders',
+          channelDescription: 'Survey Reminder Notifications',
+          channelShowBadge: true,
           defaultColor: Colors.blueAccent,
           ledColor: Colors.white,
           importance: NotificationImportance.High,
         ),
-      ],
-      // Channel groups are only visual and are not required
-      channelGroups: [
-        NotificationChannelGroup(
-            channelGroupKey: 'basic_tests',
-            channelGroupName: 'Basic test group')
       ],
       debug: true);
   // we need to connect in main as homepage won't initalize again on app restart
