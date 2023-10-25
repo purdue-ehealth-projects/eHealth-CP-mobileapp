@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:restart_app/restart_app.dart';
@@ -19,13 +21,179 @@ class CreateProfile extends StatefulWidget {
 class _CreateProfileState extends State<CreateProfile> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   bool _goodPassword = false;
+  bool _passwordsMatch = true;
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return Platform.isIOS ?
+    CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text(
+          "Create User Account",
+          style: TextStyle(fontFamily: "OpenSans"),
+        ),
+        backgroundColor: CupertinoColors.activeBlue, // Customize the navigation bar color
+      ),
+      child: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              // Refresh functionality
+            },
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: const Text(
+                        "Create a user account with the same name in your patient profile.",
+                        style: TextStyle(
+                            fontFamily: "OpenSans",
+                            color: CupertinoColors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    width: size.width * 0.9,
+                    child: CupertinoTextField(
+                      controller: nameController,
+                      placeholder: 'Name',
+                      placeholderStyle: const TextStyle(
+                        color: CupertinoColors.inactiveGray,
+                      ),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: CupertinoColors.black,
+                        fontFamily: 'OpenSans',
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    width: size.width * 0.9,
+                    child: CupertinoTextField(
+                      controller: passwordController,
+                      placeholder: 'Password',
+                      placeholderStyle: const TextStyle(
+                        color: CupertinoColors.inactiveGray,
+                      ),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: CupertinoColors.black,
+                        fontFamily: 'OpenSans',
+                      ),
+                      obscureText: true,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    width: size.width * 0.9,
+                    child: CupertinoTextField(
+                      controller: confirmPasswordController, // Use the confirmation password controller
+                      placeholder: 'Confirm Password',
+                      placeholderStyle: const TextStyle(
+                        color: CupertinoColors.inactiveGray,
+                      ),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: CupertinoColors.black,
+                        fontFamily: 'OpenSans',
+                      ),
+                      obscureText: true,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    width: size.width * 0.9,
+                    child: FlutterPwValidator(
+                      controller: passwordController,
+                      minLength: 6,
+                      uppercaseCharCount: 1,
+                      numericCharCount: 1,
+                      specialCharCount: 0,
+                      width: 400,
+                      height: 90,
+                      onSuccess: () {
+                        setState(() {
+                          _goodPassword = true;
+                        });
+                      },
+                      onFail: () {
+                        setState(() {
+                          _goodPassword = false;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Center(
+                  child: GestureDetector(
+                    child: Container(
+                      width: size.width * 0.8,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(
+                          color: CupertinoColors.black,
+                          width: 2,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: CupertinoColors.black,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    onTap: () async {
+                      if (passwordController.text == confirmPasswordController.text) {
+                        // Passwords match, perform registration
+                        _passwordsMatch = true;
+                        await registerOntap(nameController.text, passwordController.text);
+                      } else {
+                        // Passwords don't match, show an error message
+                        _passwordsMatch = false;
+                        setState(() {}); // Update the UI to show the error message
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ) :
+      Scaffold(
         backgroundColor: const Color(0xff0b3954),
         appBar: AppBar(
           centerTitle: true,

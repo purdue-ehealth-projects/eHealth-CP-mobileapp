@@ -1,5 +1,7 @@
 /// Contains reusable widgets (buttons and alerts).
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
+
 
 const double _alertTitleSize = 20;
 const double _alertMsgSize = 18;

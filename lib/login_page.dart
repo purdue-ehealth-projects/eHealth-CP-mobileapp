@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restart_app/restart_app.dart';
+import 'dart:io' show Platform;
+
 
 import 'survey_page.dart';
 import 'create_profile.dart';
@@ -23,7 +26,131 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
+
+    return Platform.isIOS ?
+    CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text(
+          "EMS Health Home Page",
+          style: TextStyle(fontFamily: "OpenSans"),
+        ),
+        leading: privacyPolicyButton(context),
+        trailing: userManButton(context),
+        backgroundColor: CupertinoColors.activeBlue, // Customize the navigation bar color
+      ),
+      child: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              // Refresh functionality
+            },
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, bottom: 20),
+                  child: Image.asset("assets/icon3_home.png", height: 150),
+                ),
+                Center(
+                  child: Column(
+                    children: <Widget>[
+                      CupertinoTextField(
+                        controller: nameController,
+                        placeholder: 'Name',
+                        placeholderStyle: const TextStyle(
+                          color: CupertinoColors.inactiveGray,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: CupertinoColors.black,
+                          fontFamily: 'OpenSans',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      CupertinoTextField(
+                        controller: passwordController,
+                        placeholder: 'Password',
+                        placeholderStyle: const TextStyle(
+                          color: CupertinoColors.inactiveGray,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: CupertinoColors.black,
+                          fontFamily: 'OpenSans',
+                        ),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 40),
+                      GestureDetector(
+                        child: Container(
+                          width: size.width * 0.8,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(15)),
+                            border: Border.all(
+                              color: CupertinoColors.black,
+                              width: 2,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              color: CupertinoColors.black,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          await loginOntap(
+                              nameController.text, passwordController.text);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      GestureDetector(
+                        child: Container(
+                          width: size.width * 0.8,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(15)),
+                            border: Border.all(
+                              color: CupertinoColors.black,
+                              width: 2,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Create User Account",
+                            style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              color: CupertinoColors.black,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (_) => const CreateProfile(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ) :
+      Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         centerTitle: true,
