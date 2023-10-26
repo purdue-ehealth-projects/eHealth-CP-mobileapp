@@ -1,70 +1,62 @@
 /// Contains reusable widgets (buttons and alerts).
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
-
 
 const double _alertTitleSize = 20;
 const double _alertMsgSize = 18;
 const double _actionFontSize = 18;
 
 /// Login failed alert pop up
-loginFailedAlert(BuildContext context, final int errCode) {
-  // set up the button
+void loginFailedAlert(BuildContext context, final int errCode) {
+  if (Platform.isIOS) {
+    _showCupertinoDialog(context, errCode);
+  } else {
+    _showMaterialDialog(context, errCode);
+  }
+}
+
+void _showCupertinoDialog(BuildContext context, final int errCode) {
+  final Widget okButton = CupertinoDialogAction(
+    child: const Text("OK", style: TextStyle(fontSize: 16.0)),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text("Login Failed", style: TextStyle(fontSize: 20.0)),
+    content: Text(
+      _getErrorMessage(errCode),
+      style: const TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void _showMaterialDialog(BuildContext context, final int errCode) {
   final Widget okButton = TextButton(
     child: const Text(
       "OK",
-      style: TextStyle(fontSize: _actionFontSize),
+      style: TextStyle(fontSize: 16.0),
     ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
-  // set up the AlertDialog
-  AlertDialog alert = const AlertDialog();
-  if (errCode == 1) {
-    alert = AlertDialog(
-      title: const Text(
-        "Login Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "Name cannot be empty.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 2) {
-    alert = AlertDialog(
-      title: const Text(
-        "Login Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "This user doesn't exist. Please create a new user account.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 3) {
-    alert = AlertDialog(
-      title: const Text(
-        "Login Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "Wrong Password. Please try again.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  }
+  AlertDialog alert = AlertDialog(
+    title: const Text("Login Failed", style: TextStyle(fontSize: 20.0)),
+    content: Text(
+      _getErrorMessage(errCode),
+      style: const TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -73,70 +65,88 @@ loginFailedAlert(BuildContext context, final int errCode) {
   );
 }
 
+String _getErrorMessage(int errCode) {
+  switch (errCode) {
+    case 1:
+      return "Name cannot be empty.";
+    case 2:
+      return "This user doesn't exist. Please create a new user account.";
+    case 3:
+      return "Wrong Password. Please try again.";
+    default:
+      return "Login Failed";
+  }
+}
+
 /// Register failed alert pop up
-validateUserFailedAlert(BuildContext context, final int errCode) {
-  // set up the button
+void validateUserFailedAlert(BuildContext context, final int errCode) {
+  if (Platform.isIOS) {
+    _showCupertinoDialogR(context, errCode);
+  } else {
+    _showMaterialDialogR(context, errCode);
+  }
+}
+
+void _showCupertinoDialogR(BuildContext context, final int errCode) {
+  final Widget okButton = CupertinoDialogAction(
+    child: const Text("OK", style: TextStyle(fontSize: 16.0)),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text("Register Failed", style: TextStyle(fontSize: 20.0)),
+    content: Text(
+      _getErrorMessageR(errCode),
+      style: const TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void _showMaterialDialogR(BuildContext context, final int errCode) {
   final Widget okButton = TextButton(
     child: const Text(
       "OK",
-      style: TextStyle(fontSize: _actionFontSize),
+      style: TextStyle(fontSize: 16.0),
     ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
-  // set up the AlertDialog
-  AlertDialog alert = const AlertDialog();
-  if (errCode == 1) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "Name cannot be empty.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 2) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "No patient profile found with the given name. Please check with your paramedic.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  } else if (errCode == 3) {
-    alert = AlertDialog(
-      title: const Text(
-        "Register Failed",
-        style: TextStyle(fontSize: _alertTitleSize),
-      ),
-      content: const Text(
-        "User with given name already exists. Please log in instead.",
-        style: TextStyle(fontSize: _alertMsgSize),
-      ),
-      actions: [
-        okButton,
-      ],
-    );
-  }
+  AlertDialog alert = AlertDialog(
+    title: const Text("Register Failed", style: TextStyle(fontSize: 20.0)),
+    content: Text(
+      _getErrorMessageR(errCode),
+      style: const TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return alert;
     },
   );
+}
+
+String _getErrorMessageR(int errCode) {
+  switch (errCode) {
+    case 1:
+      return "Name cannot be empty.";
+    case 2:
+      return "No patient profile found with the given name. Please check with your paramedic.";
+    case 3:
+      return "User with the given name already exists. Please log in instead.";
+    default:
+      return "Register Failed";
+  }
 }
 
 /// Bad password alert pop up
