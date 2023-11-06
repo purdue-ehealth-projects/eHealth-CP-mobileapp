@@ -1,4 +1,5 @@
-/// This file contains reusable buttons.
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,7 +47,6 @@ TextButton profileButton(BuildContext context, final String username) {
   );
 }
 
-/// Returns a patient profile page pop-up for the user.
 Future<void> _showProfile(BuildContext context, final String name) async {
   if (await MongoDB.testDBConnection() == false) {
     await MongoDB.connect();
@@ -55,56 +55,107 @@ Future<void> _showProfile(BuildContext context, final String name) async {
   patient.removeWhere((key, value) => key == '_id');
 
   if (context.mounted) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Patient Profile Page'),
-          content: SingleChildScrollView(
+    if (Platform.isIOS) {
+      // Cupertino-style alert for iOS
+      showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: const Text('Patient Profile Page'),
+            content: SingleChildScrollView(
               child: ListBody(
-                  children: patient.entries.map((entry) {
-            var e = const Text("");
-            if (entry.key == 'name') {
-              e = Text(
-                "${entry.key}: ${entry.value}",
-                style: const TextStyle(fontSize: 18),
-              );
-            } else {
-              e = Text("${entry.key}: ${entry.value}");
-            }
-            return e;
-          }).toList())),
-          actionsAlignment: MainAxisAlignment.spaceBetween,
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'LOG OUT',
-                style: TextStyle(
-                    fontSize: _actionFontSize, color: Colors.redAccent),
+                children: patient.entries.map((entry) {
+                  var e = const Text("");
+                  if (entry.key == 'name') {
+                    e = Text(
+                      "${entry.key}: ${entry.value}",
+                      style: const TextStyle(fontSize: 18),
+                    );
+                  } else {
+                    e = Text("${entry.key}: ${entry.value}");
+                  }
+                  return e;
+                }).toList(),
               ),
-              onPressed: () async {
-                await _confirmLogout(context);
-              },
             ),
-            TextButton(
-              child: const Text(
-                'DISMISS',
-                style: TextStyle(fontSize: _actionFontSize),
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'LOG OUT',
+                  style: TextStyle(
+                      fontSize: _actionFontSize, color: Colors.redAccent),
+                ),
+                onPressed: () async {
+                  await _confirmLogout(context);
+                },
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              TextButton(
+                child: const Text(
+                  'DISMISS',
+                  style: TextStyle(fontSize: _actionFontSize),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Material-style alert for Android
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Patient Profile Page'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: patient.entries.map((entry) {
+                  var e = const Text("");
+                  if (entry.key == 'name') {
+                    e = Text(
+                      "${entry.key}: ${entry.value}",
+                      style: const TextStyle(fontSize: 18),
+                    );
+                  } else {
+                    e = Text("${entry.key}: ${entry.value}");
+                  }
+                  return e;
+                }).toList(),
+              ),
             ),
-          ],
-        );
-      },
-    );
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'LOG OUT',
+                  style: TextStyle(
+                      fontSize: _actionFontSize, color: Colors.redAccent),
+                ),
+                onPressed: () async {
+                  await _confirmLogout(context);
+                },
+              ),
+              TextButton(
+                child: const Text(
+                  'DISMISS',
+                  style: TextStyle(fontSize: _actionFontSize),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
 
-/// Dialog to confirm log out
-_confirmLogout(BuildContext context) async {
+Future<void> _confirmLogout(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
   final Widget okButton = TextButton(
     child: const Text(
@@ -115,15 +166,15 @@ _confirmLogout(BuildContext context) async {
       await prefs.clear();
       if (context.mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              // direct to login and not home so prefs.clear() won't get
-              // called twice
-              builder: (_) => const LoginPage(),
-            ),
-            (_) => false);
+          MaterialPageRoute(
+            builder: (_) => const LoginPage(),
+          ),
+              (_) => false,
+        );
       }
     },
   );
+
   final Widget noButton = TextButton(
     child: const Text(
       "CANCEL",
@@ -132,23 +183,40 @@ _confirmLogout(BuildContext context) async {
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
-  final AlertDialog alert = AlertDialog(
-    title: const Text("Confirm Logout"),
-    content: const Text("Are you sure you want to log out?\n\n"
-        "All your local data will be cleared, and you will need to log back in again.\n\n"
-        "Your paramedic will still have all your past data."),
-    actionsAlignment: MainAxisAlignment.spaceBetween,
-    actions: [
-      okButton,
-      noButton,
-    ],
-  );
-
-  if (context.mounted) {
+  if (Platform.isIOS) {
+    // Use CupertinoAlertDialog for iOS
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to log out?\n\n"
+              "All your local data will be cleared, and you will need to log back in again.\n\n"
+              "Your paramedic will still have all your past data."),
+          //actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            okButton,
+            noButton,
+          ],
+        );
+      },
+    );
+  } else {
+    // Use AlertDialog for Android
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alert;
+        return AlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to log out?\n\n"
+              "All your local data will be cleared, and you will need to log back in again.\n\n"
+              "Your paramedic will still have all your past data."),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            okButton,
+            noButton,
+          ],
+        );
       },
     );
   }

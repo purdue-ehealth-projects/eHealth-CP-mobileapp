@@ -69,7 +69,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    width: size.width * 0.9,
+                    width: size.width * 0.8,
                     child: CupertinoTextField(
                       controller: nameController,
                       placeholder: 'Name',
@@ -88,7 +88,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    width: size.width * 0.9,
+                    width: size.width * 0.8,
                     child: CupertinoTextField(
                       controller: passwordController,
                       placeholder: 'Password',
@@ -108,7 +108,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    width: size.width * 0.9,
+                    width: size.width * 0.8,
                     child: CupertinoTextField(
                       controller: confirmPasswordController, // Use the confirmation password controller
                       placeholder: 'Confirm Password',
@@ -128,7 +128,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    width: size.width * 0.9,
+                    width: size.width * 0.8,
                     child: FlutterPwValidator(
                       controller: passwordController,
                       minLength: 6,
@@ -151,30 +151,24 @@ class _CreateProfileState extends State<CreateProfile> {
                   ),
                 ),
                 const SizedBox(height: 50),
-                Center(
-                  child: GestureDetector(
+                SizedBox(
+                  width: size.width * 0.3,
+                  child: CupertinoButton.filled(
+
                     child: Container(
-                      width: size.width * 0.8,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(
-                          color: CupertinoColors.black,
-                          width: 2,
-                        ),
-                      ),
+                      height: 50,
                       alignment: Alignment.center,
                       child: const Text(
                         "Submit",
                         style: TextStyle(
                           fontFamily: 'OpenSans',
                           color: CupertinoColors.black,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
-                    onTap: () async {
+                    onPressed: () async {
                       if (passwordController.text == confirmPasswordController.text) {
                         // Passwords match, perform registration
                         _passwordsMatch = true;
@@ -182,7 +176,7 @@ class _CreateProfileState extends State<CreateProfile> {
                       } else {
                         // Passwords don't match, show an error message
                         _passwordsMatch = false;
-                        setState(() {}); // Update the UI to show the error message
+                        passwordsMustMatchAlert(context);// Update the UI to show the error message
                       }
                     },
                   ),

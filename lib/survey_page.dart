@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 
 import 'home_page.dart';
 import 'survey_data.dart';
@@ -38,20 +40,20 @@ const double _nextFontSize = 32;
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
   final String name;
+
   const SurveyWelcomePage({Key? key, required this.name}) : super(key: key);
 
   @override
   State<SurveyWelcomePage> createState() => _SurveyWelcomePageState();
 }
 
-/// Welcome page state.
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   @override
   Widget build(BuildContext context) {
     final String name = widget.name;
     final Size size = MediaQuery.of(context).size;
 
-    Scaffold scaffold = Scaffold(
+    return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
@@ -60,34 +62,56 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
           profileButton(context, name),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-            child: SizedBox(
-              height: size.height * 0.5,
-              child: Text(
-                "Hello, ${widget.name}.\nWelcome to the survey!\n\nThis will only take 5 minutes.",
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Hello, $name",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white),
+                  fontFamily: 'OpenSans',
+                  fontSize: 36, // Increased font size for a welcoming effect
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
+              const SizedBox(height: 20), // Added some vertical spacing
+              const Text(
+                "Welcome to the survey!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 20), // Added more vertical spacing
+              const Text(
+                "This will only take 5 minutes.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 18, // Smaller font size for additional information
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 35, right: 35, bottom: 50.0),
+        padding: const EdgeInsets.all(20.0),
         child: GestureDetector(
           child: Container(
             width: size.width * 0.8,
-            height: 100,
+            height: 60, // Reduced button height
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(15)),
-              border: Border.all(color: Colors.white, width: 2),
+              borderRadius: BorderRadius.circular(30), // Rounded button corners
+              color: Colors.blue, // Changed button color
             ),
             alignment: Alignment.center,
             child: const Text(
@@ -95,8 +119,8 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
               style: TextStyle(
                 fontFamily: 'OpenSans',
                 color: Colors.white,
-                fontSize: _nextFontSize,
-                fontWeight: FontWeight.w500,
+                fontSize: 24, // Larger font size for the button text
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -105,17 +129,17 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
               context,
               MaterialPageRoute(
                 builder: (_) => SurveyQuestions(
-                    name: name,
-                    choices: choicesData[0],
-                    question: 0,
-                    percent: 0.toInt()),
+                  name: name,
+                  choices: choicesData[0], // Replace with actual data
+                  question: 0,
+                  percent: 0, // Replace with actual percentage
+                ),
               ),
             );
           },
         ),
       ),
     );
-    return scaffold;
   }
 }
 
@@ -126,19 +150,18 @@ class SurveyQuestions extends StatefulWidget {
   final int percent;
   final String name;
 
-  const SurveyQuestions(
-      {Key? key,
-      required this.choices,
-      required this.question,
-      required this.percent,
-      required this.name})
-      : super(key: key);
+  const SurveyQuestions({
+    Key? key,
+    required this.choices,
+    required this.question,
+    required this.percent,
+    required this.name,
+  }) : super(key: key);
 
   @override
   State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
 
-/// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
   double itemHeight = 0;
@@ -152,119 +175,98 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
     final Size size = MediaQuery.of(context).size;
     itemHeight = size.height / 10;
+
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, name)
+          profileButton(context, name),
         ],
       ),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
-              child: Text(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
                 questions[question],
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Changed text color to white
                   fontSize: 24,
+                  fontWeight: FontWeight.bold, // Made the text bold
                 ),
                 textAlign: TextAlign.center,
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton2(
+              const SizedBox(height: 20),
+              DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
                   hint: SizedBox(
                     width: size.width * 0.8,
                     child: const Text(
                       "Tap to choose an option.",
                       style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
+                        fontSize: 20, // Slightly reduced font size
+                        color: Colors.white, // Changed text color to white
                       ),
                     ),
                   ),
                   items: choices
                       .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: SizedBox(
-                              width: size.width * 0.8,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ))
+                    value: item,
+                    child: SizedBox(
+                      width: size.width * 0.8,
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                          fontSize: 20, // Slightly reduced font size
+                          color: Colors.white, // Changed text color to white
+                        ),
+                      ),
+                    ),
+                  ))
                       .toList(),
-                  dropdownDecoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 17, 87, 127),
-                    //color: Color(0xff0b3954),
-                  ),
-                  iconEnabledColor: Colors.white,
+                  iconEnabledColor: Colors.white, // Changed icon color to white
+                  dropdownColor: const Color(0xff0b3954), // Changed dropdown background color
                   value: selectedVal,
                   onChanged: (value) {
                     setState(() {
-                      selectedVal = value as String;
+                      selectedVal = value;
                     });
                   },
-                  itemHeight: itemHeight,
-                  buttonWidth: size.width,
-                  buttonPadding: const EdgeInsets.only(left: 10, right: 0),
-                  buttonDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.white,
-                    ),
-                    color: selectedVal != null
-                        ? const Color.fromARGB(255, 17, 87, 127)
-                        : const Color(0xff0b3954),
-                  ),
-                  buttonElevation: 2,
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(20.0),
         child: GestureDetector(
           child: Container(
-            width: 50,
+            width: size.width * 0.8,
             height: 60,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(15)),
-              border: selectedVal == null
-                  ? Border.all(color: Colors.grey, width: 2)
-                  : Border.all(color: Colors.white, width: 2),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: selectedVal == null ? Colors.grey : Colors.white,
+                width: 2,
+              ),
+              color: selectedVal == null
+                  ? const Color(0xff0b3954) // Keep the background color consistent
+                  : Colors.blue, // Changed button color when an option is selected
             ),
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               "Next",
-              style: selectedVal == null
-                  ? const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.grey,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    )
-                  : const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
+              style: TextStyle(
+                fontFamily: 'OpenSans',
+                color: Colors.white, // Changed text color to white
+                fontSize: 24,
+                fontWeight: FontWeight.bold, // Made the text bold
+              ),
             ),
           ),
           onTap: () {
@@ -273,19 +275,16 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
               return;
             }
             if (_quizResult.containsKey(questions[question])) {
-              _quizResult.update(
-                  questions[question], (value) => selectedVal as String);
+              _quizResult.update(questions[question], (value) => selectedVal as String);
             } else {
-              _quizResult.putIfAbsent(
-                  questions[question], () => selectedVal as String);
+              _quizResult.putIfAbsent(questions[question], () => selectedVal as String);
             }
 
             if (question == 9) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      LastSurveyPage(name: name, percent: percent + 10),
+                  builder: (_) => LastSurveyPage(name: name, percent: percent + 10),
                 ),
               );
             } else if (question == 6) {
@@ -293,10 +292,11 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => SurveyQuestionsMulti(
-                      name: name,
-                      choices: choicesData[question + 1],
-                      question: question + 1,
-                      percent: percent + 10),
+                    name: name,
+                    choices: choicesData[question + 1],
+                    question: question + 1,
+                    percent: percent + 10,
+                  ),
                 ),
               );
             } else {
@@ -304,10 +304,11 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => SurveyQuestions(
-                      name: name,
-                      choices: choicesData[question + 1],
-                      question: question + 1,
-                      percent: percent + 10),
+                    name: name,
+                    choices: choicesData[question + 1],
+                    question: question + 1,
+                    percent: percent + 10,
+                  ),
                 ),
               );
             }
@@ -565,7 +566,6 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   }
 }
 
-/// Last survey page to ask for user to confirm
 class LastSurveyPage extends StatefulWidget {
   final String name;
   final int percent;
@@ -577,7 +577,6 @@ class LastSurveyPage extends StatefulWidget {
   State<LastSurveyPage> createState() => _LastSurveyPageState();
 }
 
-/// Last survey page state.
 class _LastSurveyPageState extends State<LastSurveyPage> {
   bool loading = false;
 
@@ -586,57 +585,63 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
     final String name = widget.name;
     final int percent = widget.percent;
 
-    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, name)
+          profileButton(context, name),
         ],
       ),
-      body: Container(
-        alignment: Alignment.topCenter,
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-          child: Text(
-            "Are you ready to submit?",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 30,
-                fontWeight: FontWeight.w500,
-                color: Colors.white),
+      body: const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20), // Increased horizontal padding
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Are you ready to submit?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 35, right: 35, bottom: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20), // Adjusted padding
         child: GestureDetector(
           child: Container(
-            width: size.width * 0.8,
-            height: 100,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 60, // Reduced the height for a cleaner look
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
               border: Border.all(color: Colors.white, width: 2),
             ),
             alignment: Alignment.center,
             child: !loading
                 ? const Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
+              "Submit",
+              style: TextStyle(
+                fontFamily: 'OpenSans',
+                color: Color(0xff0b3954), // Inverted text and background colors
+                fontSize: 20, // Adjusted the font size
+                fontWeight: FontWeight.bold, // Use a more prominent font weight
+              ),
+            )
                 : const LoadingIndicator(
-                    indicatorType: Indicator.ballPulseSync,
-                    colors: Colors.primaries,
-                    backgroundColor: Colors.transparent,
-                    pathBackgroundColor: Colors.transparent),
+              indicatorType: Indicator.ballPulseSync,
+              colors: Colors.primaries,
+              backgroundColor: Colors.transparent,
+              pathBackgroundColor: Colors.transparent,
+            ),
           ),
           onTap: () async {
             if (!mounted) {
@@ -645,27 +650,27 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
             setState(() {
               loading = true;
             });
-            // collect score data from raw survey data (quizResult)
+
+            // Replace the following placeholders with your actual implementation
             final Map<String, dynamic> scoreData = collectScore(_quizResult);
-            // update database with score data and raw data
-            final List<SurveyScores> ss =
-                await updateDatabase(scoreData, name, _quizResult);
-            // schedule notifications
+            final List<SurveyScores> ss = await updateDatabase(scoreData, name, _quizResult);
             await scheduleNotifications();
 
             final int scoreToday = scoreData['score'];
             final String needs = scoreData['needs'];
             if (!mounted) return;
             Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => GraphSurvey(
-                      gSS: ss,
-                      scoreToday: scoreToday,
-                      name: name,
-                      needs: needs),
+              context,
+              MaterialPageRoute(
+                builder: (_) => GraphSurvey(
+                  gSS: ss,
+                  scoreToday: scoreToday,
+                  name: name,
+                  needs: needs,
                 ),
-                (_) => false);
+              ),
+                  (_) => false,
+            );
           },
         ),
       ),

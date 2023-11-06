@@ -150,27 +150,53 @@ String _getErrorMessageR(int errCode) {
 }
 
 /// Bad password alert pop up
-badPasswordAlert(BuildContext context) {
+void badPasswordAlert(BuildContext context) {
+  if (Platform.isIOS) {
+    _showCupertinoDialogB(context);
+  } else {
+    _showMaterialDialogB(context);
+  }
+}
+
+void _showCupertinoDialogB(BuildContext context) {
+  final Widget okButton = CupertinoDialogAction(
+    child: const Text("OK", style: TextStyle(fontSize: 16.0)),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text("Insecure Password", style: TextStyle(fontSize: 20.0)),
+    content: const Text(
+      "Password is too weak.",
+      style: TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void _showMaterialDialogB(BuildContext context) {
   final Widget okButton = TextButton(
     child: const Text(
       "OK",
-      style: TextStyle(fontSize: _actionFontSize),
+      style: TextStyle(fontSize: 16.0),
     ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
 
   AlertDialog alert = AlertDialog(
-    title: const Text(
-      "Insecure Password",
-      style: TextStyle(fontSize: _alertTitleSize),
-    ),
+    title: const Text("Insecure Password", style: TextStyle(fontSize: 20.0)),
     content: const Text(
       "Password is too weak.",
-      style: TextStyle(fontSize: _alertMsgSize),
+      style: TextStyle(fontSize: 16.0),
     ),
-    actions: [
-      okButton,
-    ],
+    actions: [okButton],
   );
 
   showDialog(
@@ -182,30 +208,112 @@ badPasswordAlert(BuildContext context) {
 }
 
 /// Alert pop up when no option is seleted.
-noSelectionAlert(BuildContext context) {
-  // set up the button
+void noSelectionAlert(BuildContext context) {
+  if (Platform.isIOS) {
+    _showCupertinoDialogS(context);
+  } else {
+    _showMaterialDialogS(context);
+  }
+}
+
+void _showCupertinoDialogS(BuildContext context) {
+  final Widget okButton = CupertinoDialogAction(
+    child: const Text("OK", style: TextStyle(fontSize: 16.0)),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text("No Option Selected", style: TextStyle(fontSize: 20.0)),
+    content: const Text(
+      "Please select an option.",
+      style: TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void _showMaterialDialogS(BuildContext context) {
   final Widget okButton = TextButton(
     child: const Text(
       "OK",
-      style: TextStyle(fontSize: _actionFontSize),
+      style: TextStyle(fontSize: 16.0),
     ),
     onPressed: () => Navigator.pop(context, 'Cancel'),
   );
-  // set up the AlertDialog
+
   AlertDialog alert = AlertDialog(
-    title: const Text(
-      "No Option Selected",
-      style: TextStyle(fontSize: _alertTitleSize),
-    ),
+    title: const Text("No Option Selected", style: TextStyle(fontSize: 20.0)),
     content: const Text(
       "Please select an option.",
-      style: TextStyle(fontSize: _alertMsgSize),
+      style: TextStyle(fontSize: 16.0),
     ),
-    actions: [
-      okButton,
-    ],
+    actions: [okButton],
   );
-  // show the dialog
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void passwordsMustMatchAlert(BuildContext context) {
+  if (Platform.isIOS) {
+    _showCupertinoDialogP(context);
+  } else {
+    _showMaterialDialogP(context);
+  }
+}
+
+void _showCupertinoDialogP(BuildContext context) {
+  final Widget okButton = CupertinoDialogAction(
+    child: const Text("OK", style: TextStyle(fontSize: 16.0)),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text("Passwords Must Match", style: TextStyle(fontSize: 20.0)),
+    content: const Text(
+      "Both passwords must match. Please try again.",
+      style: TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+void _showMaterialDialogP(BuildContext context) {
+  final Widget okButton = TextButton(
+    child: const Text(
+      "OK",
+      style: TextStyle(fontSize: 16.0),
+    ),
+    onPressed: () => Navigator.pop(context, 'Cancel'),
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: const Text("Passwords Must Match", style: TextStyle(fontSize: 20.0)),
+    content: const Text(
+      "Both passwords must match. Please try again.",
+      style: TextStyle(fontSize: 16.0),
+    ),
+    actions: [okButton],
+  );
+
   showDialog(
     context: context,
     builder: (BuildContext context) {

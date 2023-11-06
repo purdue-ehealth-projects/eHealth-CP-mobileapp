@@ -105,8 +105,7 @@ class MongoDB {
   /// Connect app to database and define all global collections.
   static Future<void> connect() async {
     final String prePass = FlutterConfig.get('MONGO_CONN_PRE_PASSWORD');
-    final String pass =
-        Uri.encodeComponent(FlutterConfig.get('MONGO_CONN_PASSWORD'));
+    final String pass = FlutterConfig.get('MONGO_CONN_PASSWORD');
     final String postPass = FlutterConfig.get('MONGO_CONN_POST_PASSWORD');
     final String connection = "$prePass$pass$postPass";
     try {
