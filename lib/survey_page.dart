@@ -119,7 +119,6 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   }
 }
 
-/// Survey page for single select questions.
 class SurveyQuestions extends StatefulWidget {
   final List<String> choices;
   final int question;
@@ -128,17 +127,16 @@ class SurveyQuestions extends StatefulWidget {
 
   const SurveyQuestions(
       {Key? key,
-      required this.choices,
-      required this.question,
-      required this.percent,
-      required this.name})
+        required this.choices,
+        required this.question,
+        required this.percent,
+        required this.name})
       : super(key: key);
 
   @override
   State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
 
-/// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
   double itemHeight = 0;
@@ -152,6 +150,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
     final Size size = MediaQuery.of(context).size;
     itemHeight = size.height / 10;
+
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
@@ -179,60 +178,26 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton2(
-                  hint: SizedBox(
-                    width: size.width * 0.8,
-                    child: const Text(
-                      "Tap to choose an option.",
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  items: choices
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: SizedBox(
-                              width: size.width * 0.8,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  dropdownDecoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 17, 87, 127),
-                    //color: Color(0xff0b3954),
-                  ),
-                  iconEnabledColor: Colors.white,
-                  value: selectedVal,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedVal = value as String;
-                    });
-                  },
-                  itemHeight: itemHeight,
-                  buttonWidth: size.width,
-                  buttonPadding: const EdgeInsets.only(left: 10, right: 0),
-                  buttonDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
+            child: Column(
+              children: choices.map((item) {
+                return RadioListTile<String>(
+                  title: Text(
+                    item,
+                    style: const TextStyle(
+                      fontSize: 24,
                       color: Colors.white,
                     ),
-                    color: selectedVal != null
-                        ? const Color.fromARGB(255, 17, 87, 127)
-                        : const Color(0xff0b3954),
+                    textAlign: TextAlign.center,
                   ),
-                  buttonElevation: 2,
-                ),
-              ),
+                  value: item,
+                  groupValue: selectedVal,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedVal = value;
+                    });
+                  },
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -254,17 +219,17 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
               "Next",
               style: selectedVal == null
                   ? const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.grey,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    )
+                fontFamily: 'OpenSans',
+                color: Colors.grey,
+                fontSize: _nextFontSize,
+                fontWeight: FontWeight.w500,
+              )
                   : const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+                fontSize: _nextFontSize,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           onTap: () {
@@ -273,19 +238,16 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
               return;
             }
             if (_quizResult.containsKey(questions[question])) {
-              _quizResult.update(
-                  questions[question], (value) => selectedVal as String);
+              _quizResult.update(questions[question], (value) => selectedVal as String);
             } else {
-              _quizResult.putIfAbsent(
-                  questions[question], () => selectedVal as String);
+              _quizResult.putIfAbsent(questions[question], () => selectedVal as String);
             }
 
             if (question == 9) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      LastSurveyPage(name: name, percent: percent + 10),
+                  builder: (_) => LastSurveyPage(name: name, percent: percent + 10),
                 ),
               );
             } else if (question == 6) {
@@ -339,7 +301,7 @@ class SurveyQuestionsMulti extends StatefulWidget {
 
 /// Survey multi question page state.
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
-  List<String> selectedItems = [];
+  String? selectedItem;
   bool greyNext = false;
   double multiItemHeight = 0;
 
@@ -384,119 +346,26 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                onMenuStateChange: ((isOpen) {
-                  setState(() {
-                    greyNext = isOpen;
-                  });
-                }),
-                isExpanded: true,
-                hint: const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Text(
-                    'No symptoms (tap to add more).',
-                    style: TextStyle(
+            child: Column(
+              children: choices.map((item) {
+                return RadioListTile<String>(
+                  title: Text(
+                    item,
+                    style: const TextStyle(
                       fontSize: 24,
                       color: Colors.white,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                items: choices.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: StatefulBuilder(
-                      builder: (context, menuSetState) {
-                        final isSelected = selectedItems.contains(item);
-                        return InkWell(
-                          onTap: () {
-                            isSelected
-                                ? selectedItems.remove(item)
-                                : selectedItems.add(item);
-                            //This rebuilds the StatefulWidget to update the button's text
-                            setState(() {});
-                            //This rebuilds the dropdownMenu Widget to update the check mark
-                            menuSetState(() {});
-                          },
-                          child: SizedBox(
-                            height: double.infinity,
-                            child: Row(
-                              children: [
-                                isSelected
-                                    ? const Icon(
-                                        Icons.check_box_outlined,
-                                        color: Colors.white,
-                                      )
-                                    : const Icon(Icons.check_box_outline_blank,
-                                        color: Colors.white),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    height: 200,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 24,
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }).toList(),
-                //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
-                value: selectedItems.isEmpty ? null : selectedItems.last,
-                onChanged: (value) {},
-                dropdownDecoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 17, 87, 127),
-                  //color: Color(0xff0b3954),
-                ),
-                iconEnabledColor: Colors.white,
-                // box item height
-                itemHeight: 120,
-                // drop down items heights
-                customItemsHeights: itemHeights,
-                dropdownMaxHeight: size.height / 2.3,
-                buttonWidth: size.width,
-                buttonPadding: const EdgeInsets.only(left: 10, right: 0),
-                buttonDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.white,
-                  ),
-                  color: const Color.fromARGB(255, 17, 87, 127),
-                ),
-                buttonElevation: 2,
-                scrollbarAlwaysShow: true,
-                selectedItemBuilder: (context) {
-                  return choices.map(
-                    (item) {
-                      return Container(
-                        alignment: AlignmentDirectional.center,
-                        width: size.width * 0.8,
-                        child: Text(
-                          selectedItems.join(', '),
-                          maxLines: 5,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            overflow: TextOverflow.ellipsis,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    },
-                  ).toList();
-                },
-              )),
+                  value: item,
+                  groupValue: selectedItem,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedItem = value;
+                    });
+                  },
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -518,31 +387,21 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
               "Next",
               style: greyNext == true
                   ? const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.grey,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    )
+                fontFamily: 'OpenSans',
+                color: Colors.grey,
+                fontSize: _nextFontSize,
+                fontWeight: FontWeight.w500,
+              )
                   : const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+                fontSize: _nextFontSize,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           onTap: () {
-            String temp = '';
-            if (selectedItems.isEmpty) {
-              temp = "None";
-            } else {
-              for (int i = 0; i < selectedItems.length; i++) {
-                temp += selectedItems[i];
-                if (i < selectedItems.length - 1) {
-                  temp += "+";
-                }
-              }
-            }
+            String temp = selectedItem ?? "None";
             if (_quizResult.containsKey(questions[question])) {
               _quizResult.update(questions[question], (value) => temp);
             } else {
@@ -564,6 +423,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
     );
   }
 }
+
 
 /// Last survey page to ask for user to confirm
 class LastSurveyPage extends StatefulWidget {
