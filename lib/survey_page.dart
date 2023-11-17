@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -40,13 +42,13 @@ const double _nextFontSize = 32;
 /// Welcome page.
 class SurveyWelcomePage extends StatefulWidget {
   final String name;
-
   const SurveyWelcomePage({Key? key, required this.name}) : super(key: key);
 
   @override
   State<SurveyWelcomePage> createState() => _SurveyWelcomePageState();
 }
 
+/// Welcome page state.
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   @override
   Widget build(BuildContext context) {
@@ -162,6 +164,7 @@ class SurveyQuestions extends StatefulWidget {
   State<SurveyQuestions> createState() => _SurveyQuestionsState();
 }
 
+/// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
   String? selectedVal;
   double itemHeight = 0;
@@ -175,7 +178,6 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
 
     final Size size = MediaQuery.of(context).size;
     itemHeight = size.height / 10;
-
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
       appBar: AppBar(
@@ -194,49 +196,32 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
               Text(
                 questions[question],
                 style: const TextStyle(
-                  color: Colors.white, // Changed text color to white
+                  color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.bold, // Made the text bold
+                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: SizedBox(
-                    width: size.width * 0.8,
-                    child: const Text(
-                      "Tap to choose an option.",
-                      style: TextStyle(
-                        fontSize: 20, // Slightly reduced font size
-                        color: Colors.white, // Changed text color to white
+              Column(
+                children: choices.map((item) {
+                  return RadioListTile<String>(
+                    title: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  items: choices
-                      .map((item) => DropdownMenuItem<String>(
                     value: item,
-                    child: SizedBox(
-                      width: size.width * 0.8,
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 20, // Slightly reduced font size
-                          color: Colors.white, // Changed text color to white
-                        ),
-                      ),
-                    ),
-                  ))
-                      .toList(),
-                  iconEnabledColor: Colors.white, // Changed icon color to white
-                  dropdownColor: const Color(0xff0b3954), // Changed dropdown background color
-                  value: selectedVal,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedVal = value;
-                    });
-                  },
-                ),
+                    groupValue: selectedVal,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedVal = value;
+                      });
+                    },
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -341,8 +326,9 @@ class SurveyQuestionsMulti extends StatefulWidget {
 /// Survey multi question page state.
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
   List<String> selectedItems = [];
-  bool greyNext = false;
+  bool greyNext = true;
   double multiItemHeight = 0;
+  bool noSymptoms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -353,10 +339,6 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
 
     final Size size = MediaQuery.of(context).size;
     multiItemHeight = size.height / 10;
-    List<double> itemHeights = <double>[];
-    for (int i = 0; i < choices.length; i++) {
-      itemHeights.add(multiItemHeight);
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xff0b3954),
@@ -367,182 +349,104 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
           profileButton(context, name)
         ],
       ),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
-              child: Text(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
                 questions[question],
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                onMenuStateChange: ((isOpen) {
-                  setState(() {
-                    greyNext = isOpen;
-                  });
-                }),
-                isExpanded: true,
-                hint: const Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Text(
-                    'No symptoms (tap to add more).',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                items: choices.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: StatefulBuilder(
-                      builder: (context, menuSetState) {
-                        final isSelected = selectedItems.contains(item);
-                        return InkWell(
-                          onTap: () {
-                            isSelected
-                                ? selectedItems.remove(item)
-                                : selectedItems.add(item);
-                            //This rebuilds the StatefulWidget to update the button's text
-                            setState(() {});
-                            //This rebuilds the dropdownMenu Widget to update the check mark
-                            menuSetState(() {});
-                          },
-                          child: SizedBox(
-                            height: double.infinity,
-                            child: Row(
-                              children: [
-                                isSelected
-                                    ? const Icon(
-                                        Icons.check_box_outlined,
-                                        color: Colors.white,
-                                      )
-                                    : const Icon(Icons.check_box_outline_blank,
-                                        color: Colors.white),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    height: 200,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 24,
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }).toList(),
-                //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
-                value: selectedItems.isEmpty ? null : selectedItems.last,
-                onChanged: (value) {},
-                dropdownDecoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 17, 87, 127),
-                  //color: Color(0xff0b3954),
-                ),
-                iconEnabledColor: Colors.white,
-                // box item height
-                itemHeight: 120,
-                // drop down items heights
-                customItemsHeights: itemHeights,
-                dropdownMaxHeight: size.height / 2.3,
-                buttonWidth: size.width,
-                buttonPadding: const EdgeInsets.only(left: 10, right: 0),
-                buttonDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.white,
-                  ),
-                  color: const Color.fromARGB(255, 17, 87, 127),
-                ),
-                buttonElevation: 2,
-                scrollbarAlwaysShow: true,
-                selectedItemBuilder: (context) {
-                  return choices.map(
-                    (item) {
-                      return Container(
-                        alignment: AlignmentDirectional.center,
-                        width: size.width * 0.8,
-                        child: Text(
-                          selectedItems.join(', '),
-                          maxLines: 5,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            overflow: TextOverflow.ellipsis,
-                            color: Colors.white,
-                          ),
+              const SizedBox(height: 20),
+              Column(
+                  children: choices.map((item) {
+                    return CheckboxListTile(
+                      title: Text(
+                        item,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
                         ),
-                      );
-                    },
-                  ).toList();
-                },
-              )),
-            ),
-          ),
-        ],
+                      ),
+                      value: selectedItems.contains(item),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value != null && item == "None") {
+                            noSymptoms = value;
+                            selectedItems.clear(); // Clear other selections if "None" is selected
+                          } else {
+                            noSymptoms = false;
+                          }
+
+                          if (!noSymptoms) {
+                            if (value != null && value) {
+                              selectedItems.add(item);
+                            } else {
+                              selectedItems.remove(item);
+                            }
+                          }
+
+                          greyNext = !selectedItems.isNotEmpty && !noSymptoms;
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+            ],
+          )
+        ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(20.0),
         child: GestureDetector(
           child: Container(
             width: 50,
             height: 60,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              borderRadius: const BorderRadius.all(Radius.circular(30)),
               border: greyNext == true
                   ? Border.all(color: Colors.grey, width: 2)
                   : Border.all(color: Colors.white, width: 2),
+              color: greyNext == true
+                ? const Color(0xff0b3954)
+                : Colors.blue
             ),
             alignment: Alignment.center,
             child: Text(
               "Next",
               style: greyNext == true
                   ? const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.grey,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    )
+                fontFamily: 'OpenSans',
+                color: Colors.grey,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              )
                   : const TextStyle(
-                      fontFamily: 'OpenSans',
-                      color: Colors.white,
-                      fontSize: _nextFontSize,
-                      fontWeight: FontWeight.w500,
-                    ),
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           onTap: () {
             String temp = '';
-            if (selectedItems.isEmpty) {
-              temp = "None";
-            } else {
-              for (int i = 0; i < selectedItems.length; i++) {
-                temp += selectedItems[i];
-                if (i < selectedItems.length - 1) {
-                  temp += "+";
-                }
+            for (int i = 0; i < selectedItems.length; i++) {
+              temp += selectedItems[i];
+              if (i < selectedItems.length - 1) {
+                temp += "+";
               }
+            }
+            if (temp == "") {
+              noSelectionAlert(context);
+              return;
             }
             if (_quizResult.containsKey(questions[question])) {
               _quizResult.update(questions[question], (value) => temp);
@@ -577,6 +481,7 @@ class LastSurveyPage extends StatefulWidget {
   State<LastSurveyPage> createState() => _LastSurveyPageState();
 }
 
+/// Last survey page state.
 class _LastSurveyPageState extends State<LastSurveyPage> {
   bool loading = false;
 
@@ -619,7 +524,7 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
         child: GestureDetector(
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            height: 60, // Reduced the height for a cleaner look
+            height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Colors.white,
@@ -631,9 +536,9 @@ class _LastSurveyPageState extends State<LastSurveyPage> {
               "Submit",
               style: TextStyle(
                 fontFamily: 'OpenSans',
-                color: Color(0xff0b3954), // Inverted text and background colors
-                fontSize: 20, // Adjusted the font size
-                fontWeight: FontWeight.bold, // Use a more prominent font weight
+                color: Color(0xff0b3954),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             )
                 : const LoadingIndicator(

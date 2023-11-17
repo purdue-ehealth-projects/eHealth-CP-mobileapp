@@ -40,7 +40,8 @@ const List<List<String>> choicesData = [
     'Aching all over',
     'A headache',
     'Nausea',
-    'A new concern or problem that came back'
+    'A new concern or problem that came back',
+    'None'
   ],
   ["Better than yesterday", "Same as yesterday", "Worse than yesterday"],
   ['A phone call', 'A visit', 'Nothing! I\'m good today :)'],
