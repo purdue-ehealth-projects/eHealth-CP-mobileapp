@@ -6,15 +6,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database.dart';
 import 'login_page.dart';
+import 'privacy_policy.dart';
 
 const double _actionFontSize = 18;
 
 TextButton privacyPolicyButton(BuildContext context) {
   return TextButton(
-    onPressed: () => launchUrl(
-        Uri.parse(
-            'https://gist.github.com/carl2x/3b79730cdd9ae5f8d746c817d2772a2a'),
-        mode: LaunchMode.platformDefault),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PrivacyPolicyPage(),
+        ),
+      );
+    },
     style: TextButton.styleFrom(
       foregroundColor: Colors.white,
     ),
@@ -120,7 +125,7 @@ Future<void> _showProfile(BuildContext context, final String name) async {
                       style: const TextStyle(fontSize: 18),
                     );
                   } else {
-                    e = Text("${entry.key}: ${entry.value}");
+                    e = Text("${_capitalizeWords(entry.key)}: ${entry.value}");
                   }
                   return e;
                 }).toList(),
@@ -153,8 +158,20 @@ Future<void> _showProfile(BuildContext context, final String name) async {
       );
     }
   }
+
+}
+String _capitalizeWords(String input) {
+  List<String> words = input.split('_');
+  words = words.map((word) => word.capitalize()).toList();
+  return words.join(' ');
 }
 
+// Extension method to capitalize the first letter of a string
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
 Future<void> _confirmLogout(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
   final Widget okButton = TextButton(

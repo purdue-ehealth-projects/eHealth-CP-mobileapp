@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
         // scoreToday == -1
         return _loading == true
             ? loadingScaffold
-            : (_signin == true
+            : (_signin == false
                 ? const LoginPage()
                 : (_didSurvey == false
                     ? SurveyWelcomePage(name: _username.toString())

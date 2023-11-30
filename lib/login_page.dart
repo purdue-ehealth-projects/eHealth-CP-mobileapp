@@ -35,8 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               leading: privacyPolicyButton(context),
               trailing: userManButton(context),
-              backgroundColor: CupertinoColors
-                  .activeBlue, // Customize the navigation bar color
+              backgroundColor: CupertinoColors.systemBlue, // Customize the navigation bar color
             ),
             child: CustomScrollView(
               slivers: <Widget>[
