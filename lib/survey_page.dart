@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo_dart;
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+
 import 'dart:io' show Platform;
 
 import 'home_page.dart';
@@ -14,6 +17,7 @@ import 'database.dart';
 import 'notification_api.dart';
 import 'alerts.dart';
 import 'buttons.dart';
+import 'tts_toggle_provider.dart';
 
 /// Returns a progress bar given the percent and context.
 LinearPercentIndicator getProgressBar(int percent, BuildContext context) {
@@ -47,8 +51,25 @@ class SurveyWelcomePage extends StatefulWidget {
 
 /// Welcome page state.
 class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
+  FlutterTts flutterTts = FlutterTts();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize TTS settings
+    initTts();
+  }
+  Future<void> initTts() async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(1.0);
+    final ttsToggleProvider =
+    Provider.of<TtsToggleProvider>(context, listen: false);
+    await flutterTts.setVolume(
+        ttsToggleProvider.isTtsEnabled ? 1.0 : 0.0);
+  }
   @override
   Widget build(BuildContext context) {
+    final ttsToggleProvider = Provider.of<TtsToggleProvider>(context);
     final String name = widget.name;
     final Size size = MediaQuery.of(context).size;
 
@@ -59,6 +80,20 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
         actions: <Widget>[
           getProgressBar(0, context),
           profileButton(context, name),
+          IconButton(
+            icon: Icon(
+              ttsToggleProvider.isTtsEnabled
+                  ? Icons.volume_up
+                  : Icons.volume_off,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              ttsToggleProvider.toggleTts();
+              final isTtsEnabled = ttsToggleProvider.isTtsEnabled;
+
+              await flutterTts.setVolume(isTtsEnabled ? 1.0 : 0.0);
+            },
+          ),
         ],
       ),
       body: Center(
@@ -163,11 +198,38 @@ class SurveyQuestions extends StatefulWidget {
 
 /// Survey question page state.
 class _SurveyQuestionsState extends State<SurveyQuestions> {
+  FlutterTts flutterTts = FlutterTts();
   String? selectedVal;
   double itemHeight = 0;
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize TTS settings
+    initTts();
+    speakQuestion(widget.question);
+  }
+  Future<void> initTts() async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(1.0);
+    final ttsToggleProvider =
+    Provider.of<TtsToggleProvider>(context, listen: false);
+    await flutterTts.setVolume(
+        ttsToggleProvider.isTtsEnabled ? 1.0 : 0.0);
+  }
+
+  Future<void> speakQuestion(int questionIndex) async {
+    final question = questions[questionIndex];
+    final ttsToggleProvider =
+    Provider.of<TtsToggleProvider>(context, listen: false);
+    if (ttsToggleProvider.isTtsEnabled) {
+      await flutterTts.speak(question);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ttsToggleProvider = Provider.of<TtsToggleProvider>(context);
     final String name = widget.name;
     final int question = widget.question;
     final List<String> choices = widget.choices;
@@ -182,6 +244,24 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
         actions: <Widget>[
           getProgressBar(percent, context),
           profileButton(context, name),
+          IconButton(
+            icon: Icon(
+              ttsToggleProvider.isTtsEnabled ? Icons.volume_up : Icons.volume_off,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              ttsToggleProvider.toggleTts();
+              final isTtsEnabled = ttsToggleProvider.isTtsEnabled;
+
+              // Speak the question title if TTS is enabled
+              if (isTtsEnabled) {
+                await flutterTts.setVolume(1.0);
+                speakQuestion(widget.question);
+              } else {
+                await flutterTts.setVolume(0.0);
+              }
+            },
+          ),
         ],
       ),
       body: Center(
@@ -322,13 +402,42 @@ class SurveyQuestionsMulti extends StatefulWidget {
 
 /// Survey multi question page state.
 class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
+  FlutterTts flutterTts = FlutterTts();
   List<String> selectedItems = [];
   bool greyNext = true;
   double multiItemHeight = 0;
   bool noSymptoms = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize TTS settings
+    initTts();
+    // Speak the initial question
+    speakQuestion(widget.question);
+  }
+
+  Future<void> initTts() async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(1.0);
+    final ttsToggleProvider =
+    Provider.of<TtsToggleProvider>(context, listen: false);
+    await flutterTts.setVolume(
+        ttsToggleProvider.isTtsEnabled ? 1.0 : 0.0);
+  }
+
+  Future<void> speakQuestion(int questionIndex) async {
+    final question = questions[questionIndex];
+    final ttsToggleProvider =
+    Provider.of<TtsToggleProvider>(context, listen: false);
+    if (ttsToggleProvider.isTtsEnabled) {
+      await flutterTts.speak(question);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ttsToggleProvider = Provider.of<TtsToggleProvider>(context);
     final String name = widget.name;
     final List<String> choices = widget.choices;
     final int question = widget.question;
@@ -343,7 +452,27 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
         backgroundColor: const Color(0xff0b3954),
         actions: <Widget>[
           getProgressBar(percent, context),
-          profileButton(context, name)
+          profileButton(context, name),
+          IconButton(
+            icon: Icon(
+              ttsToggleProvider.isTtsEnabled
+                  ? Icons.volume_up
+                  : Icons.volume_off,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              ttsToggleProvider.toggleTts();
+              final isTtsEnabled = ttsToggleProvider.isTtsEnabled;
+
+              // Speak the question title if TTS is enabled
+              if (isTtsEnabled) {
+                await flutterTts.setVolume(1.0);
+                speakQuestion(widget.question);
+              } else {
+                await flutterTts.setVolume(0.0);
+              }
+            },
+          ),
         ],
       ),
       body: Center(
