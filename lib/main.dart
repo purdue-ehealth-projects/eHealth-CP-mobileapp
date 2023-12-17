@@ -17,7 +17,7 @@ Future<void> main() async {
   // Initialize TTS engine
   TtsToggleProvider ttsToggleProvider = TtsToggleProvider();
   await ttsToggleProvider.flutterTts.setLanguage("en-US");
-  await ttsToggleProvider.flutterTts.setSpeechRate(1.0);
+  await ttsToggleProvider.flutterTts.setSpeechRate(0.5);
   await ttsToggleProvider.flutterTts.setVolume(ttsToggleProvider.isTtsEnabled ? 1.0 : 0.0);
 
   AwesomeNotifications().initialize(

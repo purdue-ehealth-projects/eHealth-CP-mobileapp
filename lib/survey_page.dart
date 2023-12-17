@@ -61,7 +61,7 @@ class _SurveyWelcomePageState extends State<SurveyWelcomePage> {
   }
   Future<void> initTts() async {
     await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setSpeechRate(0.5);
     final ttsToggleProvider =
     Provider.of<TtsToggleProvider>(context, listen: false);
     await flutterTts.setVolume(
@@ -211,7 +211,7 @@ class _SurveyQuestionsState extends State<SurveyQuestions> {
   }
   Future<void> initTts() async {
     await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setSpeechRate(0.5);
     final ttsToggleProvider =
     Provider.of<TtsToggleProvider>(context, listen: false);
     await flutterTts.setVolume(
@@ -419,7 +419,7 @@ class _SurveyQuestionsMultiState extends State<SurveyQuestionsMulti> {
 
   Future<void> initTts() async {
     await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setSpeechRate(0.5);
     final ttsToggleProvider =
     Provider.of<TtsToggleProvider>(context, listen: false);
     await flutterTts.setVolume(
